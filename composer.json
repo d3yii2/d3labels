@@ -1,7 +1,7 @@
 {
-  "name": "d3yii2/d3system",
-  "description": "Yii2 system",
-  "keywords": ["Yii2","system"],
+  "name": "d3yii2/d3labels",
+  "description": "Yii2 labels",
+  "keywords": ["Yii2","labels"],
   "license": "BSD-4-Clause",
   "authors": [
     {
@@ -10,14 +10,14 @@
     }
   ],
 
-  "homepage": "https://github.com/d3yii2/d3system",
+  "homepage": "https://github.com/d3yii2/d3labels",
   "require": {
     "php": ">=5.4.0",
     "yiisoft/yii2": "*"
   },
   "autoload": {
     "psr-4": {
-      "d3system\\": ""
+      "d3labels\\": ""
     }
   }
 }
