@@ -1,5 +1,5 @@
 <?php
-namespace d3labels;
+namespace d3yii2\d3labels;
 class Module extends \yii\base\Module
 {
 
