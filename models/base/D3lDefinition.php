@@ -4,6 +4,7 @@
 
 namespace d3yii2\d3labels\models\base;
 
+use d3system\models\SysModels;
 use Yii;
 use yii\db\Exception;
 
@@ -51,7 +52,7 @@ abstract class D3lDefinition extends \yii\db\ActiveRecord
             [['label', 'icon'], 'string', 'max' => 20],
             [['collor'], 'string', 'max' => 6],
             [['action_method'], 'string', 'max' => 256],
-            [['model_id'], 'exist', 'skipOnError' => true, 'targetClass' => \d3yii2\d3labels\models\SysModels::className(), 'targetAttribute' => ['model_id' => 'id']]
+            [['model_id'], 'exist', 'skipOnError' => true, 'targetClass' => SysModels::className(), 'targetAttribute' => ['model_id' => 'id']]
         ];
     }
 
@@ -100,7 +101,7 @@ abstract class D3lDefinition extends \yii\db\ActiveRecord
      */
     public function getModel()
     {
-        return $this->hasOne(\d3yii2\d3labels\models\SysModels::className(), ['id' => 'model_id']);
+        return $this->hasOne(SysModels::className(), ['id' => 'model_id']);
     }
 
     /**
