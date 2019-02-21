@@ -21,7 +21,7 @@ use yii\db\Exception;
  * @property string $action_method
  *
  * @property \d3yii2\d3labels\models\D3LabelHistory[] $d3LabelHistories
- * @property \d3yii2\d3labels\models\SysModels $model
+ * @property \d3system\models\SysModels $model
  * @property \d3yii2\d3labels\models\D3lLabel[] $d3lLabels
  * @property \d3yii2\d3labels\models\D3lTimeBomb[] $d3lTimeBombs
  * @property string $aliasModel
@@ -46,8 +46,8 @@ abstract class D3lDefinition extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['sys_company_id', 'model_id'], 'required'],
             [['sys_company_id', 'model_id'], 'integer'],
+            [['model_id'], 'required'],
             [['action_class'], 'string'],
             [['label', 'icon'], 'string', 'max' => 20],
             [['collor'], 'string', 'max' => 6],
