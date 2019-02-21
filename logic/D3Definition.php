@@ -24,14 +24,10 @@ class D3Definition
      * @param int $sysCompany
      * @throws \Exception
      */
-    public function __construct(string $modelClass, string $actionClass, array $label, int $sysCompany)
+    public function __construct(string $modelClass, array $label)
     {
         if (!class_exists($modelClass)) {
             throw new \Exception('Model Class not exists: ' . $modelClass);
-        }
-
-        if (!class_exists($actionClass)) {
-            throw new \Exception('Action Class not exists: ' . $actionClass);
         }
 
         if (empty($label['title'])) {
@@ -39,9 +35,7 @@ class D3Definition
         }
 
         $this->modelClass = $modelClass;
-        $this->actionClass = $actionClass;
         $this->label = $label;
-        $this->sysCompanyId = $sysCompany;
     }
 
     /**
@@ -67,5 +61,35 @@ class D3Definition
         }
 
         $def->saveOrException($def);
+    }
+
+    /**
+     * @param int $id
+     */
+    public function setSysCompanyId(int $id)
+    {
+        $this->sysCompanyId = $id;
+    }
+
+
+    public function setGlobalSysComampanyId()
+    {
+        $this->sysCompanyId = null;
+    }
+
+    /**
+     * @param string $icon
+     */
+    public function setLabelIcon(string $icon)
+    {
+        $this->label['icon'] = $icon;
+    }
+
+    /**
+     * @param string $collor
+     */
+    public function setLabelColor(string $collor)
+    {
+        $this->label['collorl'] = $collor;
     }
 }
