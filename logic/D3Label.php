@@ -4,6 +4,7 @@ namespace d3yii2\d3labels\logic;
 
 use d3system\exceptions\D3ActiveRecordException;
 use d3yii2\d3labels\models\D3lLabel;
+use yii\web\NotFoundHttpException;
 
 /**
  * Class Label
@@ -46,5 +47,22 @@ class D3Label
 
             $mapping->saveOrException();
         }
+    }
+
+    /**
+     * @param int $labelId
+     * @param int $modelRecordId
+     * @return D3lLabel
+     * @throws NotFoundHttpException
+     */
+    public static function loadLabel(int $id): D3lLabel
+    {
+        $label = D3lLabel::findOne($id);
+
+        if (!$label) {
+            throw new NotFoundHttpException('Label not found');
+        }
+
+        return $label;
     }
 }
