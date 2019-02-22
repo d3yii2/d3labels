@@ -17,5 +17,18 @@
  * NOTE: this file must be saved in UTF-8 encoding.
  */
 return [
-
+    'Action' => 'Darbība',
+    'Assigned Labels' => 'Piesaistītās birkas',
+    'Attach' => 'Piesaistīt',
+    'Attached' => 'Piesaistīta',
+    'Cannot delete Label record' => 'Neizdevās noņemt birku',
+    'Color' => 'Krāsa',
+    'Icon' => 'Ikona',
+    'Label attached  sucessfully' => 'Birka piesaistīta',
+    'Labels' => 'Birkas',
+    'Remove' => 'Noņemt',
+    'Removed' => 'Noņemta',
+    'Label removed sucessfully' => 'Birka noņemta',
+    'Status' => 'Statuss',
+    'Title' => 'Nosaukums',
 ];
