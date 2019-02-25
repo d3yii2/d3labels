@@ -51,6 +51,7 @@ abstract class D3lDefinition extends \yii\db\ActiveRecord
             [['label', 'icon'], 'string', 'max' => 20],
             [['collor'], 'string', 'max' => 6],
             [['action_method'], 'string', 'max' => 256],
+            [['model_id', 'label'], 'unique', 'targetAttribute' => ['model_id', 'label']],
             [['model_id'], 'exist', 'skipOnError' => true, 'targetClass' => \d3yii2\d3labels\models\SysModels::className(), 'targetAttribute' => ['model_id' => 'id']]
         ];
     }
