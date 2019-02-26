@@ -1,31 +1,59 @@
-#d3system
+D3Labels
+========
+Assign multiple labels to model
 
-##Installation
+Installation
+------------
 
-```bash
-composer require schmunk42/yii2-giiant:"@dev"
+The preferred way to install this extension is through [composer](http://getcomposer.org/download/).
+
+Either run
+
+```
+php composer.phar require --prefer-dist d3yii2/d3labels "*"
 ```
 
+or add
 
-##Compnents
-
-
-
-###ModelsList
-
-Configuration:
-```php
- 'components' => [
-        'ModelsList' => [
-            'class' => 'd3system\compnents\ModelsList',
-            'cacheKey' => 'd3system\modeList',
-            'cacheDuration' => 3600
-        ]    
-        
+```
+"d3yii2/d3labels": "*"
 ```
 
-Usage:
-```php
-  $modelId = \Yii::$app->ModelsList->getId($model);
+to the require section of your `composer.json` file.
 
+
+Define Labels
+-----
+Migration example
+```php
+public function safeUp()
+{
+    $items = [
+        [
+            'modelClass' => 'd3modules\lietvediba\models\RkInvoice',
+            'label' => ['title' => 'Test #1', 'icon' => 'test1'],
+        ],
+        [
+            'modelClass' => 'd3modules\lietvediba\models\RkInvoice',
+            'label' => ['title' => 'Test #2', 'icon' => 'test2'],
+        ]
+    ];
+
+    foreach ($items as $label) {
+        $def = new \d3yii2\d3labels\logic\D3Definition($label['modelClass'], $label['label']);
+        $def->save();
+    }
+
+    return true;
+}
+```
+
+Display Widget
+-----
+
+```php
+<?=\d3yii2\d3labels\widgets\D3LabelList::widget([
+        'title' => Yii::t('d3labels', 'Labels'),
+        'model' => $model
+])?>
 ```
