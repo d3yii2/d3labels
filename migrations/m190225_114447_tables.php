@@ -76,6 +76,8 @@ class m190225_114447_tables extends Migration
             ALTER TABLE `d3l_definition`
               ADD CONSTRAINT `d3l_definition_ibfk_1` FOREIGN KEY (`model_id`) REFERENCES `sys_models` (`id`);
             
+            ALTER TABLE `d3l_definition` ADD UNIQUE( `model_id`, `label`);
+            
             ALTER TABLE `d3l_label`
               ADD CONSTRAINT `d3l_label_ibfk_1` FOREIGN KEY (`definition_id`) REFERENCES `d3l_definition` (`id`);
             
