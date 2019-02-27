@@ -26,6 +26,7 @@ class D3LabelList extends \yii\base\Widget
     ];
     private $availableLabels = [];
     private $attachedLabels = [];
+    private $controllerRoute;
 
     public function init()
     {
@@ -51,6 +52,10 @@ class D3LabelList extends \yii\base\Widget
             foreach ($labels as $label) {
                 $this->attachedLabels[$label->definition_id] = $label;
             }
+        }
+
+        if (!$this->controllerRoute) {
+            $this->controllerRoute = Yii::$app->controller->id;
         }
     }
 
@@ -128,19 +133,19 @@ class D3LabelList extends \yii\base\Widget
                     'text' => Yii::t('d3labels', 'Attach'),
                     'url' => Url::to(
                         [
-                            '/d3labels/label/attach',
+                            $this->controllerRoute . '/attach-label',
                             'defId' => $row->id,
                             'recordId' => $this->model->id,
-                            'ru' => $returnUrl,
+                            'modelId' => $this->model->id,
                         ])
                 ])
                 : ThExternalLink::widget([
                     'text' => Yii::t('d3labels', 'Remove'),
                     'url' => Url::to(
                         [
-                            '/d3labels/label/remove',
-                            'id' => $this->attachedLabels[$row->id]->id,
-                            'ru' => $returnUrl,
+                            $this->controllerRoute . '/remove-label',
+                            'labelId' => $this->attachedLabels[$row->id]->id,
+                            'modelId' => $this->model->id,
                         ]
                     )
                 ]);
