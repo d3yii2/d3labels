@@ -6,6 +6,7 @@ use cornernote\returnurl\ReturnUrl;
 use d3system\models\SysModels;
 use d3yii2\d3labels\models\D3lDefinition;
 use d3yii2\d3labels\models\D3lLabel;
+use eaBlankonThema\widget\ThButton;
 use eaBlankonThema\widget\ThExternalLink;
 use yii\helpers\Url;
 use yii\helpers\Html;
@@ -91,11 +92,32 @@ class D3LabelList extends \yii\base\Widget
         if ($this->collapsed) {
             $collapseIcon = 'fa-angle-down';
         }
-        return '<div class="panel-heading panel-heading-table-simple">
+        $content = '<div class="panel-heading panel-heading-table-simple">
                     <div class="pull-left">
                         ' . Html::tag('h3', $this->title, $titleHtmlOptions) . '
                         ' . $description . '    
                     </div>
+                    <div>
+                    <form>';
+
+        $availableLabels = $this->getAvailableForDropdown();
+
+        if($availableLabels) {
+            $content .= Html::beginForm([$this->controllerRoute . '/attach-label'], 'get')
+                . Html::dropDownList('defId', null, $availableLabels) . ' '
+                . Html::hiddenInput('recordId', $this->model->id)
+                . Html::hiddenInput('modelId', $this->model->id)
+                . ThButton::widget([
+                    'label' => Yii::t('d3labels', 'Attach'),
+                    'icon' => ThButton::ICON_PLUS,
+                    'type' => ThButton::TYPE_SUCCESS,
+                    'size' => ThButton::SIZE_SMALL,
+                    'submit' => true,
+                ]) .
+                Html::endForm();
+        }
+
+        $content .= '</div>
                     <div class="pull-right">
                         <button class="btn btn-sm" data-action="collapse" data-toggle="tooltip" data-placement="top" data-title="Collapse" data-original-title="" title="">
                             <i class="fa ' . $collapseIcon . '"></i>
@@ -104,6 +126,7 @@ class D3LabelList extends \yii\base\Widget
                     <div class="clearfix"></div>
                 </div>';
 
+        return $content;
     }
 
     public function createTable()
@@ -111,55 +134,56 @@ class D3LabelList extends \yii\base\Widget
         $html = '
         <thead>
             <tr>
-                <th>' . Yii::t('d3labels', 'Icon') . '</th>
                 <th>' . Yii::t('d3labels', 'Title') . '</th>
-                <th>' . Yii::t('d3labels', 'Color') . '</th>
-                <th>' . Yii::t('d3labels', 'Status') . '</th>
                 <th>' . Yii::t('d3labels', 'Action') . '</th>
             </tr>     
         </thead>
         <tbody>
         ';
-        foreach ($this->availableLabels as $row) {
 
-            $isAttached = isset($this->attachedLabels[$row->id]);
+        foreach ($this->attachedLabels as $definitionId => $row) {
 
-            $status = $isAttached ? 'Attached' : 'Removed';
+            if(!isset($this->availableLabels[$definitionId])) {
+                continue;
+            }
 
-            $returnUrl = ReturnUrl::getUrl(Yii::$app->request->getUrl());
+            $label = $this->availableLabels[$definitionId];
 
-            $actions = !$isAttached
-                ? ThExternalLink::widget([
-                    'text' => Yii::t('d3labels', 'Attach'),
-                    'url' => Url::to(
-                        [
-                            $this->controllerRoute . '/attach-label',
-                            'defId' => $row->id,
-                            'recordId' => $this->model->id,
-                            'modelId' => $this->model->id,
-                        ])
-                ])
-                : ThExternalLink::widget([
-                    'text' => Yii::t('d3labels', 'Remove'),
-                    'url' => Url::to(
-                        [
-                            $this->controllerRoute . '/remove-label',
-                            'labelId' => $this->attachedLabels[$row->id]->id,
-                            'modelId' => $this->model->id,
-                        ]
-                    )
-                ]);
+            $actions = ThButton::widget([
+                'label' => Yii::t('d3labels', 'Remove'),
+                'link' => [
+                    'remove-label',
+                    'labelId' => $row->id,
+                    'modelId' => $this->model->id,
+                ],
+                'icon' => ThButton::ICON_TRASH,
+                'type' => ThButton::TYPE_DANGER,
+                'size' => ThButton::SIZE_XSMALL,
+            ]);
 
             $html .= '
                 <tr>
-                    <td>' . $row->icon . '</td>
-                    <td>' . $row->label . '</td>
-                    <td>' . $row->collor . '</td>
-                    <td>' . Yii::t('d3labels', $status) . '</td>
+                    <td>'  . $label->icon . ' ' . $label->label . '</td>
                     <td>' . $actions . '</td>
                 </tr>';
         }
 
         return $html . '</tbody>';
+    }
+
+    /**
+     * @return array
+     */
+    public function getAvailableForDropdown(): array
+    {
+        $items = [];
+
+        foreach ($this->availableLabels as $id => $label) {
+            if(!isset($this->attachedLabels[$id])) {
+                $items[$id] = $label->label;
+            }
+        }
+
+        return $items;
     }
 }
