@@ -6,6 +6,8 @@ use cornernote\returnurl\ReturnUrl;
 use d3system\models\SysModels;
 use d3yii2\d3labels\models\D3lDefinition;
 use d3yii2\d3labels\models\D3lLabel;
+use eaBlankonThema\widget\ThBadge;
+use eaBlankonThema\widget\ThBadgeList;
 use eaBlankonThema\widget\ThButton;
 use eaBlankonThema\widget\ThExternalLink;
 use yii\helpers\Url;
@@ -161,9 +163,11 @@ class D3LabelList extends \yii\base\Widget
                 'size' => ThButton::SIZE_XSMALL,
             ]);
 
+            $label = ThBadge::widget(['type' => $label->collor, 'text' => $label->label, 'faIcon' => $label->icon]);
+
             $html .= '
                 <tr>
-                    <td>'  . $label->icon . ' ' . $label->label . '</td>
+                    <td>' . $label . '</td>
                     <td>' . $actions . '</td>
                 </tr>';
         }
