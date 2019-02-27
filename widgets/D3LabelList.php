@@ -151,17 +151,15 @@ class D3LabelList extends \yii\base\Widget
 
             $label = $this->availableLabels[$definitionId];
 
-            $actions = ThButton::widget([
-                'label' => Yii::t('d3labels', 'Remove'),
-                'link' => [
+            $actions = Html::a(
+                '<span class="glyphicon glyphicon-trash"></span>',
+                [
                     'remove-label',
                     'labelId' => $row->id,
                     'modelId' => $this->model->id,
                 ],
-                'icon' => ThButton::ICON_TRASH,
-                'type' => ThButton::TYPE_DANGER,
-                'size' => ThButton::SIZE_XSMALL,
-            ]);
+                ['title' => Yii::t('d3labels', 'Remove')]
+            );
 
             $label = ThBadge::widget(['type' => $label->collor, 'text' => $label->label, 'faIcon' => $label->icon]);
 
