@@ -3,6 +3,7 @@
 namespace d3yii2\d3labels\logic;
 
 use d3system\exceptions\D3ActiveRecordException;
+use d3yii2\d3labels\models\D3lDefinition;
 use d3yii2\d3labels\models\D3lLabel;
 use yii\web\NotFoundHttpException;
 
@@ -38,31 +39,46 @@ class D3Label
      * @param array $definitions
      * @throws \yii\db\Exception
      */
-    public static function attach(int $modelId, array $definitions)
+    public static function attach(int $modelId, D3lDefinition $definition)
     {
-        foreach ($definitions as $def) {
-            $mapping = new D3lLabel();
-            $mapping->model_record_id = $modelId;
-            $mapping->definition_id = $def->id;
+        $attached = false;
 
-            $mapping->saveOrException();
+        foreach ($definition->d3lLabels as $label) {
+            if ($label->definition_id == $definition->id && $label->model_record_id == $modelId) {
+                $attached = true;
+                break;
+            }
         }
+
+        //Ignorē ja piesaistīta, lai neizraisītu exception pie lapas pārlādes
+        if ($attached) {
+            return true;
+        }
+
+        $mapping = new D3lLabel();
+        $mapping->model_record_id = $modelId;
+        $mapping->definition_id = $definition->id;
+
+        $mapping->saveOrException();
     }
 
     /**
      * @param int $labelId
-     * @param int $modelRecordId
-     * @return D3lLabel
+     * @throws D3ActiveRecordException
      * @throws NotFoundHttpException
+     * @throws \Throwable
+     * @throws \yii\db\StaleObjectException
      */
-    public static function loadLabel(int $id): D3lLabel
+    public static function remove(int $labelId)
     {
-        $label = D3lLabel::findOne($id);
+        $label = D3lLabel::findOne($labelId);
 
-        if (!$label) {
-            throw new NotFoundHttpException('Label not found');
+        if (null === $label) {
+            return false;
         }
 
-        return $label;
+        if (!$label->delete()) {
+            throw new D3ActiveRecordException($label, Yii::t('d3labels', 'Cannot delete Label record'));
+        }
     }
 }
