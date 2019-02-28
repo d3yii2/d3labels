@@ -133,12 +133,6 @@ class D3LabelList extends \yii\base\Widget
     public function createTable()
     {
         $html = '
-        <thead>
-            <tr>
-                <th>' . Yii::t('d3labels', 'Title') . '</th>
-                <th>' . Yii::t('d3labels', 'Action') . '</th>
-            </tr>     
-        </thead>
         <tbody>
         ';
 
