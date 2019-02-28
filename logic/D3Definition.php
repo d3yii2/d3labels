@@ -4,7 +4,6 @@ namespace d3yii2\d3labels\logic;
 
 use d3system\compnents\ModelsList;
 use d3yii2\d3labels\models\D3lDefinition;
-use d3yii2\d3labels\models\D3lLabel;
 use yii\web\NotFoundHttpException;
 
 /**
@@ -40,6 +39,21 @@ class D3Definition
     }
 
     /**
+     * @param int $defId
+     * @return D3lDefinition
+     */
+    public static function loadDefinition(int $id): D3lDefinition
+    {
+        $def = D3lDefinition::findOne($id);
+
+        if (!$def) {
+            throw new NotFoundHttpException('Definition not found');
+        }
+
+        return $def;
+    }
+
+    /**
      * @throws \yii\db\Exception
      */
     public function save()
@@ -72,7 +86,6 @@ class D3Definition
         $this->sysCompanyId = $id;
     }
 
-
     public function setGlobalSysComampanyId()
     {
         $this->sysCompanyId = null;
@@ -92,20 +105,5 @@ class D3Definition
     public function setLabelColor(string $collor)
     {
         $this->label['collorl'] = $collor;
-    }
-
-    /**
-     * @param int $defId
-     * @return D3lDefinition
-     */
-    public static function loadDefinition(int $id): D3lDefinition
-    {
-        $def = D3lDefinition::findOne($id);
-
-        if (!$def) {
-            throw new NotFoundHttpException('Definition not found');
-        }
-
-        return $def;
     }
 }

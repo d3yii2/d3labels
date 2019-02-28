@@ -2,19 +2,17 @@
 
 namespace d3yii2\d3labels\widgets;
 
-use cornernote\returnurl\ReturnUrl;
 use d3system\models\SysModels;
 use d3yii2\d3labels\models\D3lDefinition;
 use d3yii2\d3labels\models\D3lLabel;
 use d3yii2\d3labels\widgets\ThBadge;
 use eaBlankonThema\widget\ThButton;
-use eaBlankonThema\widget\ThExternalLink;
-use yii\helpers\Url;
 use yii\helpers\Html;
 use Yii;
 
 /**
- * D3Label Widget
+ * Class D3LabelList
+ * @package d3yii2\d3labels\widgets
  */
 class D3LabelList extends \yii\base\Widget
 {
@@ -30,6 +28,9 @@ class D3LabelList extends \yii\base\Widget
     private $attachedLabels = [];
     private $controllerRoute;
 
+    /**
+     * @return bool|void
+     */
     public function init()
     {
         parent::init();
@@ -61,7 +62,11 @@ class D3LabelList extends \yii\base\Widget
         }
     }
 
-    public function run()
+    /**
+     * @return string
+     * @throws \Exception
+     */
+    public function run(): string
     {
         $modulePath = Yii::$app->getModule('d3labels')->basePath;
 
@@ -76,7 +81,11 @@ class D3LabelList extends \yii\base\Widget
         );
     }
 
-    public function createTitle()
+    /**
+     * @return string
+     * @throws \Exception
+     */
+    public function createTitle(): string
     {
         if (!$this->title) {
             return '';
@@ -103,7 +112,7 @@ class D3LabelList extends \yii\base\Widget
 
         $availableLabels = $this->getAvailableForDropdown();
 
-        if($availableLabels) {
+        if ($availableLabels) {
             $content .= Html::beginForm([$this->controllerRoute . '/attach-label'], 'get')
                 . Html::dropDownList('defId', null, $availableLabels) . ' '
                 . Html::hiddenInput('recordId', $this->model->id)
@@ -130,7 +139,27 @@ class D3LabelList extends \yii\base\Widget
         return $content;
     }
 
-    public function createTable()
+    /**
+     * @return array
+     */
+    public function getAvailableForDropdown(): array
+    {
+        $items = [];
+
+        foreach ($this->availableLabels as $id => $label) {
+            if (!isset($this->attachedLabels[$id])) {
+                $items[$id] = $label->label;
+            }
+        }
+
+        return $items;
+    }
+
+    /**
+     * @return string
+     * @throws \Exception
+     */
+    public function createTable(): string
     {
         $html = '
         <tbody>
@@ -138,7 +167,7 @@ class D3LabelList extends \yii\base\Widget
 
         foreach ($this->attachedLabels as $definitionId => $row) {
 
-            if(!isset($this->availableLabels[$definitionId])) {
+            if (!isset($this->availableLabels[$definitionId])) {
                 continue;
             }
 
@@ -164,21 +193,5 @@ class D3LabelList extends \yii\base\Widget
         }
 
         return $html . '</tbody>';
-    }
-
-    /**
-     * @return array
-     */
-    public function getAvailableForDropdown(): array
-    {
-        $items = [];
-
-        foreach ($this->availableLabels as $id => $label) {
-            if(!isset($this->attachedLabels[$id])) {
-                $items[$id] = $label->label;
-            }
-        }
-
-        return $items;
     }
 }

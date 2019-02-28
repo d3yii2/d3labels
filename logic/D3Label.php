@@ -16,7 +16,7 @@ class D3Label
     /**
      * @return D3lLabel[]
      */
-    public static function getAll()
+    public static function getAll(): array
     {
         $labels = D3lLabel::findAll();
 
@@ -27,7 +27,7 @@ class D3Label
      * @param int $modelId
      * @return D3lLabel[]
      */
-    public static function getAllByModel(int $modelId)
+    public static function getAllByModel(int $modelId): array
     {
         $labels = D3lLabel::findAll(['model_record_id' => $modelId]);
 
@@ -50,7 +50,7 @@ class D3Label
             }
         }
 
-        //Ignorē ja piesaistīta, lai neizraisītu exception pie lapas pārlādes
+        // Ignorē ja piesaistīta, lai neizraisītu exception pie lapas pārlādes
         if ($attached) {
             return true;
         }
