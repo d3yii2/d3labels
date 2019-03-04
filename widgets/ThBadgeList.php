@@ -2,10 +2,6 @@
 
 namespace d3yii2\d3labels\widgets;
 
-use Yii;
-use yii\bootstrap\Widget;
-use yii\helpers\Html;
-
 /**
  * Class ThBadgeList
  * @package d3yii2\d3labels\widgets
@@ -30,7 +26,9 @@ class ThBadgeList extends ThBadge
                 ? '<i class="fa ' . $item['faIcon'] . '"></i> ' . $item['text']
                 : $item['text'];
 
-            $badges[] = parent::getBadge($badgeContent, $type);
+            $badges[] = isset($item['url'])
+                ? parent::getBadgeLink($badgeContent, $type, $item['url'])
+                : parent::getBadge($badgeContent, $type);
         }
 
         echo implode($this->separator, $badges);

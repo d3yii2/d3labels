@@ -52,4 +52,19 @@ class ThBadge extends Widget
     {
         return  Html::tag('span', $content, ['class' => 'badge badge-' . $type]);
     }
+
+    /**
+     * @param string $content
+     * @param string $type
+     * @param string $url
+     * @return string
+     */
+    protected function getBadgeLink(string $content, string $type, string $url)
+    {
+        $badge = Html::tag('span', $content, ['class' => 'badge badge-' . $type]);
+
+        $link = Html::a($badge, $url);
+
+        return $link;
+    }
 }
