@@ -2,13 +2,9 @@
 
 namespace d3yii2\d3labels\widgets;
 
-use d3system\models\SysModels;
-use d3yii2\d3labels\models\D3lDefinition;
-use d3yii2\d3labels\models\D3lLabel;
-use d3yii2\d3labels\widgets\ThBadge;
-use eaBlankonThema\widget\ThButton;
-use yii\helpers\Html;
+use d3yii2\d3labels\logic\D3LabelList as DefinitionsList;
 use Yii;
+use yii\helpers\Html;
 
 /**
  * Class D3LabelList
@@ -24,8 +20,8 @@ class D3LabelList extends \yii\base\Widget
     public $tableOptions = [
         'class' => 'table table-striped table-success table-bordered'
     ];
-    private $availableLabels = [];
-    private $attachedLabels = [];
+
+    private $d3LabelList;
     private $controllerRoute;
 
     /**
@@ -35,27 +31,7 @@ class D3LabelList extends \yii\base\Widget
     {
         parent::init();
 
-        $sysModel = SysModels::findOne(['class_name' => get_class($this->model)]);
-
-        if (!$sysModel) {
-            return false;
-        }
-
-        $definitions = D3lDefinition::findAll(['model_id' => $sysModel->id]);
-
-        if (!empty($definitions)) {
-            foreach ($definitions as $def) {
-                $this->availableLabels[$def->id] = $def;
-            }
-        }
-
-        $labels = D3lLabel::findAll(['model_record_id' => $this->model->id]);
-
-        if (!empty($labels)) {
-            foreach ($labels as $label) {
-                $this->attachedLabels[$label->definition_id] = $label;
-            }
-        }
+        $this->d3LabelList = new DefinitionsList($this->model);
 
         if (!$this->controllerRoute) {
             $this->controllerRoute = Yii::$app->controller->id;
@@ -102,6 +78,7 @@ class D3LabelList extends \yii\base\Widget
         if ($this->collapsed) {
             $collapseIcon = 'fa-angle-down';
         }
+
         $content = '<div class="panel-heading panel-heading-table-simple">
                     <div class="pull-left">
                         ' . Html::tag('h3', $this->title, $titleHtmlOptions) . '
@@ -110,21 +87,11 @@ class D3LabelList extends \yii\base\Widget
                     <div>
                     <form>';
 
-        $availableLabels = $this->getAvailableForDropdown();
+        $nonAttachedLabels = $this->d3LabelList->getNonAttached();
 
-        if ($availableLabels) {
-            $content .= Html::beginForm([$this->controllerRoute . '/attach-label'], 'get')
-                . Html::dropDownList('defId', null, $availableLabels) . ' '
-                . Html::hiddenInput('recordId', $this->model->id)
-                . Html::hiddenInput('modelId', $this->model->id)
-                . ThButton::widget([
-                    'label' => Yii::t('d3labels', 'Attach'),
-                    'icon' => ThButton::ICON_PLUS,
-                    'type' => ThButton::TYPE_SUCCESS,
-                    'size' => ThButton::SIZE_SMALL,
-                    'submit' => true,
-                ]) .
-                Html::endForm();
+        if ($nonAttachedLabels) {
+            $content .= \d3yii2\d3labels\logic\D3LabelList::getAsBadges($nonAttachedLabels, 'attach-label',
+                $this->model->id);
         }
 
         $content .= '</div>
@@ -140,22 +107,6 @@ class D3LabelList extends \yii\base\Widget
     }
 
     /**
-     * @return array
-     */
-    public function getAvailableForDropdown(): array
-    {
-        $items = [];
-
-        foreach ($this->availableLabels as $id => $label) {
-            if (!isset($this->attachedLabels[$id])) {
-                $items[$id] = $label->label;
-            }
-        }
-
-        return $items;
-    }
-
-    /**
      * @return string
      * @throws \Exception
      */
@@ -165,20 +116,23 @@ class D3LabelList extends \yii\base\Widget
         <tbody>
         ';
 
-        foreach ($this->attachedLabels as $definitionId => $row) {
+        $available = $this->d3LabelList->getAvailable();
+        $attached = $this->d3LabelList->getAttached();
 
-            if (!isset($this->availableLabels[$definitionId])) {
+        foreach ($attached as $definitionId => $row) {
+
+            if (!isset($available[$definitionId])) {
                 continue;
             }
 
-            $label = $this->availableLabels[$definitionId];
+            $label = $available[$definitionId];
 
             $actions = Html::a(
                 '<span class="glyphicon glyphicon-trash"></span>',
                 [
                     'remove-label',
                     'labelId' => $row->id,
-                    'modelId' => $this->model->id,
+                    'modelId' => $this->d3LabelList->model->id,
                 ],
                 ['title' => Yii::t('d3labels', 'Remove')]
             );
