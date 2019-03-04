@@ -31,6 +31,6 @@ class ThBadgeList extends ThBadge
                 : parent::getBadge($badgeContent, $type);
         }
 
-        echo implode($this->separator, $badges);
+        return implode($this->separator, $badges);
     }
 }

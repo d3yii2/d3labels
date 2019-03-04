@@ -41,7 +41,7 @@ class ThBadge extends Widget
             ? '<i class="fa ' . $this->faIcon . '"></i> ' . $this->text
             : $this->text;
 
-        echo $this->getBadge($content, $this->type);
+        return $this->getBadge($content, $this->type);
     }
 
     /**
