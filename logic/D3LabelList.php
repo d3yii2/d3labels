@@ -5,6 +5,7 @@ namespace d3yii2\d3labels\logic;
 use d3yii2\d3labels\models\D3lDefinition;
 use d3yii2\d3labels\models\D3lLabel;
 use d3yii2\d3labels\models\SysModels;
+use yii\helpers\Html;
 
 /**
  * Class D3DefinitionList
@@ -48,37 +49,78 @@ class D3LabelList
     }
 
     /**
-     * @param array $labels
+     * @param array $items
      * @return string
      * @throws \Exception
      */
-    public static function getAsBadges(array $labels, string $action, int $modelId): string
+    public static function getAsBadges(array $items): string
     {
-        $items = self::getBadgeItems($labels, $action, $modelId);
-
         $list = \eaBlankonThema\widget\ThBadgeList::widget(['items' => $items]);
 
         return $list;
     }
 
     /**
+     * @param array $items
+     * @return string
+     */
+    public static function getAsDropdown(array $items, $model = null): string
+    {
+        if ($model) {
+            $dropdown = Html::activeDropDownList(
+                $model,
+                'label_type',
+                $items,
+                ['prompt' => \Yii::t('d3labels', 'Filter by Label')]
+            );
+            return $dropdown;
+        }
+
+        $dropdown = Html::dropDownList(
+            'model_label_type',
+            null,
+            $items,
+            ['prompt' => \Yii::t('d3labels', 'Filter by Label')]
+        );
+
+        return $dropdown;
+    }
+
+    /**
      * @param array $labels
      * @return array
      */
-    public static function getBadgeItems(array $labels, string $action, int $modelId): array
+    public static function getBadgeItems(array $labels, string $action = '', int $modelId = null): array
     {
         $items = [];
 
         foreach ($labels as $label) {
-            $item = ['type' => $label->collor, 'text' => $label->label, 'faIcon' => $label->icon];
-            if ('' !== $action) {
-                $item['url'] = \yii\helpers\Url::to([$action, 'defId' => $label->id, 'modelId' => $modelId]);
-            }
+            $item = self::labelToItem($label, $action, $modelId);
 
             $items[] = $item;
         }
 
         return $items;
+    }
+
+    /**
+     * @param $label
+     * @param string $action
+     * @param int|null $modelId
+     * @return array
+     */
+    public static function labelToItem($label, string $action = '', int $modelId = null): array
+    {
+        $item = is_object($label)
+            ? ['type' => $label->collor, 'text' => $label->label, 'faIcon' => $label->icon]
+            : ['type' => $label['collor'], 'text' => $label['label'], 'faIcon' => $label['icon']];
+
+        if ('' !== $action) {
+            $labelId = is_object($label) ? $label->id : $label['id'];
+            $item['url'] = \yii\helpers\Url::to([$action, 'defId' => $labelId, 'modelId' => $modelId]);
+        }
+
+        return $item;
     }
 
     /**

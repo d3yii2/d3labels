@@ -5,6 +5,7 @@ namespace d3yii2\d3labels\widgets;
 use d3yii2\d3labels\logic\D3LabelList as DefinitionsList;
 use Yii;
 use yii\helpers\Html;
+use d3yii2\d3labels\logic\D3LabelList as LabelList;
 
 /**
  * Class D3LabelList
@@ -90,8 +91,9 @@ class D3LabelList extends \yii\base\Widget
         $nonAttachedLabels = $this->d3LabelList->getNonAttached();
 
         if ($nonAttachedLabels) {
-            $content .= \d3yii2\d3labels\logic\D3LabelList::getAsBadges($nonAttachedLabels, 'attach-label',
-                $this->model->id);
+            $items = LabelList::getBadgeItems($nonAttachedLabels, 'attach-label', $this->model->id);
+
+            $content .= LabelList::getAsBadges($items);
         }
 
         $content .= '</div>
