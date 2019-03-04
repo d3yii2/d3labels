@@ -48,4 +48,23 @@ public function behaviors()
 
         return $models;
     }
+
+    /**
+     * @param array $modelRecords
+     * @return array
+     */
+    public static function forListbox($modelRecords = []): array
+    {
+        $models = (new \yii\db\Query())
+            ->select(D3lDefinition::tableName() . '.id, ' . D3lDefinition::tableName() . '.label')
+            ->leftJoin(D3lDefinition::tableName(),
+                self::tableName() . '.definition_id = ' . D3lDefinition::tableName() . '.id')
+            ->from(self::tableName())
+            ->groupBy(self::tableName() . '.definition_id')
+            ->all();
+
+        $items = ArrayHelper::map($models, 'id', 'label');
+
+        return $items;
+    }
 }

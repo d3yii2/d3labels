@@ -23,6 +23,7 @@ return [
     'Attached' => 'Piesaistīta',
     'Cannot delete Label record' => 'Neizdevās noņemt birku',
     'Color' => 'Krāsa',
+    'Filter by Label' => 'Atlasīt pēc birkas',
     'Icon' => 'Ikona',
     'Label attached  sucessfully' => 'Birka piesaistīta',
     'Labels' => 'Birkas',
