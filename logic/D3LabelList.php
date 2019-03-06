@@ -5,7 +5,7 @@ namespace d3yii2\d3labels\logic;
 use d3yii2\d3labels\models\D3lDefinition;
 use d3yii2\d3labels\models\D3lLabel;
 use d3yii2\d3labels\models\SysModels;
-use d3yii2\d3labels\widgets\ThBadgeList;
+use d3system\widgets\ThBadgeList;
 use yii\helpers\Html;
 
 /**
