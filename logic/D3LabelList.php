@@ -5,6 +5,7 @@ namespace d3yii2\d3labels\logic;
 use d3yii2\d3labels\models\D3lDefinition;
 use d3yii2\d3labels\models\D3lLabel;
 use d3yii2\d3labels\models\SysModels;
+use d3yii2\d3labels\widgets\ThBadgeList;
 use yii\helpers\Html;
 
 /**
@@ -53,9 +54,9 @@ class D3LabelList
      * @return string
      * @throws \Exception
      */
-    public static function getAsBadges(array $items): string
+    public static function getAsBadges(array $items, array $renderOptions = []): string
     {
-        $list = \eaBlankonThema\widget\ThBadgeList::widget(['items' => $items]);
+        $list = ThBadgeList::widget(['items' => $items, 'renderOptions' => $renderOptions]);
 
         return $list;
     }
