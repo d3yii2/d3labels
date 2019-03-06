@@ -21,6 +21,8 @@ class D3LabelList extends \yii\base\Widget
     public $tableOptions = [
         'class' => 'table table-striped table-success table-bordered'
     ];
+    public $headerIconsWithText = true;
+    public $gridIconsWithText = false;
 
     private $d3LabelList;
     private $controllerRoute;
@@ -97,7 +99,8 @@ class D3LabelList extends \yii\base\Widget
         if ($nonAttachedLabels) {
             $items = LabelLogic::getBadgeItems($nonAttachedLabels, 'attach-label', $this->model->id);
 
-            $content .= LabelLogic::getAsBadges($items);
+            $renderOptions = $this->headerIconsWithText ? ['iconsWithText' => true] : [];
+            $content .= LabelLogic::getAsBadges($items, $renderOptions);
         }
 
         $content .= '</div>
@@ -143,7 +146,14 @@ class D3LabelList extends \yii\base\Widget
                 ['title' => Yii::t('d3labels', 'Remove')]
             );
 
-            $label = ThBadge::widget(['type' => $label->collor, 'text' => $label->label, 'faIcon' => $label->icon]);
+            $label = ThBadge::widget(
+                [
+                    'type' => $label->collor,
+                    'text' => $label->label,
+                    'faIcon' => $label->icon,
+                    'showText' => $this->gridIconsWithText,
+                ]
+            );
 
             $html .= '
                 <tr>
