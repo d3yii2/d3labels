@@ -20,6 +20,13 @@ class D3LabelColumn extends DataColumn
 
     private $recordsWithLabels = [];
 
+    public function init()
+    {
+        $this->initLabels();
+
+        parent::init();
+    }
+
     /**
      * @param $model
      * @param $key
@@ -48,10 +55,6 @@ class D3LabelColumn extends DataColumn
      */
     protected function renderFilterCellContent(): string
     {
-        if (empty($this->dataProviderIds)) {
-            $this->initLabels();
-        }
-
         $items = D3lLabel::forListbox($this->dataProviderIds);
 
         $dropdown = \d3yii2\d3labels\logic\D3LabelList::getAsDropdown($items, $this->model);
