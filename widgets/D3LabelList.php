@@ -34,6 +34,10 @@ class D3LabelList extends \yii\base\Widget
 
         $this->d3LabelList = new LabelLogic($this->model);
 
+        if (!$this->title) {
+            $this->title = Yii::t('d3labels', 'Labels');
+        }
+
         if (!$this->controllerRoute) {
             $this->controllerRoute = Yii::$app->controller->id;
         }
