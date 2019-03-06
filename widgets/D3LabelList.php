@@ -2,10 +2,10 @@
 
 namespace d3yii2\d3labels\widgets;
 
-use d3yii2\d3labels\logic\D3LabelList as DefinitionsList;
+use d3system\widgets\ThBadge;
+use d3yii2\d3labels\logic\D3LabelList as LabelLogic;
 use Yii;
 use yii\helpers\Html;
-use d3yii2\d3labels\logic\D3LabelList as LabelList;
 
 /**
  * Class D3LabelList
@@ -32,7 +32,7 @@ class D3LabelList extends \yii\base\Widget
     {
         parent::init();
 
-        $this->d3LabelList = new DefinitionsList($this->model);
+        $this->d3LabelList = new LabelLogic($this->model);
 
         if (!$this->controllerRoute) {
             $this->controllerRoute = Yii::$app->controller->id;
@@ -91,9 +91,9 @@ class D3LabelList extends \yii\base\Widget
         $nonAttachedLabels = $this->d3LabelList->getNonAttached();
 
         if ($nonAttachedLabels) {
-            $items = LabelList::getBadgeItems($nonAttachedLabels, 'attach-label', $this->model->id);
+            $items = LabelLogic::getBadgeItems($nonAttachedLabels, 'attach-label', $this->model->id);
 
-            $content .= LabelList::getAsBadges($items);
+            $content .= LabelLogic::getAsBadges($items);
         }
 
         $content .= '</div>
