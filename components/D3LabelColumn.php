@@ -14,6 +14,8 @@ class D3LabelColumn extends DataColumn
 {
     public $model;
 
+    public $badgeRenderOptions = [];
+
     private $dataProviderIds = [];
 
     private $recordsWithLabels = [];
@@ -33,7 +35,7 @@ class D3LabelColumn extends DataColumn
 
         $labelItems = \d3yii2\d3labels\logic\D3LabelList::getBadgeItems($this->recordsWithLabels[$model->id]);
 
-        $labelsList = \d3yii2\d3labels\logic\D3LabelList::getAsBadges($labelItems);
+        $labelsList = \d3yii2\d3labels\logic\D3LabelList::getAsBadges($labelItems, $this->badgeRenderOptions);
 
         return $labelsList;
     }
