@@ -97,7 +97,7 @@ class D3LabelList extends \yii\base\Widget
         $nonAttachedLabels = $this->d3LabelList->getNonAttached();
 
         if ($nonAttachedLabels) {
-            $items = LabelLogic::getBadgeItems($nonAttachedLabels, 'attach-label', $this->model->id);
+            $items = LabelLogic::getBadgeItems($nonAttachedLabels, 'd3labelsattach', $this->model->id);
 
             $renderOptions = $this->headerIconsWithText ? ['iconsWithText' => true] : [];
             $content .= LabelLogic::getAsBadges($items, $renderOptions);
@@ -139,7 +139,7 @@ class D3LabelList extends \yii\base\Widget
             $actions = Html::a(
                 '<span class="glyphicon glyphicon-trash"></span>',
                 [
-                    'remove-label',
+                    'd3labelsremove',
                     'labelId' => $row->id,
                     'modelId' => $this->d3LabelList->model->id,
                 ],
