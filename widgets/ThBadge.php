@@ -2,7 +2,6 @@
 
 namespace d3yii2\d3labels\widgets;
 
-use Yii;
 use yii\bootstrap\Widget;
 use yii\helpers\Html;
 
@@ -26,7 +25,8 @@ class ThBadge extends Widget
     public $type = false;
     public $faIcon = false;
     public $text = '';
-
+    public $renderOptions = [];
+    public $badgeHtmlOptions = [];
 
     /**
      * @return string|void
@@ -37,20 +37,33 @@ class ThBadge extends Widget
             $this->type = self::TYPE_WARNING;
         }
 
-        $content = !empty($this->faIcon)
-            ? '<i class="fa ' . $this->faIcon . '"></i> ' . $this->text
-            : $this->text;
+        $content = '';
 
-        return $this->getBadge($content, $this->type);
+        if (!empty($this->faIcon)) {
+            $content .= '<i class="fa ' . $this->faIcon . '"></i>';
+
+            if (!empty($this->renderOptions['iconsWithText'])) {
+                $content .= ' ' . $this->text;
+            }
+        } else {
+            $content .= $this->text;
+        }
+
+        $this->badgeHtmlOptions = [
+            'class' => 'badge badge-' . $this->type,
+            'title' => $this->text,
+        ];
+
+        return $this->getBadge($content, $this->type, $this->badgeHtmlOptions);
     }
 
     /**
      * @param string $content
      * @param string $type
      */
-    protected function getBadge(string $content, string $type)
+    protected function getBadge(string $content, string $type, array $htmlOptions = [])
     {
-        return  Html::tag('span', $content, ['class' => 'badge badge-' . $type]);
+        return  Html::tag('span', $content, $htmlOptions);
     }
 
     /**
@@ -59,9 +72,9 @@ class ThBadge extends Widget
      * @param string $url
      * @return string
      */
-    protected function getBadgeLink(string $content, string $type, string $url)
+    protected function getBadgeLink(string $content, string $type, string $url, array $badgeOptions = [])
     {
-        $badge = Html::tag('span', $content, ['class' => 'badge badge-' . $type]);
+        $badge = Html::tag('span', $content, $badgeOptions);
 
         $link = Html::a($badge, $url);
 

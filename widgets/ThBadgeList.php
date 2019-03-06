@@ -22,13 +22,30 @@ class ThBadgeList extends ThBadge
 
             $type = isset($item['type']) ? $item['type'] : parent::TYPE_WARNING;
 
-            $badgeContent = !empty($item['faIcon'])
-                ? '<i class="fa ' . $item['faIcon'] . '"></i> ' . $item['text']
-                : $item['text'];
+            $badgeContent = '';
+
+            if (!empty($item['faIcon'])) {
+                $badgeContent .= '<i class="fa ' . $item['faIcon'] . '"></i>';
+
+                if (!empty($this->renderOptions['iconsWithText'])) {
+                    $badgeContent .= ' ' . $item['text'];
+                }
+            } else {
+                $badgeContent .= $item['text'];
+            }
+
+            $defaultHtmlOptions = [
+                'class' => 'badge badge-' . $type,
+                'title' => $item['text'],
+            ];
+
+            $badgeOptions = isset($item['badgeOptions'])
+                ? array_merge($defaultHtmlOptions, $item['badgeOptions'])
+                : $defaultHtmlOptions;
 
             $badges[] = isset($item['url'])
-                ? parent::getBadgeLink($badgeContent, $type, $item['url'])
-                : parent::getBadge($badgeContent, $type);
+                ? parent::getBadgeLink($badgeContent, $type, $item['url'], $badgeOptions)
+                : parent::getBadge($badgeContent, $type, $badgeOptions);
         }
 
         return implode($this->separator, $badges);
