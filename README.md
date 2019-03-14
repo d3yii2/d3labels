@@ -53,7 +53,7 @@ Display Widget
 
 ```php
 <?=\d3yii2\d3labels\widgets\D3LabelList::widget([
-        'title' => Yii::t('d3labels', 'Labels'),
+        //'title' => Yii::t('d3labels', 'Labels'), //Optional
         'model' => $model
 ])?>
 ```
