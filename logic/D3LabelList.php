@@ -2,15 +2,18 @@
 
 namespace d3yii2\d3labels\logic;
 
+use d3system\widgets\ThBadgeList;
 use d3yii2\d3labels\models\D3lDefinition;
 use d3yii2\d3labels\models\D3lLabel;
 use d3yii2\d3labels\models\SysModels;
-use d3system\widgets\ThBadgeList;
 use yii\helpers\Html;
 
 /**
- * Class D3DefinitionList
+ * Class D3LabelList
  * @package d3yii2\d3labels\logic
+ * @property object $model
+ * @property array $availableLabels
+ * @property array $attachedLabels
  */
 class D3LabelList
 {
@@ -21,6 +24,7 @@ class D3LabelList
 
     /**
      * D3LabelList constructor.
+     * Read all available and attached Labels to class propeties
      * @param $model
      */
     public function __construct($model, $returnURLToken = null)
@@ -59,12 +63,13 @@ class D3LabelList
      */
     public static function getAsBadges(array $items, array $renderOptions = []): string
     {
-        $list = ThBadgeList::widget(['items' => $items, 'renderOptions' => $renderOptions]);
+        $labelsOutput = ThBadgeList::widget(['items' => $items, 'renderOptions' => $renderOptions]);
 
-        return $list;
+        return $labelsOutput;
     }
 
     /**
+     * Get the Labes as the Dropdown List
      * @param array $items
      * @return string
      */
@@ -80,17 +85,18 @@ class D3LabelList
             return $dropdown;
         }
 
-        $dropdown = Html::dropDownList(
+        $dropdownOutput = Html::dropDownList(
             'model_label_type',
             null,
             $items,
             ['prompt' => \Yii::t('d3labels', 'Filter by Label')]
         );
 
-        return $dropdown;
+        return $dropdownOutput;
     }
 
     /**
+     * Get the d3system\widgets\ThBadge compatible items from the array of labels
      * @param array $labels
      * @return array
      */
@@ -108,6 +114,7 @@ class D3LabelList
     }
 
     /**
+     * Convert the Label data to d3system\widgets\ThBadge compatible item
      * @param $label
      * @param string $action
      * @param int|null $modelId
@@ -135,6 +142,7 @@ class D3LabelList
     }
 
     /**
+     * Get the Available Labels as the dropdown comptible data id => title
      * @return array
      */
     public function getAvailableForDropdown(): array
@@ -167,6 +175,7 @@ class D3LabelList
     }
 
     /**
+     * Get the Labels that are not attached to model
      * @return array
      */
     public function getNonAttached(): array

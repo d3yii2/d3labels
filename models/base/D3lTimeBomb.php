@@ -23,14 +23,14 @@ abstract class D3lTimeBomb extends \yii\db\ActiveRecord
 {
 
 
-
     /**
-    * ENUM field values
-    */
+     * ENUM field values
+     */
     const STATUS_ACTIVE = 'Active';
     const STATUS_CANCELED = 'Canceled';
     const STATUS_EXPLODED = 'Exploded';
     var $enum_labels = false;
+
     /**
      * @inheritdoc
      */
@@ -39,6 +39,32 @@ abstract class D3lTimeBomb extends \yii\db\ActiveRecord
         return 'd3l_time_bomb';
     }
 
+    /**
+     * get column status enum value label
+     * @param string $value
+     * @return string
+     */
+    public static function getStatusValueLabel($value)
+    {
+        $labels = self::optsStatus();
+        if (isset($labels[$value])) {
+            return $labels[$value];
+        }
+        return $value;
+    }
+
+    /**
+     * column status ENUM value labels
+     * @return array
+     */
+    public static function optsStatus()
+    {
+        return [
+            self::STATUS_ACTIVE => Yii::t('d3labels', self::STATUS_ACTIVE),
+            self::STATUS_CANCELED => Yii::t('d3labels', self::STATUS_CANCELED),
+            self::STATUS_EXPLODED => Yii::t('d3labels', self::STATUS_EXPLODED),
+        ];
+    }
 
     /**
      * @inheritdoc
@@ -50,8 +76,17 @@ abstract class D3lTimeBomb extends \yii\db\ActiveRecord
             [['definition_id', 'record_id'], 'integer'],
             [['explode_time'], 'safe'],
             [['status'], 'string'],
-            [['definition_id'], 'exist', 'skipOnError' => true, 'targetClass' => \d3yii2\d3labels\models\D3lDefinition::className(), 'targetAttribute' => ['definition_id' => 'id']],
-            ['status', 'in', 'range' => [
+            [
+                ['definition_id'],
+                'exist',
+                'skipOnError' => true,
+                'targetClass' => \d3yii2\d3labels\models\D3lDefinition::className(),
+                'targetAttribute' => ['definition_id' => 'id']
+            ],
+            [
+                'status',
+                'in',
+                'range' => [
                     self::STATUS_ACTIVE,
                     self::STATUS_CANCELED,
                     self::STATUS_EXPLODED,
@@ -82,38 +117,9 @@ abstract class D3lTimeBomb extends \yii\db\ActiveRecord
         return $this->hasOne(\d3yii2\d3labels\models\D3lDefinition::className(), ['id' => 'definition_id']);
     }
 
-
-
-
-
-    /**
-     * get column status enum value label
-     * @param string $value
-     * @return string
-     */
-    public static function getStatusValueLabel($value){
-        $labels = self::optsStatus();
-        if(isset($labels[$value])){
-            return $labels[$value];
-        }
-        return $value;
-    }
-
-    /**
-     * column status ENUM value labels
-     * @return array
-     */
-    public static function optsStatus()
-    {
-        return [
-            self::STATUS_ACTIVE => Yii::t('d3labels', self::STATUS_ACTIVE),
-            self::STATUS_CANCELED => Yii::t('d3labels', self::STATUS_CANCELED),
-            self::STATUS_EXPLODED => Yii::t('d3labels', self::STATUS_EXPLODED),
-        ];
-    }
     public function saveOrException($runValidation = true, $attributeNames = null)
     {
-        if(!parent::save($runValidation, $attributeNames)){
+        if (!parent::save($runValidation, $attributeNames)) {
             throw new Exception(json_encode($this->getErrors()));
         }
     }

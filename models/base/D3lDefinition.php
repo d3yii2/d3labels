@@ -29,7 +29,6 @@ abstract class D3lDefinition extends \yii\db\ActiveRecord
 {
 
 
-
     /**
      * @inheritdoc
      */
@@ -46,13 +45,20 @@ abstract class D3lDefinition extends \yii\db\ActiveRecord
     {
         return [
             [['sys_company_id', 'model_id'], 'integer'],
-            [['model_id'], 'required'],
+            [['label', 'model_id'], 'required'],
             [['action_class'], 'string'],
             [['label', 'icon'], 'string', 'max' => 20],
             [['collor'], 'string', 'max' => 6],
             [['action_method'], 'string', 'max' => 256],
             [['model_id', 'label'], 'unique', 'targetAttribute' => ['model_id', 'label']],
-            [['model_id'], 'exist', 'skipOnError' => true, 'targetClass' => \d3yii2\d3labels\models\SysModels::className(), 'targetAttribute' => ['model_id' => 'id']]
+            [
+                ['model_id'],
+                'exist',
+                'skipOnError' => true,
+                'targetClass' => \d3yii2\d3labels\models\SysModels::className(),
+                'targetAttribute' => ['model_id' => 'id']
+            ],
+            [['label', 'icon'], 'safe'],
         ];
     }
 
@@ -122,10 +128,11 @@ abstract class D3lDefinition extends \yii\db\ActiveRecord
 
 
     /**
-     * @return \d3yii2\d3labels\models\D3LabelHistory     */
+     * @return \d3yii2\d3labels\models\D3LabelHistory
+     */
     public function newD3LabelHistories()
     {
-        if ($this->getIsNewRecord()){
+        if ($this->getIsNewRecord()) {
             throw new Exception('Can not create new related record for new record!');
         }
         $model = new \d3yii2\d3labels\models\D3LabelHistory();
@@ -134,10 +141,11 @@ abstract class D3lDefinition extends \yii\db\ActiveRecord
     }
 
     /**
-     * @return \d3yii2\d3labels\models\D3lLabel     */
+     * @return \d3yii2\d3labels\models\D3lLabel
+     */
     public function newD3lLabels()
     {
-        if ($this->getIsNewRecord()){
+        if ($this->getIsNewRecord()) {
             throw new Exception('Can not create new related record for new record!');
         }
         $model = new \d3yii2\d3labels\models\D3lLabel();
@@ -146,10 +154,11 @@ abstract class D3lDefinition extends \yii\db\ActiveRecord
     }
 
     /**
-     * @return \d3yii2\d3labels\models\D3lTimeBomb     */
+     * @return \d3yii2\d3labels\models\D3lTimeBomb
+     */
     public function newD3lTimeBombs()
     {
-        if ($this->getIsNewRecord()){
+        if ($this->getIsNewRecord()) {
             throw new Exception('Can not create new related record for new record!');
         }
         $model = new \d3yii2\d3labels\models\D3lTimeBomb();
@@ -158,10 +167,9 @@ abstract class D3lDefinition extends \yii\db\ActiveRecord
     }
 
 
-
     public function saveOrException($runValidation = true, $attributeNames = null)
     {
-        if(!parent::save($runValidation, $attributeNames)){
+        if (!parent::save($runValidation, $attributeNames)) {
             throw new Exception(json_encode($this->getErrors()));
         }
     }

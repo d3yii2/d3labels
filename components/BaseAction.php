@@ -11,6 +11,11 @@ use yii\web\NotFoundHttpException;
 /**
  * Class BaseAction
  * @package d3yii2\d3labels\components
+ * @property string $modelName
+ * @property string $view
+ * @property array $viewParams
+ * @property object $model
+ * @property string $returnURL
  */
 class BaseAction extends Action
 {
@@ -22,7 +27,7 @@ class BaseAction extends Action
     protected $returnURL;
 
     /**
-     * Set the JSON response format on Action init if the View not specified
+     * Set the return URL if exists
      */
     public function init()
     {
@@ -32,9 +37,10 @@ class BaseAction extends Action
     }
 
     /**
-     * @param $id
+     * @param int $id
+     * @throws NotFoundHttpException
      */
-    protected function loadModel($id)
+    protected function loadModel(int $id)
     {
         if (!$this->model = $this->modelName::findOne($id)) {
             throw new NotFoundHttpException(Yii::t('d3files',
@@ -44,9 +50,10 @@ class BaseAction extends Action
 
     /**
      * Redirect to return URL
-     * @return string
+     * @return Yii\web\Response
+     * @throws D3Exception
      */
-    protected function redirect()
+    protected function redirect(): yii\web\Response
     {
         if (!$this->returnURL) {
             throw new D3Exception('Return URL not set');

@@ -7,8 +7,13 @@ use d3yii2\d3labels\models\D3lDefinition;
 use yii\web\NotFoundHttpException;
 
 /**
- * Class Label
+ * Class D3Definition
  * @package d3yii2\d3labels\logic
+ * @property object $model
+ * @property string $attachToModelClass
+ * @property string $actionClass
+ * @property array $label;
+ * @property int $sysCompanyId
  */
 class D3Definition
 {
@@ -36,6 +41,7 @@ class D3Definition
     }
 
     /**
+     * Find the existing definition or throw the Exception if not found
      * @param int $defId
      * @return D3lDefinition
      */
@@ -51,6 +57,7 @@ class D3Definition
     }
 
     /**
+     * Save the label definitions
      * @throws \yii\db\Exception
      */
     public function save()
@@ -87,6 +94,9 @@ class D3Definition
         $this->sysCompanyId = $id;
     }
 
+    /**
+     * Set the System company ID to global (null)
+     */
     public function setGlobalSysComampanyId()
     {
         $this->sysCompanyId = null;

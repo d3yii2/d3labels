@@ -3,12 +3,12 @@
 use yii\db\Migration;
 
 /**
-* Class m190225_114447_tables*/
+ * Class m190225_114447_tables*/
 class m190225_114447_tables extends Migration
 {
     /**
-    * {@inheritdoc}
-    */
+     * {@inheritdoc}
+     */
     public function safeUp()
     {
         $this->execute('            

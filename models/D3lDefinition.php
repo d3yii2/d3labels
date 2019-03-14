@@ -2,8 +2,7 @@
 
 namespace d3yii2\d3labels\models;
 
-use Yii;
-use \d3yii2\d3labels\models\base\D3lDefinition as BaseD3lDefinition;
+use d3yii2\d3labels\models\base\D3lDefinition as BaseD3lDefinition;
 use yii\helpers\ArrayHelper;
 
 /**
@@ -12,7 +11,7 @@ use yii\helpers\ArrayHelper;
 class D3lDefinition extends BaseD3lDefinition
 {
 
-public function behaviors()
+    public function behaviors()
     {
         return ArrayHelper::merge(
             parent::behaviors(),
@@ -25,10 +24,10 @@ public function behaviors()
     public function rules()
     {
         return ArrayHelper::merge(
-             parent::rules(),
-             [
-                  # custom validation rules
-             ]
+            parent::rules(),
+            [
+                # custom validation rules
+            ]
         );
     }
 }

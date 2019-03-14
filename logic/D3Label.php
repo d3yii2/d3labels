@@ -8,12 +8,13 @@ use d3yii2\d3labels\models\D3lLabel;
 use yii\web\NotFoundHttpException;
 
 /**
- * Class Label
+ * Class D3Label
  * @package d3yii2\d3labels\logic
  */
 class D3Label
 {
     /**
+     * Get all Labels
      * @return D3lLabel[]
      */
     public static function getAll(): array
@@ -24,6 +25,7 @@ class D3Label
     }
 
     /**
+     * Get all attached labels for the model by ID
      * @param int $modelId
      * @return D3lLabel[]
      */
@@ -35,6 +37,7 @@ class D3Label
     }
 
     /**
+     * Attach the Label to Model
      * @param int $modelId
      * @param array $definitions
      * @throws \yii\db\Exception
@@ -63,6 +66,7 @@ class D3Label
     }
 
     /**
+     * Remove the attached Label from Model
      * @param int $labelId
      * @throws D3ActiveRecordException
      * @throws NotFoundHttpException

@@ -17,10 +17,10 @@ class AttachAction extends BaseAction
     /**
      * @param int $defId
      * @param int $modelId
-     * @return string
+     * @return yii\web\Response
      * @throws \d3system\exceptions\D3Exception
      */
-    public function run(int $defId, int $modelId)
+    public function run(int $defId, int $modelId): yii\web\Response
     {
         try {
 

@@ -4,12 +4,24 @@ namespace d3yii2\d3labels\widgets;
 
 use d3system\widgets\ThBadge;
 use d3yii2\d3labels\logic\D3LabelList as LabelLogic;
+use irekini\mailserverapi\logic\BaseManager;
 use Yii;
 use yii\helpers\Html;
 
 /**
  * Class D3LabelList
  * @package d3yii2\d3labels\widgets
+ * @property object $model
+ * @property string $title
+ * @property string $titleDescription
+ * @property array $titleHtmlOptions
+ * @property bool $collapsed
+ * @property array $tableOptions
+ * @property bool $headerIconsWithText
+ * @property bool $gridIconsWithText
+ * @property string $returnURLToken
+ * @property \d3yii2\d3labels\logic\D3LabelList $d3LabelList
+ * @property string $controllerRoute $controllerRoute
  */
 class D3LabelList extends \yii\base\Widget
 {
@@ -47,6 +59,7 @@ class D3LabelList extends \yii\base\Widget
     }
 
     /**
+     * Render the table with available labels for the model
      * @return string
      * @throws \Exception
      */
@@ -66,6 +79,7 @@ class D3LabelList extends \yii\base\Widget
     }
 
     /**
+     * Get the Header content for Labels table
      * @return string
      * @throws \Exception
      */
@@ -117,6 +131,7 @@ class D3LabelList extends \yii\base\Widget
     }
 
     /**
+     * Get the Labels table content
      * @return string
      * @throws \Exception
      */

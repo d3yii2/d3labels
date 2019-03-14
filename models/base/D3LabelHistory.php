@@ -25,15 +25,15 @@ abstract class D3LabelHistory extends \yii\db\ActiveRecord
 {
 
 
-
     /**
-    * ENUM field values
-    */
+     * ENUM field values
+     */
     const ACTION_ADDED = 'Added';
     const ACTION_DROPED = 'Droped';
     const ACTION_CANCELED = 'Canceled';
     const ACTION_EXPLODED = 'Exploded';
     var $enum_labels = false;
+
     /**
      * @inheritdoc
      */
@@ -42,6 +42,33 @@ abstract class D3LabelHistory extends \yii\db\ActiveRecord
         return 'd3_label_history';
     }
 
+    /**
+     * get column action enum value label
+     * @param string $value
+     * @return string
+     */
+    public static function getActionValueLabel($value)
+    {
+        $labels = self::optsAction();
+        if (isset($labels[$value])) {
+            return $labels[$value];
+        }
+        return $value;
+    }
+
+    /**
+     * column action ENUM value labels
+     * @return array
+     */
+    public static function optsAction()
+    {
+        return [
+            self::ACTION_ADDED => Yii::t('d3labels', self::ACTION_ADDED),
+            self::ACTION_DROPED => Yii::t('d3labels', self::ACTION_DROPED),
+            self::ACTION_CANCELED => Yii::t('d3labels', self::ACTION_CANCELED),
+            self::ACTION_EXPLODED => Yii::t('d3labels', self::ACTION_EXPLODED),
+        ];
+    }
 
     /**
      * @inheritdoc
@@ -53,8 +80,17 @@ abstract class D3LabelHistory extends \yii\db\ActiveRecord
             [['definition_id', 'model_record_id', 'model_id', 'user_id'], 'integer'],
             [['action'], 'string'],
             [['time'], 'safe'],
-            [['definition_id'], 'exist', 'skipOnError' => true, 'targetClass' => \d3yii2\d3labels\models\D3lDefinition::className(), 'targetAttribute' => ['definition_id' => 'id']],
-            ['action', 'in', 'range' => [
+            [
+                ['definition_id'],
+                'exist',
+                'skipOnError' => true,
+                'targetClass' => \d3yii2\d3labels\models\D3lDefinition::className(),
+                'targetAttribute' => ['definition_id' => 'id']
+            ],
+            [
+                'action',
+                'in',
+                'range' => [
                     self::ACTION_ADDED,
                     self::ACTION_DROPED,
                     self::ACTION_CANCELED,
@@ -103,39 +139,9 @@ abstract class D3LabelHistory extends \yii\db\ActiveRecord
         return $this->hasOne(\d3yii2\d3labels\models\D3lDefinition::className(), ['id' => 'definition_id']);
     }
 
-
-
-
-
-    /**
-     * get column action enum value label
-     * @param string $value
-     * @return string
-     */
-    public static function getActionValueLabel($value){
-        $labels = self::optsAction();
-        if(isset($labels[$value])){
-            return $labels[$value];
-        }
-        return $value;
-    }
-
-    /**
-     * column action ENUM value labels
-     * @return array
-     */
-    public static function optsAction()
-    {
-        return [
-            self::ACTION_ADDED => Yii::t('d3labels', self::ACTION_ADDED),
-            self::ACTION_DROPED => Yii::t('d3labels', self::ACTION_DROPED),
-            self::ACTION_CANCELED => Yii::t('d3labels', self::ACTION_CANCELED),
-            self::ACTION_EXPLODED => Yii::t('d3labels', self::ACTION_EXPLODED),
-        ];
-    }
     public function saveOrException($runValidation = true, $attributeNames = null)
     {
-        if(!parent::save($runValidation, $attributeNames)){
+        if (!parent::save($runValidation, $attributeNames)) {
             throw new Exception(json_encode($this->getErrors()));
         }
     }

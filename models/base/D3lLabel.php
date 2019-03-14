@@ -21,7 +21,6 @@ abstract class D3lLabel extends \yii\db\ActiveRecord
 {
 
 
-
     /**
      * @inheritdoc
      */
@@ -39,7 +38,13 @@ abstract class D3lLabel extends \yii\db\ActiveRecord
         return [
             [['definition_id', 'model_record_id'], 'required'],
             [['definition_id', 'model_record_id'], 'integer'],
-            [['definition_id'], 'exist', 'skipOnError' => true, 'targetClass' => \d3yii2\d3labels\models\D3lDefinition::className(), 'targetAttribute' => ['definition_id' => 'id']]
+            [
+                ['definition_id'],
+                'exist',
+                'skipOnError' => true,
+                'targetClass' => \d3yii2\d3labels\models\D3lDefinition::className(),
+                'targetAttribute' => ['definition_id' => 'id']
+            ]
         ];
     }
 
@@ -64,11 +69,9 @@ abstract class D3lLabel extends \yii\db\ActiveRecord
     }
 
 
-
-
     public function saveOrException($runValidation = true, $attributeNames = null)
     {
-        if(!parent::save($runValidation, $attributeNames)){
+        if (!parent::save($runValidation, $attributeNames)) {
             throw new Exception(json_encode($this->getErrors()));
         }
     }

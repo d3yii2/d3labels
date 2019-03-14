@@ -12,32 +12,6 @@ class D3lLabel extends BaseD3lLabel
 {
 
     /**
-     * @return array
-     */
-    public function behaviors()
-    {
-        return ArrayHelper::merge(
-            parent::behaviors(),
-            [
-                # custom behaviors
-            ]
-        );
-    }
-
-    /**
-     * @return array
-     */
-    public function rules()
-    {
-        return ArrayHelper::merge(
-            parent::rules(),
-            [
-                # custom validation rules
-            ]
-        );
-    }
-
-    /**
      * @param array $ids
      * @return array
      */
@@ -75,5 +49,31 @@ class D3lLabel extends BaseD3lLabel
         $items = ArrayHelper::map($models, 'id', 'label');
 
         return $items;
+    }
+
+    /**
+     * @return array
+     */
+    public function behaviors()
+    {
+        return ArrayHelper::merge(
+            parent::behaviors(),
+            [
+                # custom behaviors
+            ]
+        );
+    }
+
+    /**
+     * @return array
+     */
+    public function rules()
+    {
+        return ArrayHelper::merge(
+            parent::rules(),
+            [
+                # custom validation rules
+            ]
+        );
     }
 }

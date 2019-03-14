@@ -17,10 +17,11 @@ class DeleteAction extends BaseAction
     /**
      * @param int $modelId
      * @param int $labelId
-     * @return mixed
+     * @return Yii\web\Response
      * @throws \Throwable
+     * @throws \d3system\exceptions\D3Exception
      */
-    public function run(int $modelId, int $labelId)
+    public function run(int $modelId, int $labelId): yii\web\Response
     {
         try {
 

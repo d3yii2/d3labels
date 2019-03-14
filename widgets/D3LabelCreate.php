@@ -7,8 +7,11 @@ use d3yii2\d3labels\models\D3lLabelForm;
 use Yii;
 
 /**
- * Class D3LabelList
+ * Class D3LabelCreate
  * @package d3yii2\d3labels\widgets
+ * @property object $model
+ * @property yii\web\Controller
+ * @property string $returnURLToken
  */
 class D3LabelCreate extends \yii\base\Widget
 {

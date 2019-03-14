@@ -10,15 +10,17 @@ use Yii;
 /**
  * Class CreateAction
  * @package d3yii2\d3labels\components
+ * @property object $model
  */
 class CreateAction extends BaseAction
 {
     public $model;
 
     /**
-     * @return string
+     * @return Yii\web\Response
+     * @throws \d3system\exceptions\D3Exception
      */
-    public function run()
+    public function run(): yii\web\Response
     {
         try {
 
