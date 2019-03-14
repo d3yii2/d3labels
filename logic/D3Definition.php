@@ -12,7 +12,8 @@ use yii\web\NotFoundHttpException;
  */
 class D3Definition
 {
-    private $modelClass;
+    private $model;
+    private $attachToModelClass;
     private $actionClass;
     private $label;
     private $sysCompanyId;
@@ -24,17 +25,13 @@ class D3Definition
      * @param int $sysCompany
      * @throws \Exception
      */
-    public function __construct(string $modelClass, array $label)
+    public function __construct(string $attachToModelClass, $label = null)
     {
-        if (!class_exists($modelClass)) {
-            throw new \Exception('Model Class not exists: ' . $modelClass);
+        if (!class_exists($attachToModelClass)) {
+            throw new \Exception('Model Class not exists: ' . $attachToModelClass);
         }
 
-        if (empty($label['title'])) {
-            throw new \Exception('Missing label title');
-        }
-
-        $this->modelClass = $modelClass;
+        $this->attachToModelClass = $attachToModelClass;
         $this->label = $label;
     }
 
@@ -58,21 +55,25 @@ class D3Definition
      */
     public function save()
     {
-        $def = new D3lDefinition();
+        $def = $this->model ? $this->model : new D3lDefinition();
+
         $def->sys_company_id = $this->sysCompanyId;
 
-        $modelObj = new $this->modelClass();
+        $modelObj = new $this->attachToModelClass();
         $sysModels = new ModelsList();
         $def->model_id = $sysModels->getIdByTableName($modelObj);
         $def->action_class = $this->actionClass;
-        $def->label = $this->label['title'];
 
-        if (!empty($this->label['collor'])) {
-            $def->collor = $this->label['collor'];
-        }
+        if (!$this->model) {
+            $def->label = $this->label['title'];
 
-        if (!empty($this->label['icon'])) {
-            $def->icon = $this->label['icon'];
+            if (!empty($this->label['collor'])) {
+                $def->collor = $this->label['collor'];
+            }
+
+            if (!empty($this->label['icon'])) {
+                $def->icon = $this->label['icon'];
+            }
         }
 
         $def->saveOrException($def);
@@ -105,5 +106,13 @@ class D3Definition
     public function setLabelColor(string $collor)
     {
         $this->label['collorl'] = $collor;
+    }
+
+    /**
+     * @param D3lDefinition $model
+     */
+    public function setModel(D3lDefinition $model)
+    {
+        $this->model = $model;
     }
 }
