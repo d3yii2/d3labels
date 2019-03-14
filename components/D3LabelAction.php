@@ -14,7 +14,7 @@ class D3LabelAction extends Action
     public $modelName;
     public $view;
 
-    private $model;
+    protected $model;
 
     /**
      * Set the JSON response format on Action init if the View not specified
