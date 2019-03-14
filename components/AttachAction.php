@@ -12,12 +12,13 @@ use Yii;
  * Attach Label to Model
  * @package d3yii2\d3labels\components
  */
-class AttachAction extends D3LabelAction
+class AttachAction extends BaseAction
 {
     /**
      * @param int $defId
      * @param int $modelId
      * @return string
+     * @throws \d3system\exceptions\D3Exception
      */
     public function run(int $defId, int $modelId)
     {

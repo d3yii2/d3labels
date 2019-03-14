@@ -11,7 +11,7 @@ use Yii;
  * Deletes an existing Label attached to Model
  * @package d3yii2\d3labels\components
  */
-class DeleteAction extends D3LabelAction
+class DeleteAction extends BaseAction
 {
 
     /**

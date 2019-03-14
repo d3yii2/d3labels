@@ -11,7 +11,7 @@ use Yii;
  * Class CreateAction
  * @package d3yii2\d3labels\components
  */
-class CreateAction extends D3LabelAction
+class CreateAction extends BaseAction
 {
     public $model;
 

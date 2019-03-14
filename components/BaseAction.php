@@ -9,10 +9,10 @@ use yii\base\Action;
 use yii\web\NotFoundHttpException;
 
 /**
- * Class D3LabelAction
+ * Class BaseAction
  * @package d3yii2\d3labels\components
  */
-class D3LabelAction extends Action
+class BaseAction extends Action
 {
     public $modelName;
     public $view;
