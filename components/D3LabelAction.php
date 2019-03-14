@@ -3,6 +3,7 @@
 namespace d3yii2\d3labels\components;
 
 use yii\base\Action;
+use yii\web\NotFoundHttpException;
 
 /**
  * Class D3LabelAction
