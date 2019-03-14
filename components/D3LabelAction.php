@@ -2,6 +2,9 @@
 
 namespace d3yii2\d3labels\components;
 
+use cornernote\returnurl\ReturnUrl;
+use d3system\exceptions\D3Exception;
+use Yii;
 use yii\base\Action;
 use yii\web\NotFoundHttpException;
 
@@ -16,15 +19,14 @@ class D3LabelAction extends Action
     public $viewParams = [];
 
     protected $model;
+    protected $returnURL;
 
     /**
      * Set the JSON response format on Action init if the View not specified
      */
     public function init()
     {
-        if (!$this->view) {
-            Yii::$app->response->format = Response::FORMAT_JSON;
-        }
+        $this->returnURL = ReturnUrl::getUrl();
 
         parent::init();
     }
@@ -38,6 +40,19 @@ class D3LabelAction extends Action
             throw new NotFoundHttpException(Yii::t('d3files',
                 'The requested model does not exist: ' . $this->modelName));
         }
+    }
+
+    /**
+     * Redirect to return URL
+     * @return string
+     */
+    protected function redirect()
+    {
+        if (!$this->returnURL) {
+            throw new D3Exception('Return URL not set');
+        }
+
+        return $this->controller->redirect($this->returnURL);
     }
 
     /**

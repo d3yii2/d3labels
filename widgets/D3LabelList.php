@@ -23,6 +23,7 @@ class D3LabelList extends \yii\base\Widget
     ];
     public $headerIconsWithText = true;
     public $gridIconsWithText = false;
+    public $returnURLToken;
 
     private $d3LabelList;
     private $controllerRoute;
@@ -34,7 +35,7 @@ class D3LabelList extends \yii\base\Widget
     {
         parent::init();
 
-        $this->d3LabelList = new LabelLogic($this->model);
+        $this->d3LabelList = new LabelLogic($this->model, $this->returnURLToken);
 
         if (!$this->title) {
             $this->title = Yii::t('d3labels', 'Labels');
@@ -136,13 +137,20 @@ class D3LabelList extends \yii\base\Widget
 
             $label = $available[$definitionId];
 
+            $params = [
+                'd3labelsremove',
+                'labelId' => $row->id,
+                'modelId' => $this->d3LabelList->model->id,
+            ];
+
+            if ($this->returnURLToken) {
+                $params['ru'] = $this->returnURLToken;
+            }
+
+
             $actions = Html::a(
                 '<span class="glyphicon glyphicon-trash"></span>',
-                [
-                    'd3labelsremove',
-                    'labelId' => $row->id,
-                    'modelId' => $this->d3LabelList->model->id,
-                ],
+                $params,
                 ['title' => Yii::t('d3labels', 'Remove')]
             );
 

@@ -40,6 +40,6 @@ class AttachAction extends D3LabelAction
             FlashHelper::addDanger($err->getMessage());
         }
 
-        return $this->loadView();
+        return $this->redirect();
     }
 }

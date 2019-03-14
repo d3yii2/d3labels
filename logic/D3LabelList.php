@@ -14,6 +14,7 @@ use yii\helpers\Html;
  */
 class D3LabelList
 {
+    private static $returnURLToken;
     public $model;
     private $availableLabels = [];
     private $attachedLabels = [];
@@ -22,9 +23,11 @@ class D3LabelList
      * D3LabelList constructor.
      * @param $model
      */
-    public function __construct($model)
+    public function __construct($model, $returnURLToken = null)
     {
         $this->model = $model;
+
+        self::$returnURLToken = $returnURLToken;
 
         $sysModel = SysModels::findOne(['class_name' => get_class($this->model)]);
 
@@ -118,7 +121,14 @@ class D3LabelList
 
         if ('' !== $action) {
             $labelId = is_object($label) ? $label->id : $label['id'];
-            $item['url'] = \yii\helpers\Url::to([$action, 'defId' => $labelId, 'modelId' => $modelId]);
+            $item['url'] = self::$returnURLToken
+                ? \yii\helpers\Url::to([
+                    $action,
+                    'defId' => $labelId,
+                    'modelId' => $modelId,
+                    'ru' => self::$returnURLToken
+                ])
+                : \yii\helpers\Url::to([$action, 'defId' => $labelId, 'modelId' => $modelId]);
         }
 
         return $item;
