@@ -13,6 +13,7 @@ class D3LabelAction extends Action
 {
     public $modelName;
     public $view;
+    public $viewParams = [];
 
     protected $model;
 
@@ -45,10 +46,6 @@ class D3LabelAction extends Action
      */
     protected function loadView()
     {
-        if ($this->view) {
-            return $this->controller->render($this->view, [
-                'model' => $this->model,
-            ]);
-        }
+        return $this->controller->render($this->view, $this->viewParams);
     }
 }
