@@ -32,4 +32,5 @@ return [
     'Label removed sucessfully' => 'Birka noņemta',
     'Status' => 'Statuss',
     'Title' => 'Nosaukums',
+    'Unable to create Label' => 'Neizdevās izveidot Birku',
 ];
