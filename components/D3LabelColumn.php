@@ -2,7 +2,7 @@
 
 namespace d3yii2\d3labels\components;
 
-use d3yii2\d3labels\logic\D3DefinitionList;
+use d3yii2\d3labels\logic\D3LabelList;
 use d3yii2\d3labels\models\D3lLabel;
 use yii\grid\DataColumn;
 
@@ -25,7 +25,7 @@ class D3LabelColumn extends DataColumn
     /**
      * Set the initial properties on class init
      */
-    public function init()
+    public function init(): void
     {
         $this->initLabels();
 
@@ -35,7 +35,7 @@ class D3LabelColumn extends DataColumn
     /**
      * Read all the records containing attached labels into $this->recordsWithLabels array
      */
-    private function initLabels()
+    private function initLabels(): void
     {
         $rows = $this->grid->dataProvider->getModels();
 
@@ -68,9 +68,9 @@ class D3LabelColumn extends DataColumn
             return '';
         }
 
-        $labelItems = \d3yii2\d3labels\logic\D3LabelList::getBadgeItems($this->recordsWithLabels[$model->id]);
+        $labelItems = D3LabelList::getBadgeItems($this->recordsWithLabels[$model->id]);
 
-        $labelsContent = \d3yii2\d3labels\logic\D3LabelList::getAsBadges($labelItems, $this->badgeRenderOptions);
+        $labelsContent = D3LabelList::getAsBadges($labelItems, $this->badgeRenderOptions);
 
         return $labelsContent;
     }
@@ -83,10 +83,8 @@ class D3LabelColumn extends DataColumn
      */
     protected function renderFilterCellContent(): string
     {
-        $items = D3lLabel::forListbox($this->dataProviderIds);
+        $items = D3lLabel::forListBox($this->dataProviderIds);
 
-        $dropdownContent = \d3yii2\d3labels\logic\D3LabelList::getAsDropdown($items, $this->model);
-
-        return $dropdownContent;
+        return D3LabelList::getAsDropdown($items, $this->model);
     }
 }

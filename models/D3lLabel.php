@@ -36,7 +36,7 @@ class D3lLabel extends BaseD3lLabel
      * @param array $modelRecords
      * @return array
      */
-    public static function forListbox($modelRecords = []): array
+    public static function forListBox(): array
     {
         $models = (new \yii\db\Query())
             ->select(D3lDefinition::tableName() . '.id, ' . D3lDefinition::tableName() . '.label')
@@ -46,34 +46,8 @@ class D3lLabel extends BaseD3lLabel
             ->groupBy(self::tableName() . '.definition_id')
             ->all();
 
-        $items = ArrayHelper::map($models, 'id', 'label');
+        return ArrayHelper::map($models, 'id', 'label');
 
-        return $items;
     }
 
-    /**
-     * @return array
-     */
-    public function behaviors()
-    {
-        return ArrayHelper::merge(
-            parent::behaviors(),
-            [
-                # custom behaviors
-            ]
-        );
-    }
-
-    /**
-     * @return array
-     */
-    public function rules()
-    {
-        return ArrayHelper::merge(
-            parent::rules(),
-            [
-                # custom validation rules
-            ]
-        );
-    }
 }

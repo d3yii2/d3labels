@@ -43,7 +43,7 @@ class CreateAction extends BaseAction
                 throw new D3ActiveRecordException($formModel, $msg);
             }
 
-            $msg = Yii::t('d3labels', 'Labels created sucessfully');
+            $msg = Yii::t('d3labels', 'Labels created successfully');
             FlashHelper::addSuccess($msg);
         } catch (\Exception $err) {
             FlashHelper::addDanger($err->getMessage());

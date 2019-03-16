@@ -2,10 +2,9 @@
 
 namespace d3yii2\d3labels\components;
 
-use cornernote\returnurl\ReturnUrl;
-use d3system\exceptions\D3Exception;
 use Yii;
 use yii\base\Action;
+use yii\db\ActiveRecord;
 use yii\web\NotFoundHttpException;
 
 /**
@@ -19,28 +18,21 @@ use yii\web\NotFoundHttpException;
  */
 class BaseAction extends Action
 {
+    /** @var string */
     public $modelName;
-    public $view;
-    public $viewParams = [];
 
+    /** @var array */
+    public $returnUrl;
+
+    /** @var ActiveRecord */
     protected $model;
-    protected $returnURL;
 
-    /**
-     * Set the return URL if exists
-     */
-    public function init()
-    {
-        $this->returnURL = ReturnUrl::getUrl();
-
-        parent::init();
-    }
 
     /**
      * @param int $id
      * @throws NotFoundHttpException
      */
-    protected function loadModel(int $id)
+    protected function loadModel(int $id): void
     {
         if (!$this->model = $this->modelName::findOne($id)) {
             throw new NotFoundHttpException(Yii::t('d3files',
@@ -51,23 +43,10 @@ class BaseAction extends Action
     /**
      * Redirect to return URL
      * @return Yii\web\Response
-     * @throws D3Exception
      */
     protected function redirect(): yii\web\Response
     {
-        if (!$this->returnURL) {
-            throw new D3Exception('Return URL not set');
-        }
-
-        return $this->controller->redirect($this->returnURL);
+        return $this->controller->redirect(\Yii::$app->request->referrer);
     }
 
-    /**
-     * Load the View from current controller instance
-     * @return string
-     */
-    protected function loadView()
-    {
-        return $this->controller->render($this->view, $this->viewParams);
-    }
 }

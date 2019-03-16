@@ -25,7 +25,7 @@ return [
     'Color' => 'Krāsa',
     'Filter by Label' => 'Atlasīt pēc birkas',
     'Icon' => 'Ikona',
-    'Label attached  sucessfully' => 'Birka piesaistīta',
+    'Labels created successfully' => 'Birka piesaistīta',
     'Labels' => 'Birkas',
     'Remove' => 'Noņemt',
     'Removed' => 'Noņemta',

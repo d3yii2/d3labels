@@ -166,11 +166,4 @@ abstract class D3lDefinition extends \yii\db\ActiveRecord
         return $model;
     }
 
-
-    public function saveOrException($runValidation = true, $attributeNames = null)
-    {
-        if (!parent::save($runValidation, $attributeNames)) {
-            throw new Exception(json_encode($this->getErrors()));
-        }
-    }
 }

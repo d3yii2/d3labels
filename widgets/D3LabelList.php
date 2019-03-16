@@ -4,7 +4,6 @@ namespace d3yii2\d3labels\widgets;
 
 use d3system\widgets\ThBadge;
 use d3yii2\d3labels\logic\D3LabelList as LabelLogic;
-use irekini\mailserverapi\logic\BaseManager;
 use Yii;
 use yii\helpers\Html;
 
@@ -36,6 +35,7 @@ class D3LabelList extends \yii\base\Widget
     public $headerIconsWithText = true;
     public $gridIconsWithText = false;
     public $returnURLToken;
+    public $returnURL;
 
     private $d3LabelList;
     private $controllerRoute;
@@ -158,10 +158,7 @@ class D3LabelList extends \yii\base\Widget
                 'modelId' => $this->d3LabelList->model->id,
             ];
 
-            if ($this->returnURLToken) {
-                $params['ru'] = $this->returnURLToken;
-            }
-
+           // $params['returnURL'] = Yii::$app->urlManager->createAbsoluteUrl(Yii::$app->request);
 
             $actions = Html::a(
                 '<span class="glyphicon glyphicon-trash"></span>',

@@ -28,23 +28,11 @@ Migration example
 ```php
 public function safeUp()
 {
-    $items = [
-        [
-            'modelClass' => 'd3modules\lietvediba\models\RkInvoice',
-            'label' => ['title' => 'Test #1', 'icon' => 'test1'],
-        ],
-        [
-            'modelClass' => 'd3modules\lietvediba\models\RkInvoice',
-            'label' => ['title' => 'Test #2', 'icon' => 'test2'],
-        ]
-    ];
-
-    foreach ($items as $label) {
-        $def = new \d3yii2\d3labels\logic\D3Definition($label['modelClass'], $label['label']);
-        $def->save();
-    }
-
-    return true;
+    $def = new D3Definition(RkInvoice::class);
+    $def->setLabel('Warning label');
+    $def->setColor('#FFFFFF');
+    $def->setSysCompanyId(14);
+    $def->save();
 }
 ```
 
@@ -56,4 +44,19 @@ Display Widget
         //'title' => Yii::t('d3labels', 'Labels'), //Optional
         'model' => $model
 ])?>
+```
+
+for GridView D3LabelColumn
+----
+
+```php
+<?php
+$columns[] = [
+    'class' => d3yii2\d3labels\components\D3LabelColumn::class,                    
+    'model' => $searchModel,
+    'attribute'=>'label_type',
+    'format'=>'raw',
+    'label' => Yii::t('d3labels', 'Labels'),
+    //'badgeRenderOptions' => ['iconsWithText' => true],
+];
 ```

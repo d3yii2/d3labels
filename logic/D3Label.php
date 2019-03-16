@@ -5,7 +5,6 @@ namespace d3yii2\d3labels\logic;
 use d3system\exceptions\D3ActiveRecordException;
 use d3yii2\d3labels\models\D3lDefinition;
 use d3yii2\d3labels\models\D3lLabel;
-use yii\web\NotFoundHttpException;
 
 /**
  * Class D3Label
@@ -19,9 +18,7 @@ class D3Label
      */
     public static function getAll(): array
     {
-        $labels = D3lLabel::findAll();
-
-        return $labels;
+        return D3lLabel::findAll([]);
     }
 
     /**
@@ -31,23 +28,22 @@ class D3Label
      */
     public static function getAllByModel(int $modelId): array
     {
-        $labels = D3lLabel::findAll(['model_record_id' => $modelId]);
-
-        return $labels;
+        return D3lLabel::findAll(['model_record_id' => $modelId]);
     }
 
     /**
      * Attach the Label to Model
      * @param int $modelId
-     * @param array $definitions
+     * @param D3lDefinition $definition
+     * @return bool
      * @throws \yii\db\Exception
      */
-    public static function attach(int $modelId, D3lDefinition $definition)
+    public static function attach(int $modelId, D3lDefinition $definition): bool
     {
         $attached = false;
 
         foreach ($definition->d3lLabels as $label) {
-            if ($label->definition_id == $definition->id && $label->model_record_id == $modelId) {
+            if ($label->definition_id === $definition->id && $label->model_record_id === $modelId) {
                 $attached = true;
                 break;
             }
@@ -63,17 +59,19 @@ class D3Label
         $mapping->definition_id = $definition->id;
 
         $mapping->saveOrException();
+
+        return true;
     }
 
     /**
      * Remove the attached Label from Model
      * @param int $labelId
+     * @return bool
      * @throws D3ActiveRecordException
-     * @throws NotFoundHttpException
      * @throws \Throwable
      * @throws \yii\db\StaleObjectException
      */
-    public static function remove(int $labelId)
+    public static function remove(int $labelId): bool
     {
         $label = D3lLabel::findOne($labelId);
 
@@ -82,7 +80,9 @@ class D3Label
         }
 
         if (!$label->delete()) {
-            throw new D3ActiveRecordException($label, Yii::t('d3labels', 'Cannot delete Label record'));
+            throw new D3ActiveRecordException($label, \Yii::t('d3labels', 'Cannot delete Label record'));
         }
+
+        return true;
     }
 }

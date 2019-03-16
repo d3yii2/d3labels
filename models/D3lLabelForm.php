@@ -3,6 +3,7 @@
 namespace d3yii2\d3labels\models;
 
 use d3system\exceptions\D3ActiveRecordException;
+use d3yii2\d3labels\logic\D3Definition;
 use yii\base\Model;
 
 /**
@@ -11,6 +12,8 @@ use yii\base\Model;
 class D3lLabelForm extends Model
 {
     public $modelClass;
+
+    /** @var D3lDefinition[]  */
     public $labels = [];
     public $controllerModelId;
 
@@ -25,12 +28,14 @@ class D3lLabelForm extends Model
     }
 
     /**
-     * @param $data
+     * @param array $data
      * @param null $formName
+     * @return bool
+     * @throws \yii\base\InvalidConfigException
      */
     public function load($data, $formName = null)
     {
-        if (empty($data[self::formName()]['modelClass'])) {
+        if (empty($data[$this->formName()]['modelClass'])) {
             return false;
         }
 
@@ -38,11 +43,11 @@ class D3lLabelForm extends Model
             return false;
         }
 
-        if (!empty($data[self::formName()]['controllerModelId'])) {
-            $this->controllerModelId = $data[self::formName()]['controllerModelId'];
+        if (!empty($data[$this->formName()]['controllerModelId'])) {
+            $this->controllerModelId = $data[$this->formName()]['controllerModelId'];
         }
 
-        $this->modelClass = $data[self::formName()]['modelClass'];
+        $this->modelClass = $data[$this->formName()]['modelClass'];
 
         $labels = $data[$formName];
 
@@ -69,7 +74,7 @@ class D3lLabelForm extends Model
 
         try {
             foreach ($this->labels as $label) {
-                $def = new \d3yii2\d3labels\logic\D3Definition($this->modelClass);
+                $def = new D3Definition($this->modelClass);
                 $def->setModel($label);
                 $def->save();
             }

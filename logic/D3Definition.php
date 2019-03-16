@@ -3,7 +3,9 @@
 namespace d3yii2\d3labels\logic;
 
 use d3system\compnents\ModelsList;
+use d3system\exceptions\D3ActiveRecordException;
 use d3yii2\d3labels\models\D3lDefinition;
+use yii\helpers\VarDumper;
 use yii\web\NotFoundHttpException;
 
 /**
@@ -17,33 +19,64 @@ use yii\web\NotFoundHttpException;
  */
 class D3Definition
 {
-    private $model;
-    private $attachToModelClass;
-    private $actionClass;
+    private $class;
+
+
+    /** @var null string */
     private $label;
+
+    /** @var null string */
+    private $icon;
+
+    /** @var null string */
+    private $color;
+
+
     private $sysCompanyId;
 
     /**
      * D3Definition constructor.
-     * @param string $actionClass
-     * @param array $label
-     * @param int $sysCompany
+     * @param string $class
      * @throws \Exception
      */
-    public function __construct(string $attachToModelClass, $label = null)
+    public function __construct(string $class)
     {
-        if (!class_exists($attachToModelClass)) {
-            throw new \Exception('Model Class not exists: ' . $attachToModelClass);
+        if (!class_exists($class)) {
+            throw new \Exception('Model Class not exists: ' . $class);
         }
 
-        $this->attachToModelClass = $attachToModelClass;
+        $this->class = $class;
+    }
+
+    /**
+     * @param string $label
+     */
+    public function setLabel(string $label): void
+    {
         $this->label = $label;
     }
 
     /**
+     * @param string $icon
+     */
+    public function setIcon(string $icon): void
+    {
+        $this->icon = $icon;
+    }
+
+    /**
+     * @param string $color
+     */
+    public function setColor(string $color): void
+    {
+        $this->color = $color;
+    }
+
+    /**
      * Find the existing definition or throw the Exception if not found
-     * @param int $defId
+     * @param int $id
      * @return D3lDefinition
+     * @throws NotFoundHttpException
      */
     public static function loadDefinition(int $id): D3lDefinition
     {
@@ -58,71 +91,53 @@ class D3Definition
 
     /**
      * Save the label definitions
-     * @throws \yii\db\Exception
+     * @throws D3ActiveRecordException
      */
-    public function save()
+    public function save(): void
     {
-        $def = $this->model ? $this->model : new D3lDefinition();
+        $def = new D3lDefinition();
 
         $def->sys_company_id = $this->sysCompanyId;
 
-        $modelObj = new $this->attachToModelClass();
+        $modelObj = new $this->class;
         $sysModels = new ModelsList();
         $def->model_id = $sysModels->getIdByTableName($modelObj);
-        $def->action_class = $this->actionClass;
+        //$def->action_class = $this->actionClass;
 
-        if (!$this->model) {
-            $def->label = $this->label['title'];
 
-            if (!empty($this->label['collor'])) {
-                $def->collor = $this->label['collor'];
-            }
+        $def->label = $this->label;
 
-            if (!empty($this->label['icon'])) {
-                $def->icon = $this->label['icon'];
-            }
+        if ($this->color) {
+            $def->collor = $this->color;
         }
 
-        $def->saveOrException($def);
+        if ($this->icon) {
+            $def->icon = $this->icon;
+        }
+
+        if($this->sysCompanyId){
+            $def->sys_company_id = $this->sysCompanyId;
+        }
+        echo VarDumper::dumpAsString($def->getAttributes());
+        if(!$def->save($def)){
+            throw new D3ActiveRecordException($def);
+        }
     }
 
     /**
      * @param int $id
      */
-    public function setSysCompanyId(int $id)
+    public function setSysCompanyId(int $id): void
     {
         $this->sysCompanyId = $id;
     }
 
-    /**
-     * Set the System company ID to global (null)
-     */
-    public function setGlobalSysComampanyId()
+    public function setModel(D3lDefinition $label): void
     {
-        $this->sysCompanyId = null;
+        $this->setLabel($label->label);
+        $this->setIcon($label->icon);
+        $this->setColor($label->collor);
     }
 
-    /**
-     * @param string $icon
-     */
-    public function setLabelIcon(string $icon)
-    {
-        $this->label['icon'] = $icon;
-    }
 
-    /**
-     * @param string $collor
-     */
-    public function setLabelColor(string $collor)
-    {
-        $this->label['collorl'] = $collor;
-    }
-
-    /**
-     * @param D3lDefinition $model
-     */
-    public function setModel(D3lDefinition $model)
-    {
-        $this->model = $model;
-    }
 }

@@ -2,10 +2,10 @@
 
 namespace d3yii2\d3labels\logic;
 
+use d3system\compnents\ModelsList;
 use d3system\widgets\ThBadgeList;
 use d3yii2\d3labels\models\D3lDefinition;
 use d3yii2\d3labels\models\D3lLabel;
-use d3yii2\d3labels\models\SysModels;
 use yii\helpers\Html;
 
 /**
@@ -17,7 +17,6 @@ use yii\helpers\Html;
  */
 class D3LabelList
 {
-    private static $returnURLToken;
     public $model;
     private $availableLabels = [];
     private $attachedLabels = [];
@@ -27,19 +26,13 @@ class D3LabelList
      * Read all available and attached Labels to class propeties
      * @param $model
      */
-    public function __construct($model, $returnURLToken = null)
+    public function __construct($model)
     {
         $this->model = $model;
 
-        self::$returnURLToken = $returnURLToken;
-
-        $sysModel = SysModels::findOne(['class_name' => get_class($this->model)]);
-
-        if (!$sysModel) {
-            return false;
-        }
-
-        $definitions = D3lDefinition::findAll(['model_id' => $sysModel->id]);
+        $modelList = new ModelsList();
+        $sysModelId = $modelList->getIdByTableName($this->model);
+        $definitions = D3lDefinition::findAll(['model_id' => $sysModelId]);
 
         if (!empty($definitions)) {
             foreach ($definitions as $def) {
@@ -58,6 +51,7 @@ class D3LabelList
 
     /**
      * @param array $items
+     * @param array $renderOptions
      * @return string
      * @throws \Exception
      */
@@ -71,6 +65,7 @@ class D3LabelList
     /**
      * Get the Labes as the Dropdown List
      * @param array $items
+     * @param $model
      * @return string
      */
     public static function getAsDropdown(array $items, $model = null): string
@@ -97,7 +92,10 @@ class D3LabelList
 
     /**
      * Get the d3system\widgets\ThBadge compatible items from the array of labels
+     *
      * @param array $labels
+     * @param string $action
+     * @param int|null $modelId
      * @return array
      */
     public static function getBadgeItems(array $labels, string $action = '', int $modelId = null): array
@@ -128,14 +126,11 @@ class D3LabelList
 
         if ('' !== $action) {
             $labelId = is_object($label) ? $label->id : $label['id'];
-            $item['url'] = self::$returnURLToken
-                ? \yii\helpers\Url::to([
+            $item['url'] = \yii\helpers\Url::to([
                     $action,
                     'defId' => $labelId,
                     'modelId' => $modelId,
-                    'ru' => self::$returnURLToken
-                ])
-                : \yii\helpers\Url::to([$action, 'defId' => $labelId, 'modelId' => $modelId]);
+                ]);
         }
 
         return $item;
