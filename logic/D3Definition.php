@@ -5,7 +5,6 @@ namespace d3yii2\d3labels\logic;
 use d3system\compnents\ModelsList;
 use d3system\exceptions\D3ActiveRecordException;
 use d3yii2\d3labels\models\D3lDefinition;
-use yii\helpers\VarDumper;
 use yii\web\NotFoundHttpException;
 
 /**
@@ -118,7 +117,7 @@ class D3Definition
         if($this->sysCompanyId){
             $def->sys_company_id = $this->sysCompanyId;
         }
-        echo VarDumper::dumpAsString($def->getAttributes());
+
         if(!$def->save($def)){
             throw new D3ActiveRecordException($def);
         }
