@@ -8,6 +8,8 @@ use yii\base\Model;
 
 /**
  * This is the model class for table "d3l_label".
+ * @property array $labels
+ * @property int $controllerModelId
  */
 class D3lLabelForm extends Model
 {
@@ -32,11 +34,10 @@ class D3lLabelForm extends Model
 
     /**
      * @param array $data
-     * @param null $formName
      * @return bool
      * @throws \yii\base\InvalidConfigException
      */
-    public function load($data, $formName = null)
+    public function load($data, $formName = null): bool
     {
         if (empty($data[self::FORM_NAME]['modelClass'])) {
             return false;
@@ -65,7 +66,7 @@ class D3lLabelForm extends Model
      * @return bool
      * @throws D3ActiveRecordException
      */
-    public function save($runValidation = true, $attributeNames = null)
+    public function save($runValidation = true, $attributeNames = null): bool
     {
         if (!$this->validate()) {
             return false;

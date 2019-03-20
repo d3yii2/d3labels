@@ -17,6 +17,7 @@ class DefinitionDeleteAction extends BaseAction
 {
 
     /**
+     * @return yii\web\Response
      */
     public function run(int $modelId, int $definitionId): yii\web\Response
     {

@@ -12,7 +12,7 @@ use yii\helpers\Html;
 /**
  * Class D3LabelCreate
  * @package d3yii2\d3labels\widgets
- * @property object $model
+ * @property string $modelClass
  * @property yii\web\Controller
  * @property string $returnURLToken
  */

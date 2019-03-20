@@ -12,16 +12,15 @@ use d3system\widgets\ThBadge;
 /**
  * Class D3Definition
  * @package d3yii2\d3labels\logic
- * @property object $model
- * @property string $attachToModelClass
- * @property string $actionClass
- * @property array $label;
+ * @property string $class
+ * @property string $label
+ * @property string $icon
+ * @property string $color
  * @property int $sysCompanyId
  */
 class D3Definition
 {
     private $class;
-
 
     /** @var null string */
     private $label;
@@ -31,7 +30,6 @@ class D3Definition
 
     /** @var null string */
     private $color;
-
 
     private $sysCompanyId;
 
