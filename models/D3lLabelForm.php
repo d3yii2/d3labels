@@ -17,7 +17,10 @@ class D3lLabelForm extends Model
     public $labels = [];
     public $controllerModelId;
 
-    public function rules()
+    const FORM_NAME = 'D3lLabelForm';
+    const DEFINITION_MODEL_NAME = 'D3lDefinition';
+
+    public function rules(): array
     {
         return [
             [['controllerModelId'], 'integer'],
@@ -35,21 +38,17 @@ class D3lLabelForm extends Model
      */
     public function load($data, $formName = null)
     {
-        if (empty($data[$this->formName()]['modelClass'])) {
+        if (empty($data[self::FORM_NAME]['modelClass'])) {
             return false;
         }
 
-        if (empty($data[$formName])) {
+        if (empty($data[self::DEFINITION_MODEL_NAME])) {
             return false;
         }
 
-        if (!empty($data[$this->formName()]['controllerModelId'])) {
-            $this->controllerModelId = $data[$this->formName()]['controllerModelId'];
-        }
+        $this->modelClass = $data[self::FORM_NAME]['modelClass'];
 
-        $this->modelClass = $data[$this->formName()]['modelClass'];
-
-        $labels = $data[$formName];
+        $labels = $data[self::DEFINITION_MODEL_NAME];
 
         foreach ($labels as $label) {
             $def = new D3lDefinition();
@@ -72,14 +71,10 @@ class D3lLabelForm extends Model
             return false;
         }
 
-        try {
-            foreach ($this->labels as $label) {
-                $def = new D3Definition($this->modelClass);
-                $def->setModel($label);
-                $def->save();
-            }
-        } catch (\Exception $err) {
-            return false;
+        foreach ($this->labels as $label) {
+            $def = new D3Definition($this->modelClass);
+            $def->setModel($label);
+            $def->save();
         }
 
         return true;
