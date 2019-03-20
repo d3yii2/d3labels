@@ -33,6 +33,7 @@ return [
     'Labels created successfully' => 'Birka izveidota',
     'Label' => 'Nosaukums',
     'Label with this name exists already' => 'Birka ar šādu nosaukumu jau ir izveidota',
+    'Label definition record not exists' => 'Birkas definīcijas ieraksts neeksistē',
     'Labels' => 'Birkas',
     'Remove' => 'Noņemt',
     'Removed' => 'Noņemta',

@@ -7,6 +7,7 @@ use d3yii2\d3labels\logic\D3Label;
 use d3yii2\d3labels\models\D3lDefinition;
 use eaBlankonThema\components\FlashHelper;
 use Yii;
+use yii\base\Exception;
 
 /**
  * DefinitionDeleteAction
@@ -23,6 +24,10 @@ class DefinitionDeleteAction extends BaseAction
     {
         try {
             $model = D3lDefinition::findOne(['id' => $definitionId, 'model_id' => $modelId]);
+
+            if (!$model) {
+                throw new Exception(Yii::t('d3labels','Label definition record not exists'));
+            }
 
             $hasLabels = $model->d3lLabels;
 
