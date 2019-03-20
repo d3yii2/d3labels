@@ -9,7 +9,7 @@ use eaBlankonThema\components\FlashHelper;
 use Yii;
 
 /**
- * Class DeleteAction
+ * DefinitionDeleteAction
  * Deletes an existing Label attached to Model
  * @package d3yii2\d3labels\components
  */
