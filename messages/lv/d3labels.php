@@ -32,6 +32,7 @@ return [
     'Icon' => 'Ikona',
     'Labels created successfully' => 'Birka izveidota',
     'Label' => 'Nosaukums',
+    'Label with this name exists already' => 'Birka ar šādu nosaukumu jau ir izveidota',
     'Labels' => 'Birkas',
     'Remove' => 'Noņemt',
     'Removed' => 'Noņemta',
