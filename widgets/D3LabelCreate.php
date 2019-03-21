@@ -5,7 +5,6 @@ namespace d3yii2\d3labels\widgets;
 use d3system\widgets\ThBadge;
 use d3yii2\d3labels\logic\D3Definition;
 use d3yii2\d3labels\models\D3lDefinition;
-use d3yii2\d3labels\models\D3lLabelForm;
 use Yii;
 use yii\helpers\Html;
 
@@ -22,10 +21,12 @@ class D3LabelCreate extends \yii\base\Widget
     public $controller;
     public $returnURLToken;
 
+    /** @var D3Definition */
     private $definition;
 
+
     /**
-     * @return bool|void
+     * @throws \Exception
      */
     public function init()
     {
@@ -37,23 +38,21 @@ class D3LabelCreate extends \yii\base\Widget
 
     /**
      * @return string
+     * @throws \Exception
      */
     public function run(): string
     {
         $modulePath = Yii::$app->getModule('d3labels')->basePath;
 
-        $formModel = new D3lLabelForm();
-
-        $formModel->modelClass = $this->modelClass;
-
-        $formModel->labels[] = new D3lDefinition();
+        $model = new D3lDefinition();
+        $model->sys_company_id =  \Yii::$app->SysCmp->getActiveCompanyId();
+        $model->model_id = $this->modelClass;
 
         return $this->renderFile(
             $modulePath . '/views/label/_create.php',
             [
-                'model' => $formModel,
+                'model' => $model,
                 'controller' => $this->controller,
-                'returnURLToken' => $this->returnURLToken,
                 'labelsList' => $this->renderFile(
                     $modulePath . '/views/label/list.php',
                     [

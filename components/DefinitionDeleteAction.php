@@ -2,8 +2,6 @@
 
 namespace d3yii2\d3labels\components;
 
-use d3yii2\d3labels\logic\D3Definition;
-use d3yii2\d3labels\logic\D3Label;
 use d3yii2\d3labels\models\D3lDefinition;
 use eaBlankonThema\components\FlashHelper;
 use Yii;
@@ -18,11 +16,24 @@ class DefinitionDeleteAction extends BaseAction
 {
 
     /**
-     * @return yii\web\Response
+     * @var array Labels used by the system and not allowed to delete
+     */
+    public $sysLabelsIdList = [];
+
+    /**
+     * @param int $modelId
+     * @param int $definitionId
+     * @return Yii\web\Response
+     * @throws \Throwable
      */
     public function run(int $modelId, int $definitionId): yii\web\Response
     {
         try {
+
+            if(in_array($definitionId,$this->sysLabelsIdList, true)){
+                throw new Exception(Yii::t('d3labels','Can not delete system labels'));
+            }
+
             $model = D3lDefinition::findOne(['id' => $definitionId, 'model_id' => $modelId]);
 
             if (!$model) {

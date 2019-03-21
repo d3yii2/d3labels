@@ -2,6 +2,11 @@
 
 use eaBlankonThema\widget\ThButton;
 
+/**
+ * @var $model \d3yii2\d3labels\models\D3lDefinition
+ * @var string $returnURLToken
+ * @var string $labelsList
+ */
 $modulePath = Yii::$app->getModule('d3labels')->basePath;
 ?>
 <div class="row rounded shadow">
@@ -9,7 +14,7 @@ $modulePath = Yii::$app->getModule('d3labels')->basePath;
         <div class="row panel-heading">
             <div class="pull-left">
                 <h3 class="panel-title">
-                    <?= Yii::t('d3lietvediba', 'Create Label') ?>
+                    <?= Yii::t('d3labels', 'Create Label') ?>
                 </h3>
             </div>
             <div class="clearfix"></div>
@@ -21,19 +26,13 @@ $modulePath = Yii::$app->getModule('d3labels')->basePath;
                 </div>
                 <div class="row">
                     <div class="col-md-8">
-                        <?php $form = \kartik\widgets\ActiveForm::begin(['action' => ['d3labelscreate']]); ?>
-                        <?= $form->field($model, 'modelClass')->textInput() ?>
-                        <?php
-                        foreach ($model->labels as $labelDefinitionModel): ?>
-                            <?= $form->field($model, 'controllerModelId')->hiddenInput()->label(false) ?>
-                            <?= $form->field($labelDefinitionModel, '[0]collor')->dropDownList(\d3yii2\d3labels\logic\D3Definition::getColors()) ?>
-                            <?= $form->field($labelDefinitionModel, '[0]label')->textInput() ?>
-                            <?= $form->field($labelDefinitionModel, '[0]icon')->textInput() ?>
-                            <?php if ($returnURLToken): ?>
-                                <?= \yii\helpers\Html::hiddenInput('ru', $returnURLToken) ?>
-                            <?php endif; ?>
-                        <?php
-                        endforeach; ?>
+                        <?php $form = \kartik\widgets\ActiveForm::begin([
+                                'action' =>  \yii\helpers\Url::toRoute(['d3labelscreate'])
+                        ]); ?>
+
+                            <?= $form->field($model, 'collor')->dropDownList(\d3yii2\d3labels\logic\D3Definition::getColors()) ?>
+                            <?= $form->field($model, 'label')->textInput() ?>
+                            <?= $form->field($model, 'icon')->textInput() ?>
 
                         <?= ThButton::widget([
                             'label' => Yii::t('email-api-client', 'Create'),

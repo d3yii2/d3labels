@@ -6,6 +6,7 @@ use Yii;
 use d3system\compnents\ModelsList;
 use d3system\exceptions\D3ActiveRecordException;
 use d3yii2\d3labels\models\D3lDefinition;
+use yii\base\Exception;
 use yii\web\NotFoundHttpException;
 use d3system\widgets\ThBadge;
 
@@ -41,7 +42,7 @@ class D3Definition
     public function __construct(string $class)
     {
         if (!class_exists($class)) {
-            throw new \Exception('Model Class not exists: ' . $class);
+            throw new Exception('Model Class not exists: ' . $class);
         }
 
         $this->class = $class;
@@ -125,17 +126,18 @@ class D3Definition
         }
     }
 
+
     /**
      * Get System Model ID from current model class
+     *
      * @return int
+     * @throws D3ActiveRecordException
      */
     public function getSystemModelId(): int
     {
         $modelObj = new $this->class;
         $sysModels = new ModelsList();
-        $modeId = $sysModels->getIdByTableName($modelObj);
-
-        return $modeId;
+        return $sysModels->getIdByTableName($modelObj);
     }
 
     /**
@@ -174,8 +176,10 @@ class D3Definition
 
     /**
      * Get all label Definitions for system model
-     * @param int|null $modelId
-     * @return D3lDefinition[]
+     *
+     * @param null $modelId
+     * @return array
+     * @throws D3ActiveRecordException
      */
     public function getAllByModel($modelId = null): array
     {
@@ -183,8 +187,7 @@ class D3Definition
             $modelId = $this->getSystemModelId();
         }
 
-        $defs = D3lDefinition::findAll(['model_id' => $modelId]);
+        return D3lDefinition::findAll(['model_id' => $modelId]);
 
-        return $defs;
     }
 }
