@@ -49,12 +49,12 @@ class D3LabelCreate extends \yii\base\Widget
         $model->model_id = $this->modelClass;
 
         return $this->renderFile(
-            $modulePath . '/views/label/_create.php',
+            $modulePath . '/views/label/create.php',
             [
                 'model' => $model,
                 'controller' => $this->controller,
                 'labelsList' => $this->renderFile(
-                    $modulePath . '/views/label/list.php',
+                    $modulePath . '/views/label/_list.php',
                     [
                         'labels' => $this->definition->getAllByModel(),
                         'systemModelId' => $this->definition->getSystemModelId(),
