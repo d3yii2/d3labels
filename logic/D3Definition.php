@@ -18,6 +18,7 @@ use d3system\widgets\ThBadge;
  * @property string $icon
  * @property string $color
  * @property int $sysCompanyId
+ * @property D3lDefinition
  */
 class D3Definition
 {
@@ -34,6 +35,8 @@ class D3Definition
 
     private $sysCompanyId;
 
+    private $definitionModel;
+
     /**
      * D3Definition constructor.
      * @param string $class
@@ -46,6 +49,8 @@ class D3Definition
         }
 
         $this->class = $class;
+
+        $this->definitionModel = new D3lDefinition();
     }
 
     /**
@@ -90,40 +95,36 @@ class D3Definition
     }
 
     /**
+     * Load form data into D3lDefinition model
+     * @throws D3ActiveRecordException
+     */
+    public function loadFromForm()
+    {
+        if (!$this->definitionModel->load(Yii::$app->request->post(), 'D3lDefinition')) {
+            throw new D3ActiveRecordException($this->definitionModel, 'Cannot load POST data');
+        }
+
+        $this->definitionModel->sys_company_id = $this->sysCompanyId;
+
+        $this->definitionModel->model_id = $this->getSystemModelId();
+
+
+        if ($this->color) {
+            $this->definitionModel->collor = $this->color;
+        }
+
+        /*if ($this->icon) {
+            $def->icon = $this->icon;
+        }*/
+    }
+
+    /**
      * Save the label definitions
      * @throws D3ActiveRecordException
      */
     public function save(): void
     {
-        $def = new D3lDefinition();
-
-        $def->sys_company_id = $this->sysCompanyId;
-
-        $def->model_id = $this->getSystemModelId();
-
-        $def->label = $this->label;
-
-        if ($this->color) {
-            $def->collor = $this->color;
-        }
-
-        if ($this->icon) {
-            $def->icon = $this->icon;
-        }
-
-        if($this->sysCompanyId){
-            $def->sys_company_id = $this->sysCompanyId;
-        }
-
-        if(!$def->save($def)){
-            $errors = $def->getErrors();
-
-            $errMsg = isset($errors['model_id'])
-                ? Yii::t('d3labels', 'Label with this name exists already')
-                : Yii::t('d3labels', 'Unable to create Label');
-
-            throw new D3ActiveRecordException($def, $errMsg);
-        }
+        $this->definitionModel->save();
     }
 
 

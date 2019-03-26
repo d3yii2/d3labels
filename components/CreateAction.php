@@ -2,9 +2,7 @@
 
 namespace d3yii2\d3labels\components;
 
-use d3system\compnents\ModelsList;
-use d3system\exceptions\D3ActiveRecordException;
-use d3yii2\d3labels\models\D3lDefinition;
+use d3yii2\d3labels\logic\D3Definition;
 use eaBlankonThema\components\FlashHelper;
 use Yii;
 
@@ -22,16 +20,11 @@ class CreateAction extends BaseAction
     {
         try {
 
-            $model = new D3lDefinition();
-            $model->sys_company_id =  \Yii::$app->SysCmp->getActiveCompanyId();
-            $sysModels = new ModelsList();
-            $model->model_id = $sysModels->getIdByClassName($this->modelName);
+            $def = new D3Definition($this->modelName);
 
-            if (!$model->load(Yii::$app->request->post(), 'D3lDefinition')) {
-                throw new D3ActiveRecordException($model, 'Cannot load POST data');
-            }
+            $def->loadFromForm();
 
-            $model->save();
+            $def->save();
 
             $msg = Yii::t('d3labels', 'Labels created successfully');
             FlashHelper::addSuccess($msg);

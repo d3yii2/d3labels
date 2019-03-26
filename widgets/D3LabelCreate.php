@@ -56,61 +56,11 @@ class D3LabelCreate extends \yii\base\Widget
                 'labelsList' => $this->renderFile(
                     $modulePath . '/views/label/list.php',
                     [
-                        'title' => Yii::t('d3labels', 'Existing Labels'),
-                        'collapsedHtml' => '',
-                        'table' => $this->getTable(),
-                        'tableOptions' => [],
+                        'labels' => $this->definition->getAllByModel(),
+                        'systemModelId' => $this->definition->getSystemModelId(),
                     ]
                 )
             ]
         );
-    }
-
-    /**
-     * Get the Labels table content
-     * @return string
-     * @throws \Exception
-     */
-    public function getTable(): string
-    {
-        $html = '
-        <tbody>
-        ';
-
-        $labels = $this->definition->getAllByModel();
-
-        $systemModelId = $this->definition->getSystemModelId();
-
-        foreach ($labels as $definitionId => $def) {
-
-            $params = [
-                'd3labelsdefinitionremove',
-                'definitionId' => $def->id,
-                'modelId' => $systemModelId,
-            ];
-
-            $actions = Html::a(
-                '<span class="glyphicon glyphicon-trash"></span>',
-                $params,
-                ['title' => Yii::t('d3labels', 'Remove')]
-            );
-
-            $label = ThBadge::widget(
-                [
-                    'type' => $def->collor,
-                    'text' => $def->label,
-                    'faIcon' => $def->icon,
-                    'showText' => true,
-                ]
-            );
-
-            $html .= '
-                <tr>
-                    <td>' . $label . '</td>
-                    <td>' . $actions . '</td>
-                </tr>';
-        }
-
-        return $html . '</tbody>';
     }
 }
