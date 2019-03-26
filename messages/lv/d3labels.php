@@ -33,6 +33,7 @@ return [
     'Icon' => 'Ikona',
     'Labels created successfully' => 'Birka izveidota',
     'Label' => 'Nosaukums',
+    'Label attached' => 'Birka piesaistīta',
     'Label definition record not exists' => 'Birkas definīcijas ieraksts neeksistē',
     'Label is required if no icon' => 'Ir nepieciešams nosaukums, ja nav uzdota ikona',
     'Label will be deleted' => 'Birka tiks dzēsta',

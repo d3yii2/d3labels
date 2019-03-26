@@ -28,7 +28,7 @@ class AttachAction extends BaseAction
             $def = D3Definition::loadDefinition($defId);
 
             D3Label::attach($modelId, $def);
-            $msg = Yii::t('d3labels', 'Label attached  sucessfully');
+            $msg = Yii::t('d3labels', 'Label attached');
             FlashHelper::addSuccess($msg);
         } catch (\Exception $err) {
             FlashHelper::addDanger($err->getMessage());
