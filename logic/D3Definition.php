@@ -100,22 +100,13 @@ class D3Definition
      */
     public function loadFromForm()
     {
-        if (!$this->definitionModel->load(Yii::$app->request->post(), 'D3lDefinition')) {
-            throw new D3ActiveRecordException($this->definitionModel, 'Cannot load POST data');
+        $formAttrs = ['label', 'icon', 'collor'];
+
+        $post = Yii::$app->request->post('D3lDefinition');
+
+        foreach ($formAttrs as $attr) {
+            $this->{$attr} = $post[$attr] ?? null;
         }
-
-        $this->definitionModel->sys_company_id = $this->sysCompanyId;
-
-        $this->definitionModel->model_id = $this->getSystemModelId();
-
-
-        if ($this->color) {
-            $this->definitionModel->collor = $this->color;
-        }
-
-        /*if ($this->icon) {
-            $def->icon = $this->icon;
-        }*/
     }
 
     /**
@@ -124,6 +115,12 @@ class D3Definition
      */
     public function save(): void
     {
+        $this->definitionModel->sys_company_id = $this->sysCompanyId;
+        $this->definitionModel->model_id = $this->getSystemModelId();
+        $this->definitionModel->collor = $this->color;
+        $this->definitionModel->icon = $this->icon;
+        $this->definitionModel->label = $this->label;
+
         $this->definitionModel->save();
     }
 
