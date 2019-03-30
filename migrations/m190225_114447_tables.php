@@ -65,9 +65,9 @@ class m190225_114447_tables extends Migration
               ADD KEY `definition_id` (`definition_id`);
                         
             ALTER TABLE `d3l_definition`
-              MODIFY `id` smallint(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+              MODIFY `id` smallint(10) UNSIGNED NOT NULL AUTO_INCREMENT;
             ALTER TABLE `d3l_label`
-              MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+              MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
             ALTER TABLE `d3l_time_bomb`
               MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
             ALTER TABLE `d3_label_history`

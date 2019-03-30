@@ -98,24 +98,15 @@ class D3Definition
      * Load form data into D3lDefinition model
      * @throws D3ActiveRecordException
      */
-    public function loadFromForm(): void
+    public function loadFromForm()
     {
-        if (!$this->definitionModel->load(Yii::$app->request->post(), 'D3lDefinition')) {
-            throw new D3ActiveRecordException($this->definitionModel, 'Cannot load POST data');
+        $formAttrs = ['label', 'icon', 'collor'];
+
+        $post = Yii::$app->request->post('D3lDefinition');
+
+        foreach ($formAttrs as $attr) {
+            $this->{$attr} = $post[$attr] ?? null;
         }
-
-        $this->definitionModel->sys_company_id = $this->sysCompanyId;
-
-        $this->definitionModel->model_id = $this->getSystemModelId();
-
-
-        if ($this->color) {
-            $this->definitionModel->collor = $this->color;
-        }
-
-        /*if ($this->icon) {
-            $def->icon = $this->icon;
-        }*/
     }
 
     /**
