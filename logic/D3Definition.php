@@ -105,7 +105,7 @@ class D3Definition
         $post = Yii::$app->request->post('D3lDefinition');
 
         foreach ($formAttrs as $attr) {
-            $this->{$attr} = $post[$attr] ?? null;
+            $this->definitionModel->{$attr} = $post[$attr] ?? null;
         }
     }
 
