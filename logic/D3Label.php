@@ -3,7 +3,6 @@
 namespace d3yii2\d3labels\logic;
 
 use d3system\exceptions\D3ActiveRecordException;
-use d3yii2\d3labels\models\D3lDefinition;
 use d3yii2\d3labels\models\D3lLabel;
 
 /**
@@ -33,14 +32,17 @@ class D3Label
 
     /**
      * Attach the Label to Model
+     *
      * @param int $modelId
-     * @param D3lDefinition $definition
+     * @param int $definitionId
      * @return bool
      * @throws \yii\db\Exception
+     * @throws \yii\web\NotFoundHttpException
      */
-    public static function attach(int $modelId, D3lDefinition $definition): bool
+    public static function attach(int $modelId, int $definitionId): bool
     {
         $attached = false;
+        $definition = D3Definition::loadDefinition($definitionId);
 
         foreach ($definition->d3lLabels as $label) {
             if ($label->definition_id === $definition->id && $label->model_record_id === $modelId) {

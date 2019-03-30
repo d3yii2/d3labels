@@ -12,6 +12,7 @@ use yii\db\Exception;
  *
  * @property integer $id
  * @property integer $sys_company_id
+ * @property string $code
  * @property integer $model_id
  * @property string $label
  * @property string $collor
@@ -48,10 +49,9 @@ abstract class D3lDefinition extends \yii\db\ActiveRecord
             [['sys_company_id', 'model_id'], 'integer'],
             [['model_id'], 'required'],
             [['action_class'], 'string'],
-            [['label', 'icon'], 'string', 'max' => 20],
+            [['code', 'label', 'icon'], 'string', 'max' => 20],
             [['collor'], 'string', 'max' => 10],
             [['action_method'], 'string', 'max' => 256],
-            [['model_id', 'label'], 'unique', 'targetAttribute' => ['model_id', 'label']],
             [['model_id'], 'exist', 'skipOnError' => true, 'targetClass' => \d3yii2\d3labels\models\SysModels::className(), 'targetAttribute' => ['model_id' => 'id']]
         ];
     }
@@ -64,6 +64,7 @@ abstract class D3lDefinition extends \yii\db\ActiveRecord
         return [
             'id' => Yii::t('d3labels', 'ID'),
             'sys_company_id' => Yii::t('d3labels', 'Sys Company ID'),
+            'code' => Yii::t('d3labels', 'Code'),
             'model_id' => Yii::t('d3labels', 'Model'),
             'label' => Yii::t('d3labels', 'Label'),
             'collor' => Yii::t('d3labels', 'Collor'),
@@ -79,6 +80,7 @@ abstract class D3lDefinition extends \yii\db\ActiveRecord
     public function attributeHints()
     {
         return array_merge(parent::attributeHints(), [
+            'code' => Yii::t('d3labels', 'Code'),
             'model_id' => Yii::t('d3labels', 'Model'),
             'label' => Yii::t('d3labels', 'Label'),
             'collor' => Yii::t('d3labels', 'Collor'),

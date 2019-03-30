@@ -2,7 +2,6 @@
 
 namespace d3yii2\d3labels\components;
 
-use d3yii2\d3labels\logic\D3Definition;
 use d3yii2\d3labels\logic\D3Label;
 use eaBlankonThema\components\FlashHelper;
 use Yii;
@@ -24,10 +23,7 @@ class AttachAction extends BaseAction
         try {
 
             $this->loadModel($modelId);
-
-            $def = D3Definition::loadDefinition($defId);
-
-            D3Label::attach($modelId, $def);
+            D3Label::attach($modelId, $defId);
             $msg = Yii::t('d3labels', 'Label attached');
             FlashHelper::addSuccess($msg);
         } catch (\Exception $err) {

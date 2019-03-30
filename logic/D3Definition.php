@@ -24,18 +24,10 @@ class D3Definition
 {
     private $class;
 
-    /** @var null string */
-    private $label;
-
-    /** @var null string */
-    private $icon;
-
-    /** @var null string */
-    private $color;
-
     private $sysCompanyId;
 
     private $definitionModel;
+
 
     /**
      * D3Definition constructor.
@@ -58,7 +50,7 @@ class D3Definition
      */
     public function setLabel(string $label): void
     {
-        $this->label = $label;
+        $this->definitionModel->label = $label;
     }
 
     /**
@@ -66,7 +58,7 @@ class D3Definition
      */
     public function setIcon(string $icon): void
     {
-        $this->icon = $icon;
+        $this->definitionModel->icon = $icon;
     }
 
     /**
@@ -74,7 +66,15 @@ class D3Definition
      */
     public function setColor(string $color): void
     {
-        $this->color = $color;
+        $this->definitionModel->collor = $color;
+    }
+
+    /**
+     * @param string $code
+     */
+    public function setCode(string $code): void
+    {
+        $this->definitionModel->code = $code;
     }
 
     /**
@@ -98,7 +98,7 @@ class D3Definition
      * Load form data into D3lDefinition model
      * @throws D3ActiveRecordException
      */
-    public function loadFromForm()
+    public function loadFromForm(): void
     {
         if (!$this->definitionModel->load(Yii::$app->request->post(), 'D3lDefinition')) {
             throw new D3ActiveRecordException($this->definitionModel, 'Cannot load POST data');
@@ -124,6 +124,7 @@ class D3Definition
      */
     public function save(): void
     {
+        $this->definitionModel->model_id = $this->getSystemModelId();
         $this->definitionModel->save();
     }
 
@@ -144,9 +145,9 @@ class D3Definition
     /**
      * @param int $id
      */
-    public function setSysCompanyId(int $id): void
+    public function setCompanyId(int $id): void
     {
-        $this->sysCompanyId = $id;
+        $this->definitionModel->sys_company_id = $id;
     }
 
     public function setModel(D3lDefinition $label): void
@@ -154,6 +155,7 @@ class D3Definition
         $this->setLabel($label->label);
         $this->setIcon($label->icon);
         $this->setColor($label->collor);
+        $this->setCode($label->code);
     }
 
     /**
@@ -188,7 +190,15 @@ class D3Definition
             $modelId = $this->getSystemModelId();
         }
 
-        return D3lDefinition::findAll(['model_id' => $modelId]);
+        return D3lDefinition::find()
+            ->where(['model_id' => $modelId])
+            ->andWhere([
+                'OR',
+                ['sys_company_id' =>  \Yii::$app->SysCmp->getActiveCompanyId()],
+                ['sys_company_id' => null]
+            ])
+            ->all()
+            ;
 
     }
 }

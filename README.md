@@ -26,14 +26,31 @@ Define Labels
 -----
 Migration example
 ```php
-public function safeUp()
+
+use yii\db\Migration;
+use \d3yii2\d3labels\logic\D3Definition;
+use d3modules\lietvediba\models\RkInvoice;
+use d3system\widgets\ThBadge;
+class m190329_095047_invoice_labels extends Migration
 {
-    $def = new D3Definition(RkInvoice::class);
-    $def->setLabel('Warning label');
-    $def->setColor('#FFFFFF');
-    $def->setSysCompanyId(14);
-    $def->save();
-}
+    /**
+    * {@inheritdoc}
+    */
+    public function safeUp()
+     {
+         $def = new D3Definition(RkInvoice::class);
+         $def->setLabel('Warning label');
+         $def->setColor(ThBadge::TYPE_INVERSE);
+         $def->setCompanyId(14);
+         $def->save();
+    }
+    public function safeDown()
+    {
+        echo "m190329_095047_invoice_labels cannot be reverted.\n";
+        return false;
+    }
+
+}     
 ```
 
 Display Widget
@@ -59,4 +76,13 @@ $columns[] = [
     'label' => Yii::t('d3labels', 'Labels'),
     //'badgeRenderOptions' => ['iconsWithText' => true],
 ];
+```
+
+attach to model record
+---------------------
+
+```php
+use d3yii2\d3labels\logic\D3Label;
+
+D3Label::attach($model->id,$labelDefId);
 ```
