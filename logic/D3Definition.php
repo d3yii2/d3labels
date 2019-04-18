@@ -94,6 +94,18 @@ class D3Definition
         return $def;
     }
 
+     /**
+     * Find the existing definition by code
+     * @param string $code
+     * @return D3lDefinition
+     */
+    public static function getByCode(string $code)
+    {
+        $def = D3lDefinition::findOne(['code' => $code]);
+
+        return $def;
+    }
+
     /**
      * Load form data into D3lDefinition model
      * @throws D3ActiveRecordException
