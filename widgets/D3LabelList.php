@@ -152,33 +152,25 @@ class D3LabelList extends \yii\base\Widget
 
             $label = $available[$definitionId];
 
-            $params = [
-                'd3labelsremove',
-                'labelId' => $row->id,
-                'modelId' => $this->d3LabelList->model->id,
-            ];
-
-           // $params['returnURL'] = Yii::$app->urlManager->createAbsoluteUrl(Yii::$app->request);
-
-            $actions = Html::a(
-                '<span class="glyphicon glyphicon-trash"></span>',
-                $params,
-                ['title' => Yii::t('d3labels', 'Remove')]
-            );
-
             $label = ThBadge::widget(
                 [
                     'type' => $label->collor,
                     'text' => $label->label,
+                    'afterText' => ' <i class="fa fa-times"></i>',
+                    'title' => Yii::t('d3labels', 'Remove'),
                     'faIcon' => $label->icon,
                     'showText' => $this->gridIconsWithText,
+                    'url' => \yii\helpers\Url::to([
+                        'd3labelsremove',
+                        'labelId' => $row->id,
+                        'modelId' => $this->d3LabelList->model->id,
+                    ]),
                 ]
             );
 
             $html .= '
                 <tr>
                     <td>' . $label . '</td>
-                    <td>' . $actions . '</td>
                 </tr>';
         }
 
