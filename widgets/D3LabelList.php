@@ -107,7 +107,7 @@ class D3LabelList extends \yii\base\Widget
                         ' . $description . '    
                     </div>
                     <div>
-                    <form>';
+                    ';
 
         $nonAttachedLabels = $this->d3LabelList->getNonAttached();
 
