@@ -41,18 +41,14 @@ class D3Label
      */
     public static function attach(int $modelId, int $definitionId): bool
     {
-        $attached = false;
         $definition = D3Definition::loadDefinition($definitionId);
 
-        foreach ($definition->d3lLabels as $label) {
-            if ($label->definition_id === $definition->id && $label->model_record_id === $modelId) {
-                $attached = true;
-                break;
-            }
-        }
-
-        // Ignorē ja piesaistīta, lai neizraisītu exception pie lapas pārlādes
-        if ($attached) {
+        $label = $definition
+                    ->getD3lLabels()
+                    ->where(['model_record_id' => $modelId])
+                    ->one();
+        if($label) {
+            // Ignorē ja piesaistīta, lai neizraisītu exception pie lapas pārlādes
             return true;
         }
 
@@ -63,6 +59,26 @@ class D3Label
         $mapping->saveOrException();
 
         return true;
+    }
+
+    /**
+     * Attach a Label to the Model
+     *
+     * @param int $modelId
+     * @param int $definitionId
+     */
+    public static function detach(int $modelId, int $definitionId)
+    {
+        $definition = D3Definition::loadDefinition($definitionId);
+
+        $label = $definition
+                    ->getD3lLabels()
+                    ->where(['model_record_id' => $modelId])
+                    ->one();
+
+        if($label) {
+            self::remove($label->id);
+        }
     }
 
     /**
