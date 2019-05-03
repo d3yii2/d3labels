@@ -27,7 +27,7 @@ class D3LabelList extends \yii\base\Widget
     public $model;
     public $title;
     public $titleDescription;
-    public $titleHtmlOptions = [];
+    public $titleHtmlOptions = ['style' => 'padding-bottom:0'];
     public $collapsed = false;
     public $tableOptions = [
         'class' => 'table table-striped table-success table-bordered'
@@ -101,29 +101,34 @@ class D3LabelList extends \yii\base\Widget
             $collapseIcon = 'fa-angle-down';
         }
 
-        $content = '<div class="panel-heading panel-heading-table-simple">
-                    <div class="pull-left">
+        $content = '<div class="panel-heading panel-heading-table-simple no-padding">
                         ' . Html::tag('h3', $this->title, $titleHtmlOptions) . '
-                        ' . $description . '    
-                    </div>
-                    <div>
-                    ';
+                        ' . $description;
 
         $nonAttachedLabels = $this->d3LabelList->getNonAttached();
 
         if ($nonAttachedLabels) {
+            $content .= '<span class="pull-left" style="display: inline-block;max-width:94%;padding-top:7px;padding-left:10px;padding-bottom:4px"><b style="margin-right: 6px">' . Yii::t('d3labels', 'Add') . ':</b>';
+
             $items = LabelLogic::getBadgeItems($nonAttachedLabels, 'd3labelsattach', $this->model->id);
 
-            $renderOptions = $this->headerIconsWithText ? ['iconsWithText' => true] : [];
+            $renderOptions = ['beforeText' => '<i class="fa fa-plus"></i> '];
+
+            if ($this->headerIconsWithText) {
+                $renderOptions['iconsWithText'] = true;
+            }
+
             $content .= LabelLogic::getAsBadges($items, $renderOptions);
+
+            $content .= '</span>';
         }
 
-        $content .= '</div>
-                    <div class="pull-right">
+        $content .= '
+                    <span class="pull-right" style="display: inline-block">
                         <button class="btn btn-sm" data-action="collapse" data-toggle="tooltip" data-placement="top" data-title="Collapse" data-original-title="" title="">
                             <i class="fa ' . $collapseIcon . '"></i>
                         </button>
-                    </div>                    
+                    </span>                    
                     <div class="clearfix"></div>
                 </div>';
 
