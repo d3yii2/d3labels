@@ -18,6 +18,7 @@
  */
 return [
     'Action' => 'Darbība',
+    'Add' => 'Pievienot',
     'Assigned Labels' => 'Piesaistītās birkas',
     'Attach' => 'Piesaistīt',
     'Attached' => 'Piesaistīta',
