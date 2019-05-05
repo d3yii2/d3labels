@@ -4,6 +4,7 @@ namespace d3yii2\d3labels\widgets;
 
 use d3system\widgets\ThBadge;
 use d3yii2\d3labels\logic\D3LabelList as LabelLogic;
+use eaBlankonThema\widget\ThButton;use eaBlankonThema\widget\ThButtonDropDown;
 use Yii;
 use yii\helpers\Html;
 
@@ -32,7 +33,6 @@ class D3LabelList extends \yii\base\Widget
     public $tableOptions = [
         'class' => 'table table-striped table-success table-bordered'
     ];
-    public $headerIconsWithText = true;
     public $gridIconsWithText = false;
     public $returnURLToken;
     public $returnURL;
@@ -101,36 +101,48 @@ class D3LabelList extends \yii\base\Widget
             $collapseIcon = 'fa-angle-down';
         }
 
-        $content = '<div class="panel-heading panel-heading-table-simple no-padding">
-                        ' . Html::tag('h3', $this->title, $titleHtmlOptions) . '
-                        ' . $description;
-
         $nonAttachedLabels = $this->d3LabelList->getNonAttached();
 
+        $dropdownItems = [];
+
         if ($nonAttachedLabels) {
-            $content .= '<span class="pull-left" style="display: inline-block;max-width:94%;padding-top:7px;padding-left:10px;padding-bottom:4px"><b style="margin-right: 6px">' . Yii::t('d3labels', 'Add') . ':</b>';
 
             $items = LabelLogic::getBadgeItems($nonAttachedLabels, 'd3labelsattach', $this->model->id);
 
-            $renderOptions = ['beforeText' => '<i class="fa fa-plus"></i> '];
+            $dropdownItems = [];
 
-            if ($this->headerIconsWithText) {
-                $renderOptions['iconsWithText'] = true;
+            foreach ($items as $item) {
+                $url = $item['url'];
+                unset($item['url']);
+                $dropdownItems[] = [
+                    'label' => ThBadge::widget($item),
+                    'url' => $url,
+                ];
             }
-
-            $content .= LabelLogic::getAsBadges($items, $renderOptions);
-
-            $content .= '</span>';
         }
 
-        $content .= '
-                    <span class="pull-right" style="display: inline-block">
-                        <button class="btn btn-sm" data-action="collapse" data-toggle="tooltip" data-placement="top" data-title="Collapse" data-original-title="" title="">
-                            <i class="fa ' . $collapseIcon . '"></i>
-                        </button>
-                    </span>                    
-                    <div class="clearfix"></div>
-                </div>';
+        $content = '
+        <div class="panel-heading panel-heading-table-simple no-padding">
+            <div class="pull-left">' .
+                Html::tag(
+                    'h3',
+                    ThButtonDropDown::widget([
+                        'icon' => ThButton::ICON_PLUS,
+                        'type' => ThButton::TYPE_SUCCESS,
+                        'items' => $dropdownItems,
+                        'size' => ThButtonDropDown::SIZE_XSMALL,
+                        'options' => ['id' => 'd3label-attach-dropdown']
+                    ]) . $this->title
+                    , $titleHtmlOptions
+                ) . '
+            </div>
+            <div class="pull-right" style="display: inline-block">
+                <button class="btn btn-sm" data-action="collapse" data-toggle="tooltip" data-placement="top" data-title="Collapse" data-original-title="" title="">
+                    <i class="fa ' . $collapseIcon . '"></i>
+                </button>
+            </div>
+            <div class="clearfix"></div>
+        </div>';
 
         return $content;
     }
