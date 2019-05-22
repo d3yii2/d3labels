@@ -9,17 +9,19 @@ use eaBlankonThema\widget\ThButton;
  */
 $modulePath = Yii::$app->getModule('d3labels')->basePath;
 
-Yii::$app->view->params['pageButtons'] .= ThButton::widget([
-    'label' => Yii::t('d3labels', 'Create Label'),
-    'icon' => ThButton::ICON_PLUS,
-    'type' => ThButton::TYPE_SUCCESS,
-    'htmlOptions' => [
-        'data-toggle' => 'collapse',
-        'data-target' => '#collapse',
-        'aria-expanded' => 'false',
-        'aria-controls' => 'collapse'
-    ],
-]);
+Yii::$app->view->addPageButtons(
+        ThButton::widget([
+            'label' => Yii::t('d3labels', 'Create Label'),
+            'icon' => ThButton::ICON_PLUS,
+            'type' => ThButton::TYPE_SUCCESS,
+            'htmlOptions' => [
+                'data-toggle' => 'collapse',
+                'data-target' => '#collapse',
+                'aria-expanded' => 'false',
+                'aria-controls' => 'collapse'
+            ],
+        ])
+);
 
 ?>
 <div class="row rounded shadow">
