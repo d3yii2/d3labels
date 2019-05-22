@@ -31,7 +31,7 @@ Yii::$app->view->addPageButtons(
                 <h4><?= Yii::t('d3labels', 'Labels') ?></h4>
             </div>
         </div>
-        <div class="row panel-body no-padding">
+        <div class="row panel-body">
             <div class="col-md-6">
                 <div class="row">
                     <?= \eaBlankonThema\widget\ThAlertList::widget() ?>
