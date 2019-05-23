@@ -2,6 +2,7 @@
 
 namespace d3yii2\d3labels\components;
 
+use d3system\compnents\ModelsList;
 use d3yii2\d3labels\logic\D3LabelList;
 use d3yii2\d3labels\models\D3lLabel;
 use yii\grid\DataColumn;
@@ -17,6 +18,7 @@ use yii\grid\DataColumn;
 class D3LabelColumn extends DataColumn
 {
     public $model;
+    public $modelClass;
     public $badgeRenderOptions = [];
 
     private $dataProviderIds = [];
@@ -83,7 +85,11 @@ class D3LabelColumn extends DataColumn
      */
     protected function renderFilterCellContent(): string
     {
-        $items = D3lLabel::forListBox($this->dataProviderIds);
+        $modelsList = new ModelsList();
+
+        $modelId = $modelsList->getIdByClassName($this->modelClass);
+
+        $items = D3lLabel::forListBox($modelId);
 
         return D3LabelList::getAsDropdown($items, $this->model);
     }

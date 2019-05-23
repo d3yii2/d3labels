@@ -36,13 +36,14 @@ class D3lLabel extends BaseD3lLabel
      * @param array $modelRecords
      * @return array
      */
-    public static function forListBox(): array
+    public static function forListBox(string $modelId): array
     {
         $models = (new \yii\db\Query())
             ->select(D3lDefinition::tableName() . '.id, ' . D3lDefinition::tableName() . '.label')
             ->leftJoin(D3lDefinition::tableName(),
                 self::tableName() . '.definition_id = ' . D3lDefinition::tableName() . '.id')
             ->from(self::tableName())
+            ->where(['model_id' => $modelId])
             ->groupBy(self::tableName() . '.definition_id')
             ->all();
 
