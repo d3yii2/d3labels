@@ -20,6 +20,7 @@ class D3LabelColumn extends DataColumn
     public $model;
     public $modelClass;
     public $badgeRenderOptions = [];
+    public $filterListboxOptions = [];
 
     private $dataProviderIds = [];
     private $recordsWithLabels = [];
@@ -91,6 +92,6 @@ class D3LabelColumn extends DataColumn
 
         $items = D3lLabel::forListBox($modelId);
 
-        return D3LabelList::getAsDropdown($items, $this->model);
+        return D3LabelList::getAsDropdown($items, $this->model, $this->filterListboxOptions);
     }
 }

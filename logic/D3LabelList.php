@@ -65,17 +65,25 @@ class D3LabelList
     /**
      * Get the Labes as the Dropdown List
      * @param array $items
-     * @param $model
+     * @param null $model
+     * @param array $dropdownOptions
      * @return string
      */
-    public static function getAsDropdown(array $items, $model = null): string
+    public static function getAsDropdown(array $items, $model = null, array $dropdownOptions): string
     {
+        $dropdownOptions = array_merge(                [
+                'class' => 'form-control limiter-max__150',
+                'prompt' => \Yii::t('d3labels', 'Filter by Label')
+            ],
+            $dropdownOptions
+        );
+
         if ($model) {
             $dropdown = Html::activeDropDownList(
                 $model,
                 'label_type',
                 $items,
-                ['prompt' => \Yii::t('d3labels', 'Filter by Label')]
+                $dropdownOptions
             );
             return $dropdown;
         }
@@ -84,7 +92,7 @@ class D3LabelList
             'model_label_type',
             null,
             $items,
-            ['prompt' => \Yii::t('d3labels', 'Filter by Label')]
+            $dropdownOptions
         );
 
         return $dropdownOutput;
