@@ -74,6 +74,7 @@ class D3LabelList extends \yii\base\Widget
                 'collapsedHtml' => '',
                 'table' => $this->createTable(),
                 'tableOptions' => $this->tableOptions,
+                'collapseIcon' => $this->collapsed ? 'fa-angle-down' : 'fa-angle-up',
             ]
         );
     }
@@ -96,11 +97,6 @@ class D3LabelList extends \yii\base\Widget
         $titleHtmlOptions = $this->titleHtmlOptions;
         Html::addCssClass($titleHtmlOptions, 'panel-title');
 
-        $collapseIcon = 'fa-angle-up';
-        if ($this->collapsed) {
-            $collapseIcon = 'fa-angle-down';
-        }
-
         $nonAttachedLabels = $this->d3LabelList->getNonAttached();
 
         $dropdownItems = [];
@@ -121,11 +117,8 @@ class D3LabelList extends \yii\base\Widget
             }
         }
 
-        $content = '
-        <div class="panel-heading panel-heading-table-simple no-padding">
-            <div class="pull-left">' .
-                Html::tag(
-                    'h3',
+        $title = Html::tag(
+                    'div',
                     ThButtonDropDown::widget([
                         'icon' => ThButton::ICON_PLUS,
                         'type' => ThButton::TYPE_SUCCESS,
@@ -134,17 +127,9 @@ class D3LabelList extends \yii\base\Widget
                         'options' => ['id' => 'd3label-attach-dropdown']
                     ]) . $this->title
                     , $titleHtmlOptions
-                ) . '
-            </div>
-            <div class="pull-right" style="display: inline-block">
-                <button class="btn btn-sm" data-action="collapse" data-toggle="tooltip" data-placement="top" data-title="Collapse" data-original-title="" title="">
-                    <i class="fa ' . $collapseIcon . '"></i>
-                </button>
-            </div>
-            <div class="clearfix"></div>
-        </div>';
+                );
 
-        return $content;
+        return $title;
     }
 
     /**
