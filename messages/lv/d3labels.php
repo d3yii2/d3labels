@@ -19,8 +19,9 @@
 return [
     'Action' => 'Darbība',
     'Add' => 'Pievienot',
-    'Assigned Labels' => 'Piesaistītās birkas',
+    'Attached Labels' => 'Piesaistītās birkas',
     'Attach' => 'Piesaistīt',
+    'Attach Label' => 'Piesaistīt birku',
     'Attached' => 'Piesaistīta',
     'Cancel and close' => 'Atcelt un aizvērt',
     'Cannot delete Label record' => 'Neizdevās noņemt birku',

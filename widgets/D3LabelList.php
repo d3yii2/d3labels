@@ -124,7 +124,10 @@ class D3LabelList extends \yii\base\Widget
                         'type' => ThButton::TYPE_SUCCESS,
                         'items' => $dropdownItems,
                         'size' => ThButtonDropDown::SIZE_XSMALL,
-                        'options' => ['id' => 'd3label-attach-dropdown']
+                        'options' => ['id' => 'd3label-attach-dropdown'],
+                        'htmlOptions' => [
+                            'title' => Yii::t('d3labels', 'Attach Label')
+                        ]
                     ]) . $this->title
                     , $titleHtmlOptions
                 );
