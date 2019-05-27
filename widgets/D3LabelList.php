@@ -143,6 +143,9 @@ class D3LabelList extends \yii\base\Widget
     public function createTable(): string
     {
         $html = '
+        <thead>
+            <tr><th data-col-seq="0">' . Yii::t('d3labels', 'Attached Labels'). '</th></tr>    
+        </thead>
         <tbody>
         ';
 
