@@ -1,12 +1,15 @@
-<?php
+<?php /** @noinspection PhpUndefinedClassInspection */
 
 namespace d3yii2\d3labels\widgets;
 
 use d3system\widgets\ThBadge;
 use d3yii2\d3labels\logic\D3LabelList as LabelLogic;
 use eaBlankonThema\widget\ThButton;use eaBlankonThema\widget\ThButtonDropDown;
+use Exception;
 use Yii;
+use yii\base\Widget;
 use yii\helpers\Html;
+use yii\helpers\Url;
 
 /**
  * Class D3LabelList
@@ -20,10 +23,10 @@ use yii\helpers\Html;
  * @property bool $headerIconsWithText
  * @property bool $gridIconsWithText
  * @property string $returnURLToken
- * @property \d3yii2\d3labels\logic\D3LabelList $d3LabelList
+ * @property LabelLogic $d3LabelList
  * @property string $controllerRoute $controllerRoute
  */
-class D3LabelList extends \yii\base\Widget
+class D3LabelList extends Widget
 {
     public $model;
     public $title;
@@ -37,6 +40,8 @@ class D3LabelList extends \yii\base\Widget
     public $returnURLToken;
     public $returnURL;
 
+    public $readOnly = false;
+
     private $d3LabelList;
     private $controllerRoute;
 
@@ -47,7 +52,7 @@ class D3LabelList extends \yii\base\Widget
     {
         parent::init();
 
-        $this->d3LabelList = new LabelLogic($this->model, $this->returnURLToken);
+        $this->d3LabelList = new LabelLogic($this->model);
 
         if (!$this->title) {
             $this->title = Yii::t('d3labels', 'Labels');
@@ -61,7 +66,7 @@ class D3LabelList extends \yii\base\Widget
     /**
      * Render the table with available labels for the model
      * @return string
-     * @throws \Exception
+     * @throws Exception
      */
     public function run(): string
     {
@@ -82,7 +87,7 @@ class D3LabelList extends \yii\base\Widget
     /**
      * Get the Header content for Labels table
      * @return string
-     * @throws \Exception
+     * @throws Exception
      */
     public function createTitle(): string
     {
@@ -117,7 +122,14 @@ class D3LabelList extends \yii\base\Widget
             }
         }
 
-        $title = Html::tag(
+        if($this->readOnly){
+            return Html::tag(
+                'div',
+                $this->title
+                , $titleHtmlOptions
+            );
+        }
+        return Html::tag(
                     'div',
                     ThButtonDropDown::widget([
                         'icon' => ThButton::ICON_PLUS,
@@ -132,13 +144,12 @@ class D3LabelList extends \yii\base\Widget
                     , $titleHtmlOptions
                 );
 
-        return $title;
     }
 
     /**
      * Get the Labels table content
      * @return string
-     * @throws \Exception
+     * @throws Exception
      */
     public function createTable(): string
     {
@@ -168,11 +179,11 @@ class D3LabelList extends \yii\base\Widget
                     'title' => Yii::t('d3labels', 'Remove'),
                     'faIcon' => $label->icon,
                     'showText' => $this->gridIconsWithText,
-                    'url' => \yii\helpers\Url::to([
+                    'url' => !$this->readOnly? Url::to([
                         'd3labelsremove',
                         'labelId' => $row->id,
                         'modelId' => $this->d3LabelList->model->id,
-                    ]),
+                    ]):null,
                 ]
             );
 
