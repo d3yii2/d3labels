@@ -20,10 +20,13 @@ class D3LabelCreate extends \yii\base\Widget
     public $modelClass;
     public $controller;
     public $returnURLToken;
+    public $createButtonPlacement = self::PLACEMENT_TOP;
 
     /** @var D3Definition */
     private $definition;
 
+    public const PLACEMENT_PAGE_BUTTONS = 'button-bar';
+    public const PLACEMENT_TOP = 'top';
 
     /**
      * @throws \Exception
@@ -59,7 +62,8 @@ class D3LabelCreate extends \yii\base\Widget
                         'labels' => $this->definition->getAllByModel(),
                         'systemModelId' => $this->definition->getSystemModelId(),
                     ]
-                )
+                ),
+                'createButtonPlacement' => $this->createButtonPlacement,
             ]
         );
     }

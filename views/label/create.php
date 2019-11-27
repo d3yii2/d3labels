@@ -1,27 +1,31 @@
 <?php
 
 use eaBlankonThema\widget\ThButton;
+use d3yii2\d3labels\widgets\D3LabelCreate;
 
 /**
  * @var $model \d3yii2\d3labels\models\D3lDefinition
  * @var string $returnURLToken
  * @var string $labelsList
+ * @var string $createButtonPlacement
  */
 $modulePath = Yii::$app->getModule('d3labels')->basePath;
 
-Yii::$app->view->addPageButtons(
-        ThButton::widget([
-            'label' => Yii::t('d3labels', 'Create Label'),
-            'icon' => ThButton::ICON_PLUS,
-            'type' => ThButton::TYPE_SUCCESS,
-            'htmlOptions' => [
-                'data-toggle' => 'collapse',
-                'data-target' => '#collapse',
-                'aria-expanded' => 'false',
-                'aria-controls' => 'collapse'
-            ],
-        ])
-);
+$createButton = ThButton::widget([
+    'label' => Yii::t('d3labels', 'Create Label'),
+    'icon' => ThButton::ICON_PLUS,
+    'type' => ThButton::TYPE_SUCCESS,
+    'htmlOptions' => [
+        'data-toggle' => 'collapse',
+        'data-target' => '#collapse',
+        'aria-expanded' => 'false',
+        'aria-controls' => 'collapse'
+    ],
+]);
+
+if (D3LabelCreate::PLACEMENT_PAGE_BUTTONS === $createButtonPlacement) {
+    Yii::$app->view->addPageButtons($createButton);
+}
 
 ?>
 <div class="row rounded shadow">
@@ -37,6 +41,14 @@ Yii::$app->view->addPageButtons(
                     <?= \eaBlankonThema\widget\ThAlertList::widget() ?>
                 </div>
 
+                <?php
+                if (D3LabelCreate::PLACEMENT_TOP === $createButtonPlacement): ?>
+                <div class="row">
+                    <?= $createButton ?>
+                </div>
+                <?php
+                endif;
+                ?>
                 <div id="labels-list" class="row">
                     <?= $labelsList ?>
                 </div>
