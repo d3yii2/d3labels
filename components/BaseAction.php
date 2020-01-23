@@ -46,7 +46,7 @@ class BaseAction extends Action
      */
     protected function redirect(): yii\web\Response
     {
-        return $this->controller->redirect(\Yii::$app->request->referrer);
+        return $this->controller->redirect(Yii::$app->request->referrer);
     }
 
 }

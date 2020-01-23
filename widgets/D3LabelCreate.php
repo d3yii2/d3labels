@@ -2,11 +2,11 @@
 
 namespace d3yii2\d3labels\widgets;
 
-use d3system\widgets\ThBadge;
 use d3yii2\d3labels\logic\D3Definition;
 use d3yii2\d3labels\models\D3lDefinition;
+use Exception;
 use Yii;
-use yii\helpers\Html;
+use yii\base\Widget;
 
 /**
  * Class D3LabelCreate
@@ -15,7 +15,7 @@ use yii\helpers\Html;
  * @property yii\web\Controller
  * @property string $returnURLToken
  */
-class D3LabelCreate extends \yii\base\Widget
+class D3LabelCreate extends Widget
 {
     public $modelClass;
     public $controller;
@@ -29,7 +29,7 @@ class D3LabelCreate extends \yii\base\Widget
     public const PLACEMENT_TOP = 'top';
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public function init()
     {
@@ -41,14 +41,14 @@ class D3LabelCreate extends \yii\base\Widget
 
     /**
      * @return string
-     * @throws \Exception
+     * @throws Exception
      */
     public function run(): string
     {
         $modulePath = Yii::$app->getModule('d3labels')->basePath;
 
         $model = new D3lDefinition();
-        $model->sys_company_id =  \Yii::$app->SysCmp->getActiveCompanyId();
+        $model->sys_company_id = Yii::$app->SysCmp->getActiveCompanyId();
         $model->model_id = $this->modelClass;
 
         return $this->renderFile(

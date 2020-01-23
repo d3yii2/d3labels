@@ -14,14 +14,14 @@ class D3lDefinition extends BaseD3lDefinition
     /**
      * @inheritdoc
      */
-    public function rules()
+    public function rules(): array
     {
         $rules = parent::rules();
 
         $rules[] = [
             'label',
             'required',
-            'when' => function($model) {
+            'when' => static function ($model) {
                 return true === empty($model->label) && true === empty($model->icon);
             },
             'whenClient' => "function (attribute, value) {
@@ -33,16 +33,14 @@ class D3lDefinition extends BaseD3lDefinition
         return $rules;
     }
 
-    public function save($runValidation = true, $attributeNames = null)
+    public function save($runValidation = true, $attributeNames = null): bool
     {
         if (!parent::save($runValidation, $attributeNames)) {
             $errors = $this->getErrors();
 
             $errMsg = isset($errors['model_id'])
                 ? 'Label with this name exists already'
-                : (isset($errors['label'][0])
-                    ? $errors['label'][0]
-                    : 'Unable to create Label'
+                : ($errors['label'][0] ?? 'Unable to create Label'
                 );
 
 

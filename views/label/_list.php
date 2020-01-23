@@ -1,7 +1,12 @@
 <?php
+/**
+ * @var int $systemModelId
+ */
 
+use d3system\widgets\ThBadge;
+use d3yii2\d3labels\components\D3LabelAccess;
 use yii\helpers\Html;
-use \d3system\widgets\ThBadge;
+
 ?>
 <table class="table">
     <thead>
@@ -30,13 +35,13 @@ use \d3system\widgets\ThBadge;
             <td><?= Html::a(
                     '<span class="glyphicon glyphicon-trash"></span>',
                     [
-                        'd3labelsdefinitionremove',
+                        D3LabelAccess::ACTION_DEFINITION_DELETE,
                         'definitionId' => $def->id,
                         'modelId' => $systemModelId,
                     ],
                     [
-                            'class' => 'delete-item',
-                            'title' => Yii::t('d3labels', 'Remove')
+                        'class' => 'delete-item',
+                        'title' => Yii::t('d3labels', 'Remove')
                     ]
                 ) ?></td>
         </tr>

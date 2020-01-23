@@ -4,6 +4,7 @@ namespace d3yii2\d3labels\components;
 
 use d3yii2\d3labels\logic\D3Definition;
 use eaBlankonThema\components\FlashHelper;
+use Exception;
 use Yii;
 
 /**
@@ -28,7 +29,7 @@ class CreateAction extends BaseAction
 
             $msg = Yii::t('d3labels', 'Labels created successfully');
             FlashHelper::addSuccess($msg);
-        } catch (\Exception $err) {
+        } catch (Exception $err) {
             FlashHelper::addDanger($err->getMessage());
         }
 

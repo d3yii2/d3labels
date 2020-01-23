@@ -23,12 +23,12 @@ class LabelDict
      */
     public static function getDefinitionByCode(string $className, string $code): D3lDefinition
     {
-        if(!isset(self::$list[$className])){
+        if (!isset(self::$list[$className])) {
             self::loadList($className);
         }
 
-        foreach(self::$list[$className] as $definition){
-            if($definition->code === $code){
+        foreach (self::$list[$className] as $definition) {
+            if ($definition->code === $code) {
                 return $definition;
             }
         }

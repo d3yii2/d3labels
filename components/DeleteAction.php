@@ -4,6 +4,8 @@ namespace d3yii2\d3labels\components;
 
 use d3yii2\d3labels\logic\D3Label;
 use eaBlankonThema\components\FlashHelper;
+use Exception;
+use Throwable;
 use Yii;
 
 /**
@@ -18,7 +20,7 @@ class DeleteAction extends BaseAction
      * @param int $modelId
      * @param int $labelId
      * @return Yii\web\Response
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function run(int $modelId, int $labelId): yii\web\Response
     {
@@ -30,7 +32,7 @@ class DeleteAction extends BaseAction
 
             $msg = Yii::t('d3labels', 'Label removed sucessfully');
             FlashHelper::addSuccess($msg);
-        } catch (\Exception $err) {
+        } catch (Exception $err) {
             FlashHelper::addDanger($err->getMessage());
         }
 

@@ -3,15 +3,20 @@
 namespace d3yii2\d3labels\logic;
 
 use d3system\compnents\ModelsList;
+use d3system\exceptions\D3ActiveRecordException;
 use d3system\widgets\ThBadgeList;
 use d3yii2\d3labels\models\D3lDefinition;
 use d3yii2\d3labels\models\D3lLabel;
+use Exception;
+use Yii;
+use yii\db\ActiveRecord;
 use yii\helpers\Html;
+use yii\helpers\Url;
 
 /**
  * Class D3LabelList
  * @package d3yii2\d3labels\logic
- * @property object $model
+ * @property ActiveRecord $model
  * @property array $availableLabels
  * @property array $attachedLabels
  */
@@ -25,6 +30,7 @@ class D3LabelList
      * D3LabelList constructor.
      * Read all available and attached Labels to class propeties
      * @param $model
+     * @throws D3ActiveRecordException
      */
     public function __construct($model)
     {
@@ -53,13 +59,11 @@ class D3LabelList
      * @param array $items
      * @param array $renderOptions
      * @return string
-     * @throws \Exception
+     * @throws Exception
      */
     public static function getAsBadges(array $items, array $renderOptions = []): string
     {
-        $labelsOutput = ThBadgeList::widget(['items' => $items, 'renderOptions' => $renderOptions]);
-
-        return $labelsOutput;
+        return ThBadgeList::widget(['items' => $items, 'renderOptions' => $renderOptions]);
     }
 
     /**
@@ -71,31 +75,28 @@ class D3LabelList
      */
     public static function getAsDropdown(array $items, $model = null, array $dropdownOptions): string
     {
-        $dropdownOptions = array_merge(                [
-                'class' => 'form-control limiter-max__150',
-                'prompt' => \Yii::t('d3labels', 'Filter by Label')
-            ],
+        $dropdownOptions = array_merge([
+            'class' => 'form-control limiter-max__150',
+            'prompt' => Yii::t('d3labels', 'Filter by Label')
+        ],
             $dropdownOptions
         );
 
         if ($model) {
-            $dropdown = Html::activeDropDownList(
+            return Html::activeDropDownList(
                 $model,
                 'label_type',
                 $items,
                 $dropdownOptions
             );
-            return $dropdown;
         }
 
-        $dropdownOutput = Html::dropDownList(
+        return Html::dropDownList(
             'model_label_type',
             null,
             $items,
             $dropdownOptions
         );
-
-        return $dropdownOutput;
     }
 
     /**
@@ -134,11 +135,11 @@ class D3LabelList
 
         if ('' !== $action) {
             $labelId = is_object($label) ? $label->id : $label['id'];
-            $item['url'] = \yii\helpers\Url::to([
-                    $action,
-                    'defId' => $labelId,
-                    'modelId' => $modelId,
-                ]);
+            $item['url'] = Url::to([
+                $action,
+                'defId' => $labelId,
+                'modelId' => $modelId,
+            ]);
         }
 
         return $item;

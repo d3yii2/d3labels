@@ -2,13 +2,13 @@
 
 namespace d3yii2\d3labels\logic;
 
-use Yii;
 use d3system\compnents\ModelsList;
 use d3system\exceptions\D3ActiveRecordException;
+use d3system\widgets\ThBadge;
 use d3yii2\d3labels\models\D3lDefinition;
+use Yii;
 use yii\base\Exception;
 use yii\web\NotFoundHttpException;
-use d3system\widgets\ThBadge;
 
 /**
  * Class D3Definition
@@ -23,8 +23,6 @@ use d3system\widgets\ThBadge;
 class D3Definition
 {
     private $class;
-
-    private $sysCompanyId;
 
     private $definitionModel;
 
@@ -94,23 +92,20 @@ class D3Definition
         return $def;
     }
 
-     /**
+    /**
      * Find the existing definition by code
      * @param string $code
      * @return D3lDefinition
      */
-    public static function getByCode(string $code)
+    public static function getByCode(string $code): D3lDefinition
     {
-        $def = D3lDefinition::findOne(['code' => $code]);
-
-        return $def;
+        return D3lDefinition::findOne(['code' => $code]);
     }
 
     /**
      * Load form data into D3lDefinition model
-     * @throws D3ActiveRecordException
      */
-    public function loadFromForm()
+    public function loadFromForm(): void
     {
         $formAttrs = ['label', 'icon', 'collor'];
 
@@ -186,6 +181,7 @@ class D3Definition
      * @param null $modelId
      * @return array
      * @throws D3ActiveRecordException
+     * @throws \yii\db\Exception
      */
     public function getAllByModel($modelId = null): array
     {
@@ -197,11 +193,10 @@ class D3Definition
             ->where(['model_id' => $modelId])
             ->andWhere([
                 'OR',
-                ['sys_company_id' =>  \Yii::$app->SysCmp->getActiveCompanyId()],
+                ['sys_company_id' => Yii::$app->SysCmp->getActiveCompanyId()],
                 ['sys_company_id' => null]
             ])
-            ->all()
-            ;
+            ->all();
 
     }
 }

@@ -1,10 +1,15 @@
 <?php
 
-use eaBlankonThema\widget\ThButton;
+use d3yii2\d3labels\logic\D3Definition;
+use d3yii2\d3labels\models\D3lDefinition;
 use d3yii2\d3labels\widgets\D3LabelCreate;
+use eaBlankonThema\widget\ThAlertList;
+use eaBlankonThema\widget\ThButton;
+use yii\bootstrap\ActiveForm;
+use yii\helpers\Url;
 
 /**
- * @var $model \d3yii2\d3labels\models\D3lDefinition
+ * @var $model D3lDefinition
  * @var string $returnURLToken
  * @var string $labelsList
  * @var string $createButtonPlacement
@@ -36,77 +41,76 @@ if (D3LabelCreate::PLACEMENT_PAGE_BUTTONS === $createButtonPlacement) {
                     <h3 class="panel-title">
                         <?= Yii::t('d3labels', 'Labels') ?>
                     </h3>
+                </div>
             </div>
-        </div>
-        <div class="row panel-body">
-            <div class="col-md-6">
-                <div class="row">
-                    <?= \eaBlankonThema\widget\ThAlertList::widget() ?>
-                </div>
+            <div class="row panel-body">
+                <div class="col-md-6">
+                    <div class="row">
+                        <?= ThAlertList::widget() ?>
+                    </div>
 
-                <?php
-                if (D3LabelCreate::PLACEMENT_TOP === $createButtonPlacement): ?>
-                <div class="row">
-                    <?= $createButton ?>
-                </div>
-                <?php
-                endif;
-                ?>
-                <div id="labels-list" class="row">
-                    <?= $labelsList ?>
-                </div>
+                    <?php
+                    if (D3LabelCreate::PLACEMENT_TOP === $createButtonPlacement): ?>
+                        <div class="row">
+                            <?= $createButton ?>
+                        </div>
+                    <?php
+                    endif;
+                    ?>
+                    <div id="labels-list" class="row">
+                        <?= $labelsList ?>
+                    </div>
 
-                <div class="row collapse" id="collapse">
-                    <div class="card card-body">
-                        <?php $form = \yii\bootstrap\ActiveForm::begin([
-                            'action' =>  \yii\helpers\Url::toRoute(['d3labelscreate']),
-                            'fieldConfig' => [
-                                'template' => "{label}\n{input}\n{error}"
-                            ],
-                            'enableClientValidation' => true,
-                            'options' => [
-                                'validateOnSubmit' => true,
-                            ],
-                        ]); ?>
+                    <div class="row collapse" id="collapse">
+                        <div class="card card-body">
+                            <?php $form = ActiveForm::begin([
+                                'action' => Url::toRoute(['d3labelscreate']),
+                                'fieldConfig' => [
+                                    'template' => "{label}\n{input}\n{error}"
+                                ],
+                                'enableClientValidation' => true,
+                                'options' => [
+                                    'validateOnSubmit' => true,
+                                ],
+                            ]); ?>
 
-                        <?= $form->field($model, 'collor')->dropDownList(\d3yii2\d3labels\logic\D3Definition::getColors()) ?>
-                        <?= $form->field($model, 'label')->textInput() ?>
-                        <?= $form->field($model, 'icon')->textInput() ?>
+                            <?= $form->field($model, 'collor')->dropDownList(D3Definition::getColors()) ?>
+                            <?= $form->field($model, 'label')->textInput() ?>
+                            <?= $form->field($model, 'icon')->textInput() ?>
 
-                        <?= ThButton::widget([
-                            'label' => Yii::t('d3labels', 'Cancel and close'),
-                            'icon' => ThButton::ICON_CHECK,
-                            'type' => ThButton::TYPE_DANGER,
-                            'htmlOptions' => [
-                                'data-toggle' => 'collapse',
-                                'data-target' => '#collapse',
-                                'aria-expanded' => 'false',
-                                'aria-controls' => 'collapse'
-                            ],
-                        ]);
-                        ?>
+                            <?= ThButton::widget([
+                                'label' => Yii::t('d3labels', 'Cancel and close'),
+                                'icon' => ThButton::ICON_CHECK,
+                                'type' => ThButton::TYPE_DANGER,
+                                'htmlOptions' => [
+                                    'data-toggle' => 'collapse',
+                                    'data-target' => '#collapse',
+                                    'aria-expanded' => 'false',
+                                    'aria-controls' => 'collapse'
+                                ],
+                            ])
+                            ?>
 
-                        <?= ThButton::widget([
-                            'label' => Yii::t('d3labels', 'Create Label'),
-                            'icon' => ThButton::ICON_CHECK,
-                            'type' => ThButton::TYPE_SUCCESS,
-                            'submit' => true,
-                            'htmlOptions' => [
-                                'name' => 'action',
-                                'value' => 'save',
-                            ],
-                        ]);
-                        ?>
-                        <?php $form::end(); ?>
+                            <?= ThButton::widget([
+                                'label' => Yii::t('d3labels', 'Create Label'),
+                                'icon' => ThButton::ICON_CHECK,
+                                'type' => ThButton::TYPE_SUCCESS,
+                                'submit' => true,
+                                'htmlOptions' => [
+                                    'name' => 'action',
+                                    'value' => 'save',
+                                ],
+                            ])
+                            ?>
+                            <?php $form::end(); ?>
+                        </div>
                     </div>
                 </div>
-
             </div>
         </div>
     </div>
-</div>
-<?php
-$js = "$('#collapse').on('hidden.bs.collapse', function () {
+    <?php
+    $js = "$('#collapse').on('hidden.bs.collapse', function () {
     $('#labels-list').show();
 });
 $('#collapse').on('shown.bs.collapse', function () {
@@ -116,6 +120,6 @@ $('.delete-item').on('click', function() {
     confirm('" . Yii::t('d3labels', 'Label will be deleted') . "');
 });";
 
-$this->registerJs($js);
-?>
+    $this->registerJs($js);
+    ?>
 

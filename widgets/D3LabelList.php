@@ -4,7 +4,8 @@ namespace d3yii2\d3labels\widgets;
 
 use d3system\widgets\ThBadge;
 use d3yii2\d3labels\logic\D3LabelList as LabelLogic;
-use eaBlankonThema\widget\ThButton;use eaBlankonThema\widget\ThButtonDropDown;
+use eaBlankonThema\widget\ThButton;
+use eaBlankonThema\widget\ThButtonDropDown;
 use Exception;
 use Yii;
 use yii\base\Widget;
@@ -95,10 +96,6 @@ class D3LabelList extends Widget
             return '';
         }
 
-        $description = '';
-        if ($this->titleDescription) {
-            $description = '<p>' . $this->titleDescription . '</p>';
-        }
         $titleHtmlOptions = $this->titleHtmlOptions;
         Html::addCssClass($titleHtmlOptions, 'panel-title');
 
@@ -122,7 +119,7 @@ class D3LabelList extends Widget
             }
         }
 
-        if($this->readOnly){
+        if ($this->readOnly) {
             return Html::tag(
                 'div',
                 $this->title
@@ -130,19 +127,19 @@ class D3LabelList extends Widget
             );
         }
         return Html::tag(
-                    'div',
-                    ThButtonDropDown::widget([
-                        'icon' => ThButton::ICON_PLUS,
-                        'type' => ThButton::TYPE_SUCCESS,
-                        'items' => $dropdownItems,
-                        'size' => ThButtonDropDown::SIZE_XSMALL,
-                        'options' => ['id' => 'd3label-attach-dropdown'],
-                        'htmlOptions' => [
-                            'title' => Yii::t('d3labels', 'Attach Label')
-                        ]
-                    ]) . $this->title
-                    , $titleHtmlOptions
-                );
+            'div',
+            ThButtonDropDown::widget([
+                'icon' => ThButton::ICON_PLUS,
+                'type' => ThButton::TYPE_SUCCESS,
+                'items' => $dropdownItems,
+                'size' => ThButtonDropDown::SIZE_XSMALL,
+                'options' => ['id' => 'd3label-attach-dropdown'],
+                'htmlOptions' => [
+                    'title' => Yii::t('d3labels', 'Attach Label')
+                ]
+            ]) . $this->title
+            , $titleHtmlOptions
+        );
 
     }
 
@@ -155,7 +152,7 @@ class D3LabelList extends Widget
     {
         $html = '
         <thead>
-            <tr><th data-col-seq="0">' . Yii::t('d3labels', 'Attached Labels'). '</th></tr>    
+            <tr><th data-col-seq="0">' . Yii::t('d3labels', 'Attached Labels') . '</th></tr>    
         </thead>
         <tbody>
         ';
@@ -179,11 +176,11 @@ class D3LabelList extends Widget
                     'title' => Yii::t('d3labels', 'Remove'),
                     'faIcon' => $label->icon,
                     'showText' => $this->gridIconsWithText,
-                    'url' => !$this->readOnly? Url::to([
+                    'url' => !$this->readOnly ? Url::to([
                         'd3labelsremove',
                         'labelId' => $row->id,
                         'modelId' => $this->d3LabelList->model->id,
-                    ]):null,
+                    ]) : null,
                 ]
             );
 
