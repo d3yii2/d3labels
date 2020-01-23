@@ -3,8 +3,10 @@
 namespace d3yii2\d3labels\components;
 
 use d3system\compnents\ModelsList;
+use d3system\exceptions\D3ActiveRecordException;
 use d3yii2\d3labels\logic\D3LabelList;
 use d3yii2\d3labels\models\D3lLabel;
+use Exception;
 use yii\grid\DataColumn;
 
 /**
@@ -63,7 +65,7 @@ class D3LabelColumn extends DataColumn
      * @param $key
      * @param $index
      * @return string
-     * @throws \Exception
+     * @throws Exception
      */
     public function renderDataCellContent($model, $key, $index): string
     {
@@ -73,9 +75,7 @@ class D3LabelColumn extends DataColumn
 
         $labelItems = D3LabelList::getBadgeItems($this->recordsWithLabels[$model->id]);
 
-        $labelsContent = D3LabelList::getAsBadges($labelItems, $this->badgeRenderOptions);
-
-        return $labelsContent;
+        return D3LabelList::getAsBadges($labelItems, $this->badgeRenderOptions);
     }
 
     /**
@@ -83,6 +83,7 @@ class D3LabelColumn extends DataColumn
      * The default implementation simply renders a space.
      * This method may be overridden to customize the rendering of the filter cell (if any).
      * @return string the rendering result
+     * @throws D3ActiveRecordException
      */
     protected function renderFilterCellContent(): string
     {
