@@ -32,7 +32,10 @@ if (D3LabelCreate::PLACEMENT_PAGE_BUTTONS === $createButtonPlacement) {
     <div class="col-md-8">
         <div class="row panel-heading">
             <div class="pull-left">
-                <h4><?= Yii::t('d3labels', 'Labels') ?></h4>
+                <div class="pull-left">
+                    <h3 class="panel-title">
+                        <?= Yii::t('d3labels', 'Labels') ?>
+                    </h3>
             </div>
         </div>
         <div class="row panel-body">
