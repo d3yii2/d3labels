@@ -2,13 +2,15 @@
 
 namespace d3yii2\d3labels\widgets;
 
+use d3system\exceptions\D3ActiveRecordException;
+use d3system\models\D3ActiveRecord;
+use d3system\widgets\D3Widget;
 use d3system\widgets\ThBadge;
 use d3yii2\d3labels\logic\D3LabelList as LabelLogic;
 use eaBlankonThema\widget\ThButton;
 use eaBlankonThema\widget\ThButtonDropDown;
 use Exception;
 use Yii;
-use yii\base\Widget;
 use yii\helpers\Html;
 use yii\helpers\Url;
 
@@ -24,10 +26,10 @@ use yii\helpers\Url;
  * @property bool $headerIconsWithText
  * @property bool $gridIconsWithText
  * @property string $returnURLToken
- * @property LabelLogic $d3LabelList
- * @property string $controllerRoute $controllerRoute
+ * @property LabelLogic $_d3LabelList
+ * @property string $_controllerRoute $controllerRoute
  */
-class D3LabelList extends Widget
+class D3LabelList extends D3Widget
 {
     public $model;
     public $title;
@@ -43,24 +45,25 @@ class D3LabelList extends Widget
 
     public $readOnly = false;
 
-    private $d3LabelList;
-    private $controllerRoute;
+    private $_d3LabelList;
+    private $_controllerRoute;
 
     /**
      * @return bool|void
+     * @throws D3ActiveRecordException
      */
     public function init()
     {
         parent::init();
 
-        $this->d3LabelList = new LabelLogic($this->model);
+        $this->_d3LabelList = new LabelLogic($this->model);
 
         if (!$this->title) {
             $this->title = Yii::t('d3labels', 'Labels');
         }
 
-        if (!$this->controllerRoute) {
-            $this->controllerRoute = Yii::$app->controller->id;
+        if (!$this->_controllerRoute) {
+            $this->_controllerRoute = Yii::$app->controller->id;
         }
     }
 
@@ -99,12 +102,11 @@ class D3LabelList extends Widget
         $titleHtmlOptions = $this->titleHtmlOptions;
         Html::addCssClass($titleHtmlOptions, 'panel-title');
 
-        $nonAttachedLabels = $this->d3LabelList->getNonAttached();
+        $nonAttachedLabels = $this->_d3LabelList->getNonAttached();
 
         $dropdownItems = [];
 
         if ($nonAttachedLabels) {
-
             $items = LabelLogic::getBadgeItems($nonAttachedLabels, 'd3labelsattach', $this->model->id);
 
             $dropdownItems = [];
@@ -120,11 +122,7 @@ class D3LabelList extends Widget
         }
 
         if ($this->readOnly) {
-            return Html::tag(
-                'div',
-                $this->title
-                , $titleHtmlOptions
-            );
+            return Html::tag('div', $this->title, $titleHtmlOptions);
         }
         return Html::tag(
             'div',
@@ -137,10 +135,9 @@ class D3LabelList extends Widget
                 'htmlOptions' => [
                     'title' => Yii::t('d3labels', 'Attach Label')
                 ]
-            ]) . $this->title
-            , $titleHtmlOptions
+            ]) . $this->title,
+            $titleHtmlOptions
         );
-
     }
 
     /**
@@ -157,16 +154,22 @@ class D3LabelList extends Widget
         <tbody>
         ';
 
-        $available = $this->d3LabelList->getAvailable();
-        $attached = $this->d3LabelList->getAttached();
+        $available = $this->_d3LabelList->getAvailable();
+        $attached = $this->_d3LabelList->getAttached();
 
         foreach ($attached as $definitionId => $row) {
-
             if (!isset($available[$definitionId])) {
                 continue;
             }
 
             $label = $available[$definitionId];
+
+            /** @var D3ActiveRecord $model */
+            $model = $this->_d3LabelList->model;
+
+            if (!is_object($model)) {
+                throw new \yii\base\Exception('Label Model not exists');
+            }
 
             $label = ThBadge::widget(
                 [
@@ -179,7 +182,7 @@ class D3LabelList extends Widget
                     'url' => !$this->readOnly ? Url::to([
                         'd3labelsremove',
                         'labelId' => $row->id,
-                        'modelId' => $this->d3LabelList->model->id,
+                        'modelId' => $model->id,
                     ]) : null,
                 ]
             );
