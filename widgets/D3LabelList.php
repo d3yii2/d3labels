@@ -74,10 +74,15 @@ class D3LabelList extends D3Widget
      */
     public function run(): string
     {
-        $modulePath = Yii::$app->getModule('d3labels')->basePath;
+        /**
+         * if module in config no defined, ignore widget
+         */
+        if(!$module =Yii::$app->getModule('d3labels')){
+            return '';
+        }
 
         return $this->renderFile(
-            $modulePath . '/views/label/_attached-list.php',
+            $module->basePath . '/views/label/_attached-list.php',
             [
                 'title' => $this->createTitle(),
                 'collapsedHtml' => '',
