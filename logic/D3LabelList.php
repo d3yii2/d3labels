@@ -2,7 +2,7 @@
 
 namespace d3yii2\d3labels\logic;
 
-use d3system\compnents\ModelsList;
+use d3system\dictionaries\SysModelsDictionary;
 use d3system\exceptions\D3ActiveRecordException;
 use d3system\widgets\ThBadgeList;
 use d3yii2\d3labels\models\D3lDefinition;
@@ -36,8 +36,7 @@ class D3LabelList
     {
         $this->model = $model;
 
-        $modelList = new ModelsList();
-        $sysModelId = $modelList->getIdByTableName($this->model);
+        $sysModelId = SysModelsDictionary::getIdByClassName(get_class($this->model));
         $definitions = D3lDefinition::findAll(['model_id' => $sysModelId]);
 
         if (!empty($definitions)) {
@@ -73,7 +72,7 @@ class D3LabelList
      * @param array $dropdownOptions
      * @return string
      */
-    public static function getAsDropdown(array $items, $model = null, array $dropdownOptions): string
+    public static function getAsDropdown(array $items, array $dropdownOptions, $model = null): string
     {
         $dropdownOptions = array_merge([
             'class' => 'form-control limiter-max__150',

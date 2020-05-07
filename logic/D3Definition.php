@@ -2,7 +2,7 @@
 
 namespace d3yii2\d3labels\logic;
 
-use d3system\compnents\ModelsList;
+use d3system\dictionaries\SysModelsDictionary;
 use d3system\exceptions\D3ActiveRecordException;
 use d3system\widgets\ThBadge;
 use d3yii2\d3labels\models\D3lDefinition;
@@ -135,9 +135,7 @@ class D3Definition
      */
     public function getSystemModelId(): int
     {
-        $modelObj = new $this->class;
-        $sysModels = new ModelsList();
-        return $sysModels->getIdByTableName($modelObj);
+        return SysModelsDictionary::getIdByClassName($this->class);
     }
 
     /**

@@ -2,7 +2,7 @@
 
 namespace d3yii2\d3labels\components;
 
-use d3system\compnents\ModelsList;
+use d3system\dictionaries\SysModelsDictionary;
 use d3system\exceptions\D3ActiveRecordException;
 use d3yii2\d3labels\logic\D3LabelList;
 use d3yii2\d3labels\models\D3lLabel;
@@ -87,12 +87,9 @@ class D3LabelColumn extends DataColumn
      */
     protected function renderFilterCellContent(): string
     {
-        $modelsList = new ModelsList();
 
-        $modelId = $modelsList->getIdByClassName($this->modelClass);
-
+        $modelId = SysModelsDictionary::getIdByClassName($this->modelClass);
         $items = D3lLabel::forListBox($modelId);
-
-        return D3LabelList::getAsDropdown($items, $this->model, $this->filterListboxOptions);
+        return D3LabelList::getAsDropdown($items, $this->filterListboxOptions, $this->model);
     }
 }
