@@ -93,16 +93,6 @@ class D3Definition
     }
 
     /**
-     * Find the existing definition by code
-     * @param string $code
-     * @return D3lDefinition
-     */
-    public static function getByCode(string $code): D3lDefinition
-    {
-        return D3lDefinition::findOne(['code' => $code]);
-    }
-
-    /**
      * Load form data into D3lDefinition model
      */
     public function loadFromForm(): void
@@ -122,6 +112,7 @@ class D3Definition
      */
     public function save(): void
     {
+        $this->definitionModel->sys_company_id = Yii::$app->SysCmp->getActiveCompanyId();
         $this->definitionModel->model_id = $this->getSystemModelId();
         $this->definitionModel->save();
     }
@@ -173,28 +164,4 @@ class D3Definition
         ];
     }
 
-    /**
-     * Get all label Definitions for system model
-     *
-     * @param null $modelId
-     * @return array
-     * @throws D3ActiveRecordException
-     * @throws \yii\db\Exception
-     */
-    public function getAllByModel($modelId = null): array
-    {
-        if (!$modelId) {
-            $modelId = $this->getSystemModelId();
-        }
-
-        return D3lDefinition::find()
-            ->where(['model_id' => $modelId])
-            ->andWhere([
-                'OR',
-                ['sys_company_id' => Yii::$app->SysCmp->getActiveCompanyId()],
-                ['sys_company_id' => null]
-            ])
-            ->all();
-
-    }
 }

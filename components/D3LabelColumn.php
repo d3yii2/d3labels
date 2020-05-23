@@ -4,6 +4,7 @@ namespace d3yii2\d3labels\components;
 
 use d3system\dictionaries\SysModelsDictionary;
 use d3system\exceptions\D3ActiveRecordException;
+use d3yii2\d3labels\dictionaries\D3lDefinitionDictionary;
 use d3yii2\d3labels\logic\D3LabelList;
 use d3yii2\d3labels\models\D3lLabel;
 use Exception;
@@ -23,6 +24,9 @@ class D3LabelColumn extends DataColumn
     public $modelClass;
     public $badgeRenderOptions = [];
     public $filterListboxOptions = [];
+
+    /** @var int */
+    public $sysCompanyId;
 
     private $dataProviderIds = [];
     private $recordsWithLabels = [];
@@ -48,7 +52,7 @@ class D3LabelColumn extends DataColumn
             $this->dataProviderIds[] = $row->id;
         }
 
-        $recordsWithLabels = D3lLabel::getAllByModelRecordIds($this->dataProviderIds);
+        $recordsWithLabels = D3lLabel::getAllByModelRecordIds($this->dataProviderIds, $this->modelClass);
 
         foreach ($recordsWithLabels as $labelModel) {
             if (!isset($this->recordsWithLabels[$labelModel['model_record_id']])) {
@@ -83,13 +87,10 @@ class D3LabelColumn extends DataColumn
      * The default implementation simply renders a space.
      * This method may be overridden to customize the rendering of the filter cell (if any).
      * @return string the rendering result
-     * @throws D3ActiveRecordException
      */
     protected function renderFilterCellContent(): string
     {
-
-        $modelId = SysModelsDictionary::getIdByClassName($this->modelClass);
-        $items = D3lLabel::forListBox($modelId);
+        $items = D3lDefinitionDictionary::getList($this->sysCompanyId, $this->modelClass);
         return D3LabelList::getAsDropdown($items, $this->filterListboxOptions, $this->model);
     }
 }

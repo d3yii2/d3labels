@@ -74,6 +74,7 @@ $columns[] = [
     'attribute'=>'label_type',
     'format'=>'raw',
     'label' => Yii::t('d3labels', 'Labels'),
+    'sysCompanyId' => $sysCompanyId
     //'badgeRenderOptions' => ['iconsWithText' => true],
 ];
 ```

@@ -2,6 +2,9 @@
 
 namespace d3yii2\d3labels\models;
 
+use d3system\dictionaries\SysModelsDictionary;
+use d3system\exceptions\D3ActiveRecordException;
+use d3yii2\d3labels\dictionaries\D3lDefinitionDictionary;
 use d3yii2\d3labels\models\base\D3lLabel as BaseD3lLabel;
 use yii\db\Query;
 use yii\helpers\ArrayHelper;
@@ -14,9 +17,11 @@ class D3lLabel extends BaseD3lLabel
 
     /**
      * @param array $ids
-     * @return array
+     * @param string $modelClassName
+     * @return int[]
+     * @throws D3ActiveRecordException
      */
-    public static function getAllByModelRecordIds(array $ids): array
+    public static function getAllByModelRecordIds(array $ids,string $modelClassName): array
     {
         if (empty($ids)) {
             return [];
@@ -27,27 +32,33 @@ class D3lLabel extends BaseD3lLabel
             ->leftJoin(D3lDefinition::tableName(),
                 self::tableName() . '.definition_id = ' . D3lDefinition::tableName() . '.id')
             ->from(self::tableName())
-            ->where(['model_record_id' => $ids])
+            ->where([
+                self::tableName().'.model_record_id' => $ids,
+                D3lDefinition::tableName().'.model_id' => SysModelsDictionary::getIdByClassName($modelClassName)
+            ])
             ->all();
     }
 
     /**
-     * @param string $modelId
+     * @param int $modelId
      * @return array
+     * @deprecated  use D3lDefinitionDictionary::getForListBox()
      */
-    public static function forListBox(string $modelId): array
+    public static function forListBox(int $modelId): array
     {
-        $models = (new Query())
-            ->select(D3lDefinition::tableName() . '.id, ' . D3lDefinition::tableName() . '.label')
-            ->leftJoin(D3lDefinition::tableName(),
-                self::tableName() . '.definition_id = ' . D3lDefinition::tableName() . '.id')
-            ->from(self::tableName())
+        $models = D3lDefinition::find()
+            ->select([
+                'id',
+                'label'
+            ])
             ->where(['model_id' => $modelId])
-            ->groupBy(self::tableName() . '.definition_id')
+            ->asArray()
             ->all();
 
         return ArrayHelper::map($models, 'id', 'label');
 
     }
+
+
 
 }

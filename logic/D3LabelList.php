@@ -45,7 +45,8 @@ class D3LabelList
             }
         }
 
-        $labels = D3lLabel::findAll(['model_record_id' => $this->model->id]);
+        $labels = D3lLabel::findAll([
+            'model_record_id' => $this->model->id]);
 
         if (!empty($labels)) {
             foreach ($labels as $label) {

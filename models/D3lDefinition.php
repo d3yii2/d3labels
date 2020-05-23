@@ -3,6 +3,7 @@
 namespace d3yii2\d3labels\models;
 
 use d3system\exceptions\D3ActiveRecordException;
+use d3yii2\d3labels\dictionaries\D3lDefinitionDictionary;
 use d3yii2\d3labels\models\base\D3lDefinition as BaseD3lDefinition;
 use Yii;
 
@@ -48,5 +49,17 @@ class D3lDefinition extends BaseD3lDefinition
         }
 
         return true;
+    }
+
+    public function afterSave($insert, $changedAttributes)
+    {
+        parent::afterSave($insert, $changedAttributes);
+        D3lDefinitionDictionary::clearCache();
+    }
+
+    public function afterDelete()
+    {
+        parent::afterDelete();
+        D3lDefinitionDictionary::clearCache();
     }
 }

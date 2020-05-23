@@ -2,6 +2,7 @@
 
 namespace d3yii2\d3labels\widgets;
 
+use d3yii2\d3labels\dictionaries\D3lDefinitionDictionary;
 use d3yii2\d3labels\logic\D3Definition;
 use d3yii2\d3labels\models\D3lDefinition;
 use Exception;
@@ -21,6 +22,9 @@ class D3LabelCreate extends Widget
     public $controller;
     public $returnURLToken;
     public $createButtonPlacement = self::PLACEMENT_TOP;
+
+    /** @var int */
+    public $sysCompanyId;
 
     /** @var D3Definition */
     private $definition;
@@ -59,7 +63,7 @@ class D3LabelCreate extends Widget
                 'labelsList' => $this->renderFile(
                     $modulePath . '/views/label/_list.php',
                     [
-                        'labels' => $this->definition->getAllByModel(),
+                        'labels' => D3lDefinitionDictionary::rowlList($this->modelClass,$this->sysCompanyId),
                         'systemModelId' => $this->definition->getSystemModelId(),
                     ]
                 ),

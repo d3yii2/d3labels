@@ -20,23 +20,23 @@ use yii\helpers\Html;
     </thead>
     <tbody>
     <?php
-    foreach ($labels as $definitionId => $def): ?>
+    foreach ($labels as $defRow): ?>
         <tr>
-            <td><b><?= $def->label ?></b></td>
-            <td><?= $def->icon ?></td>
-            <td><?= $def->collor ?></td>
+            <td><b><?= $defRow['label'] ?></b></td>
+            <td><?= $defRow['icon'] ?></td>
+            <td><?= $defRow['collor'] ?></td>
             <td><?= ThBadge::widget(
                     [
-                        'type' => $def->collor,
-                        'text' => $def->label,
-                        'faIcon' => $def->icon,
+                        'type' => $defRow['collor'],
+                        'text' => $defRow['label'],
+                        'faIcon' => $defRow['icon'],
                         'showText' => true,
                     ]) ?></td>
             <td><?= Html::a(
                     '<span class="glyphicon glyphicon-trash"></span>',
                     [
                         D3LabelAccess::ACTION_DEFINITION_DELETE,
-                        'definitionId' => $def->id,
+                        'definitionId' => $defRow['id'],
                         'modelId' => $systemModelId,
                     ],
                     [
