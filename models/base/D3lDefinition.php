@@ -4,7 +4,10 @@
 
 namespace d3yii2\d3labels\models\base;
 
+use d3yii2\d3labels\models\SysModels;
 use Yii;
+use yii\db\ActiveQuery;
+use yii\db\ActiveRecord;
 use yii\db\Exception;
 
 /**
@@ -21,12 +24,12 @@ use yii\db\Exception;
  * @property string $action_method
  *
  * @property \d3yii2\d3labels\models\D3LabelHistory[] $d3LabelHistories
- * @property \d3yii2\d3labels\models\SysModels $model
+ * @property SysModels $model
  * @property \d3yii2\d3labels\models\D3lLabel[] $d3lLabels
  * @property \d3yii2\d3labels\models\D3lTimeBomb[] $d3lTimeBombs
  * @property string $aliasModel
  */
-abstract class D3lDefinition extends \yii\db\ActiveRecord
+abstract class D3lDefinition extends ActiveRecord
 {
 
 
@@ -52,7 +55,7 @@ abstract class D3lDefinition extends \yii\db\ActiveRecord
             [['code', 'label', 'icon'], 'string', 'max' => 20],
             [['collor'], 'string', 'max' => 10],
             [['action_method'], 'string', 'max' => 256],
-            [['model_id'], 'exist', 'skipOnError' => true, 'targetClass' => \d3yii2\d3labels\models\SysModels::className(), 'targetAttribute' => ['model_id' => 'id']]
+            [['model_id'], 'exist', 'skipOnError' => true, 'targetClass' => SysModels::className(), 'targetAttribute' => ['model_id' => 'id']]
         ];
     }
 
@@ -91,7 +94,7 @@ abstract class D3lDefinition extends \yii\db\ActiveRecord
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
     public function getD3LabelHistories()
     {
@@ -99,15 +102,15 @@ abstract class D3lDefinition extends \yii\db\ActiveRecord
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
     public function getModel()
     {
-        return $this->hasOne(\d3yii2\d3labels\models\SysModels::className(), ['id' => 'model_id'])->inverseOf('d3lDefinitions');
+        return $this->hasOne(SysModels::className(), ['id' => 'model_id'])->inverseOf('d3lDefinitions');
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
     public function getD3lLabels()
     {
@@ -115,7 +118,7 @@ abstract class D3lDefinition extends \yii\db\ActiveRecord
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
     public function getD3lTimeBombs()
     {
@@ -124,7 +127,9 @@ abstract class D3lDefinition extends \yii\db\ActiveRecord
 
 
     /**
-     * @return \d3yii2\d3labels\models\D3LabelHistory     */
+     * @return \d3yii2\d3labels\models\D3LabelHistory
+     * @throws Exception
+     */
     public function newD3LabelHistories()
     {
         if ($this->getIsNewRecord()){
@@ -136,8 +141,10 @@ abstract class D3lDefinition extends \yii\db\ActiveRecord
     }
 
     /**
-     * @return \d3yii2\d3labels\models\D3lLabel     */
-    public function newD3lLabels()
+     * @return \d3yii2\d3labels\models\D3lLabel
+     * @throws Exception
+     */
+    public function newD3lLabels(): \d3yii2\d3labels\models\D3lLabel
     {
         if ($this->getIsNewRecord()){
             throw new Exception('Can not create new related record for new record!');
@@ -148,8 +155,10 @@ abstract class D3lDefinition extends \yii\db\ActiveRecord
     }
 
     /**
-     * @return \d3yii2\d3labels\models\D3lTimeBomb     */
-    public function newD3lTimeBombs()
+     * @return \d3yii2\d3labels\models\D3lTimeBomb
+     * @throws Exception
+     */
+    public function newD3lTimeBombs(): \d3yii2\d3labels\models\D3lTimeBomb
     {
         if ($this->getIsNewRecord()){
             throw new Exception('Can not create new related record for new record!');

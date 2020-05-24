@@ -34,6 +34,12 @@ class D3lDefinition extends BaseD3lDefinition
         return $rules;
     }
 
+    /**
+     * @param bool $runValidation
+     * @param null $attributeNames
+     * @return bool
+     * @throws D3ActiveRecordException
+     */
     public function save($runValidation = true, $attributeNames = null): bool
     {
         if (!parent::save($runValidation, $attributeNames)) {

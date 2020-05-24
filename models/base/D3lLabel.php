@@ -5,6 +5,8 @@
 namespace d3yii2\d3labels\models\base;
 
 use Yii;
+use yii\db\ActiveQuery;
+use yii\db\ActiveRecord;
 use yii\db\Exception;
 
 /**
@@ -17,7 +19,7 @@ use yii\db\Exception;
  * @property \d3yii2\d3labels\models\D3lDefinition $definition
  * @property string $aliasModel
  */
-abstract class D3lLabel extends \yii\db\ActiveRecord
+abstract class D3lLabel extends ActiveRecord
 {
 
 
@@ -61,17 +63,21 @@ abstract class D3lLabel extends \yii\db\ActiveRecord
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
     public function getDefinition()
     {
         return $this->hasOne(\d3yii2\d3labels\models\D3lDefinition::className(), ['id' => 'definition_id']);
     }
 
-
-    public function saveOrException($runValidation = true, $attributeNames = null)
+    /**
+     * @param bool $runValidation
+     * @param null $attributeNames
+     * @throws Exception
+     */
+    public function saveOrException($runValidation = true, $attributeNames = null): void
     {
-        if (!parent::save($runValidation, $attributeNames)) {
+        if (!$this->save($runValidation, $attributeNames)) {
             throw new Exception(json_encode($this->getErrors()));
         }
     }

@@ -28,7 +28,7 @@ class DeleteAction extends BaseAction
 
             $this->loadModel($modelId);
 
-            D3Label::remove($labelId);
+            D3Label::detach($modelId,$labelId);
 
             $msg = Yii::t('d3labels', 'Label removed sucessfully');
             FlashHelper::addSuccess($msg);

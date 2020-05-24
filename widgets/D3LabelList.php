@@ -1,16 +1,18 @@
-<?php /** @noinspection PhpUndefinedClassInspection */
+<?php
 
 namespace d3yii2\d3labels\widgets;
 
 use d3system\exceptions\D3ActiveRecordException;
-use d3system\models\D3ActiveRecord;
 use d3system\widgets\D3Widget;
 use d3system\widgets\ThBadge;
+use d3yii2\d3labels\dictionaries\D3lDefinitionDictionary;
 use d3yii2\d3labels\logic\D3LabelList as LabelLogic;
+use d3yii2\d3labels\models\D3lLabel;
 use eaBlankonThema\widget\ThButton;
 use eaBlankonThema\widget\ThButtonDropDown;
 use Exception;
 use Yii;
+use yii\db\ActiveRecord;
 use yii\helpers\Html;
 use yii\helpers\Url;
 
@@ -31,6 +33,7 @@ use yii\helpers\Url;
  */
 class D3LabelList extends D3Widget
 {
+    /** @var ActiveRecord */
     public $model;
     public $title;
     public $titleDescription;
@@ -45,8 +48,12 @@ class D3LabelList extends D3Widget
 
     public $readOnly = false;
 
-    private $_d3LabelList;
+    /** @var int */
+    public $sysCompanyId;
+
     private $_controllerRoute;
+    private $attached = [];
+    private $noAttached = [];
 
     /**
      * @return bool|void
@@ -56,7 +63,18 @@ class D3LabelList extends D3Widget
     {
         parent::init();
 
-        $this->_d3LabelList = new LabelLogic($this->model);
+        $attachedDefIdList = D3lLabel::find()
+            ->select('definition_id')
+            ->where(['model_record_id' => $this->model->id])
+            ->column();
+
+        foreach(D3lDefinitionDictionary::rowlList(get_class($this->model), $this->sysCompanyId) as $defRow){
+            if(in_array($defRow['id'],$attachedDefIdList,true)){
+                $this->attached[] = $defRow;
+            }else{
+                $this->noAttached[] = $defRow;
+            }
+        }
 
         if (!$this->title) {
             $this->title = Yii::t('d3labels', 'Labels');
@@ -106,29 +124,22 @@ class D3LabelList extends D3Widget
 
         $titleHtmlOptions = $this->titleHtmlOptions;
         Html::addCssClass($titleHtmlOptions, 'panel-title');
-
-        $nonAttachedLabels = $this->_d3LabelList->getNonAttached();
-
-        $dropdownItems = [];
-
-        if ($nonAttachedLabels) {
-            $items = LabelLogic::getBadgeItems($nonAttachedLabels, 'd3labelsattach', $this->model->id);
-
-            $dropdownItems = [];
-
-            foreach ($items as $item) {
-                $url = $item['url'];
-                unset($item['url']);
-                $dropdownItems[] = [
-                    'label' => ThBadge::widget($item),
-                    'url' => $url,
-                ];
-            }
-        }
-
-        if ($this->readOnly) {
+        if ($this->readOnly || !$this->noAttached) {
             return Html::tag('div', $this->title, $titleHtmlOptions);
         }
+
+        $items = LabelLogic::getBadgeItems($this->noAttached, 'd3labelsattach', $this->model->id);
+        $dropdownItems = [];
+
+        foreach ($items as $item) {
+            $url = $item['url'];
+            unset($item['url']);
+            $dropdownItems[] = [
+                'label' => ThBadge::widget($item),
+                'url' => $url,
+            ];
+        }
+
         return Html::tag(
             'div',
             ThButtonDropDown::widget([
@@ -159,35 +170,20 @@ class D3LabelList extends D3Widget
         <tbody>
         ';
 
-        $available = $this->_d3LabelList->getAvailable();
-        $attached = $this->_d3LabelList->getAttached();
-
-        foreach ($attached as $definitionId => $row) {
-            if (!isset($available[$definitionId])) {
-                continue;
-            }
-
-            $label = $available[$definitionId];
-
-            /** @var D3ActiveRecord $model */
-            $model = $this->_d3LabelList->model;
-
-            if (!is_object($model)) {
-                throw new \yii\base\Exception('Label Model not exists');
-            }
+        foreach ($this->attached as $defRow) {
 
             $label = ThBadge::widget(
                 [
-                    'type' => $label->collor,
-                    'text' => $label->label,
+                    'type' => $defRow['collor'],
+                    'text' => $defRow['label'],
                     'afterText' => ' <i class="fa fa-times"></i>',
                     'title' => Yii::t('d3labels', 'Remove'),
-                    'faIcon' => $label->icon,
+                    'faIcon' => $defRow['icon'],
                     'showText' => $this->gridIconsWithText,
                     'url' => !$this->readOnly ? Url::to([
                         'd3labelsremove',
-                        'labelId' => $row->id,
-                        'modelId' => $model->id,
+                        'labelId' => $defRow['id'],
+                        'modelId' => $this->model->id,
                     ]) : null,
                 ]
             );

@@ -5,7 +5,7 @@ namespace d3yii2\d3labels\logic;
 use d3system\dictionaries\SysModelsDictionary;
 use d3system\exceptions\D3ActiveRecordException;
 use d3system\widgets\ThBadgeList;
-use d3yii2\d3labels\models\D3lDefinition;
+use d3yii2\d3labels\dictionaries\D3lDefinitionDictionary;
 use d3yii2\d3labels\models\D3lLabel;
 use Exception;
 use Yii;
@@ -30,20 +30,18 @@ class D3LabelList
      * D3LabelList constructor.
      * Read all available and attached Labels to class propeties
      * @param $model
+     * @param int $sysCompanyId
      * @throws D3ActiveRecordException
      */
-    public function __construct($model)
+    public function __construct($model, int $sysCompanyId)
     {
         $this->model = $model;
-
         $sysModelId = SysModelsDictionary::getIdByClassName(get_class($this->model));
-        $definitions = D3lDefinition::findAll(['model_id' => $sysModelId]);
-
-        if (!empty($definitions)) {
-            foreach ($definitions as $def) {
-                $this->availableLabels[$def->id] = $def;
-            }
+        //$definitions = D3lDefinition::findAll(['model_id' => $sysModelId]);
+        foreach (D3lDefinitionDictionary::getList($sysCompanyId,$sysModelId) as $defId => $defLabel) {
+            $this->availableLabels[$defId] = $defLabel;
         }
+
 
         $labels = D3lLabel::findAll([
             'model_record_id' => $this->model->id]);
@@ -186,9 +184,9 @@ class D3LabelList
     {
         $nonAttached = [];
 
-        foreach ($this->availableLabels as $label) {
-            if (!isset($this->attachedLabels[$label->id])) {
-                $nonAttached[] = $label;
+        foreach ($this->availableLabels as $id => $label) {
+            if (!isset($this->attachedLabels[$id])) {
+                $nonAttached[$id] = $label;
             }
         }
 

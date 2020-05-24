@@ -10,7 +10,7 @@ use yii\web\NotFoundHttpException;
 /**
  * Class BaseAction
  * @package d3yii2\d3labels\components
- * @property string $modelName
+ * @property ActiveRecord|string $modelName
  * @property string $view
  * @property array $viewParams
  * @property object $model
@@ -34,7 +34,12 @@ class BaseAction extends Action
      */
     protected function loadModel(int $id): void
     {
-        if (!$this->model = $this->modelName::findOne($id)) {
+        if(method_exists($this->controller,'findModel')){
+            $this->model = $this->controller->findModel($id);
+        }else{
+            $this->model = $this->modelName::findOne($id);
+        }
+        if (!$this->model) {
             throw new NotFoundHttpException(Yii::t('d3files',
                 'The requested model does not exist: ' . $this->modelName));
         }

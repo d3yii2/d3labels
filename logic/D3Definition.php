@@ -108,7 +108,7 @@ class D3Definition
 
     /**
      * Save the label definitions
-     * @throws D3ActiveRecordException
+     * @throws D3ActiveRecordException|\yii\db\Exception
      */
     public function save(): void
     {

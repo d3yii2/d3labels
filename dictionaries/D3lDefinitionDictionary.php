@@ -3,28 +3,33 @@
 namespace d3yii2\d3labels\dictionaries;
 
 use d3system\dictionaries\SysModelsDictionary;
+use d3system\exceptions\D3ActiveRecordException;
 use d3yii2\d3labels\models\D3lDefinition;
 use Yii;
 
 
-class D3lDefinitionDictionary{
+class D3lDefinitionDictionary
+{
 
     private const CACHE_KEY_LIST = 'D3lLabelDictionaryList';
 
 
-
-
-
+    /**
+     * @param int $sysCompanyId
+     * @param string $modelClass
+     * @return array
+     * @throws D3ActiveRecordException
+     */
     public static function getList(int $sysCompanyId, string $modelClass): array
     {
         $modelId = SysModelsDictionary::getIdByClassName($modelClass);
         $fullList = self::getFullSelect();
         $list = [];
-        foreach($fullList as $row){
-            if($row['sys_company_id'] && (int)$row['sys_company_id'] !== $sysCompanyId){
+        foreach ($fullList as $row) {
+            if ($row['sys_company_id'] && (int)$row['sys_company_id'] !== $sysCompanyId) {
                 continue;
             }
-            if((int)$row['model_id'] !== $modelId){
+            if ((int)$row['model_id'] !== $modelId) {
                 continue;
             }
             $list[$row['id']] = $row['label'];
@@ -34,20 +39,25 @@ class D3lDefinitionDictionary{
     }
 
 
-
+    /**
+     * @param string $code
+     * @param string $modelClass
+     * @param int $sysCompanyId
+     * @return bool|int
+     * @throws D3ActiveRecordException
+     */
     public static function findByCodeModel(string $code, string $modelClass, int $sysCompanyId = 0)
     {
         $fullList = self::getFullSelect();
-        $list = [];
         $modelId = SysModelsDictionary::getIdByClassName($modelClass);
-        foreach($fullList as $row){
-            if($row['code'] !== $code){
+        foreach ($fullList as $row) {
+            if ($row['code'] !== $code) {
                 continue;
             }
-            if((int)$row['model_id'] !== $modelId){
+            if ((int)$row['model_id'] !== $modelId) {
                 continue;
             }
-            if($sysCompanyId && $row['sys_company_id'] && (int)$row['sys_company_id'] !== $sysCompanyId){
+            if ($sysCompanyId && $row['sys_company_id'] && (int)$row['sys_company_id'] !== $sysCompanyId) {
                 continue;
             }
 
@@ -57,16 +67,22 @@ class D3lDefinitionDictionary{
         return false;
     }
 
-    public static function rowlList(string $modelClass, int $sysCompanyId = 0)
+    /**
+     * @param string $modelClass
+     * @param int $sysCompanyId
+     * @return array
+     * @throws D3ActiveRecordException
+     */
+    public static function rowlList(string $modelClass, int $sysCompanyId = 0): array
     {
         $fullList = self::getFullSelect();
         $list = [];
         $modelId = SysModelsDictionary::getIdByClassName($modelClass);
-        foreach($fullList as $row){
-            if((int)$row['model_id'] !== $modelId){
+        foreach ($fullList as $row) {
+            if ((int)$row['model_id'] !== $modelId) {
                 continue;
             }
-            if($sysCompanyId && $row['sys_company_id'] && (int)$row['sys_company_id'] !== $sysCompanyId){
+            if ($sysCompanyId && $row['sys_company_id'] && (int)$row['sys_company_id'] !== $sysCompanyId) {
                 continue;
             }
             $list[] = $row;
@@ -86,7 +102,7 @@ class D3lDefinitionDictionary{
      */
     public static function getFullSelect()
     {
-        $fullList = Yii::$app->cache->getOrSet(
+        return Yii::$app->cache->getOrSet(
             self::CACHE_KEY_LIST,
             static function () {
                 return
@@ -96,6 +112,5 @@ class D3lDefinitionDictionary{
                         ->all();
             }
         );
-        return $fullList;
     }
 }

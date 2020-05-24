@@ -2,7 +2,6 @@
 
 namespace d3yii2\d3labels\components;
 
-use d3system\dictionaries\SysModelsDictionary;
 use d3system\exceptions\D3ActiveRecordException;
 use d3yii2\d3labels\dictionaries\D3lDefinitionDictionary;
 use d3yii2\d3labels\logic\D3LabelList;
@@ -33,6 +32,7 @@ class D3LabelColumn extends DataColumn
 
     /**
      * Set the initial properties on class init
+     * @throws D3ActiveRecordException
      */
     public function init(): void
     {
@@ -43,6 +43,8 @@ class D3LabelColumn extends DataColumn
 
     /**
      * Read all the records containing attached labels into $this->recordsWithLabels array
+     *
+     * @throws D3ActiveRecordException
      */
     private function initLabels(): void
     {
@@ -87,6 +89,7 @@ class D3LabelColumn extends DataColumn
      * The default implementation simply renders a space.
      * This method may be overridden to customize the rendering of the filter cell (if any).
      * @return string the rendering result
+     * @throws D3ActiveRecordException
      */
     protected function renderFilterCellContent(): string
     {

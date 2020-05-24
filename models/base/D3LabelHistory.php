@@ -5,6 +5,8 @@
 namespace d3yii2\d3labels\models\base;
 
 use Yii;
+use yii\db\ActiveQuery;
+use yii\db\ActiveRecord;
 use yii\db\Exception;
 
 /**
@@ -21,18 +23,18 @@ use yii\db\Exception;
  * @property \d3yii2\d3labels\models\D3lDefinition $definition
  * @property string $aliasModel
  */
-abstract class D3LabelHistory extends \yii\db\ActiveRecord
+abstract class D3LabelHistory extends ActiveRecord
 {
 
 
     /**
      * ENUM field values
      */
-    const ACTION_ADDED = 'Added';
-    const ACTION_DROPED = 'Droped';
-    const ACTION_CANCELED = 'Canceled';
-    const ACTION_EXPLODED = 'Exploded';
-    var $enum_labels = false;
+    public const ACTION_ADDED = 'Added';
+    public const ACTION_DROPED = 'Droped';
+    public const ACTION_CANCELED = 'Canceled';
+    public const ACTION_EXPLODED = 'Exploded';
+    public $enum_labels = false;
 
     /**
      * @inheritdoc
@@ -47,13 +49,10 @@ abstract class D3LabelHistory extends \yii\db\ActiveRecord
      * @param string $value
      * @return string
      */
-    public static function getActionValueLabel($value)
+    public static function getActionValueLabel($value): string
     {
         $labels = self::optsAction();
-        if (isset($labels[$value])) {
-            return $labels[$value];
-        }
-        return $value;
+        return $labels[$value] ?? $value;
     }
 
     /**
@@ -132,16 +131,21 @@ abstract class D3LabelHistory extends \yii\db\ActiveRecord
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
     public function getDefinition()
     {
         return $this->hasOne(\d3yii2\d3labels\models\D3lDefinition::className(), ['id' => 'definition_id']);
     }
 
-    public function saveOrException($runValidation = true, $attributeNames = null)
+    /**
+     * @param bool $runValidation
+     * @param null $attributeNames
+     * @throws Exception
+     */
+    public function saveOrException($runValidation = true, $attributeNames = null): void
     {
-        if (!parent::save($runValidation, $attributeNames)) {
+        if (!$this->save($runValidation, $attributeNames)) {
             throw new Exception(json_encode($this->getErrors()));
         }
     }

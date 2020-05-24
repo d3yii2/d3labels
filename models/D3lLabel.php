@@ -4,7 +4,6 @@ namespace d3yii2\d3labels\models;
 
 use d3system\dictionaries\SysModelsDictionary;
 use d3system\exceptions\D3ActiveRecordException;
-use d3yii2\d3labels\dictionaries\D3lDefinitionDictionary;
 use d3yii2\d3labels\models\base\D3lLabel as BaseD3lLabel;
 use yii\db\Query;
 use yii\helpers\ArrayHelper;
