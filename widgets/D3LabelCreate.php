@@ -18,8 +18,15 @@ use yii\base\Widget;
  */
 class D3LabelCreate extends Widget
 {
+    /**
+     * @var string
+     */
     public $modelClass;
     public $controller;
+
+    /**
+     * @var string
+     */
     public $returnURLToken;
     public $createButtonPlacement = self::PLACEMENT_TOP;
 

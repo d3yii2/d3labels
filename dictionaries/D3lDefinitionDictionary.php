@@ -37,7 +37,9 @@ class D3lDefinitionDictionary
 
         return $list;
     }
-
+    public static function findByCodeModelObject(string $code, object $model, int $sysCompanyId = 0){
+        return self::findByCodeModel($code,get_class($model), $sysCompanyId);
+    }
 
     /**
      * @param string $code

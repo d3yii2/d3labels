@@ -112,7 +112,6 @@ class D3Definition
      */
     public function save(): void
     {
-        $this->definitionModel->sys_company_id = Yii::$app->SysCmp->getActiveCompanyId();
         $this->definitionModel->model_id = $this->getSystemModelId();
         $this->definitionModel->save();
     }

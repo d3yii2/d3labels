@@ -32,7 +32,7 @@ class DefinitionDeleteAction extends BaseAction
         try {
 
             if (in_array($definitionId, $this->sysLabelsIdList, true)) {
-                throw new Exception(Yii::t('d3labels', 'Can not delete system labels'));
+                throw new Exception(Yii::t('d3labels', 'Can not delete system labels(A)'));
             }
 
             $model = D3lDefinition::findOne([
@@ -40,7 +40,9 @@ class DefinitionDeleteAction extends BaseAction
                 'model_id' => $modelId,
                 'sys_company_id' => Yii::$app->SysCmp->getActiveCompanyId()
             ]);
-
+            if(!$model->sys_company_id){
+                throw new Exception(Yii::t('d3labels', 'Can not delete system labels(B)'));
+            }
             if (!$model) {
                 throw new Exception(Yii::t('d3labels', 'Label definition record not exists'));
             }

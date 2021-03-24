@@ -14,6 +14,8 @@ use Yii;
  */
 class CreateAction extends BaseAction
 {
+
+    public $sysCompanyId;
     /**
      * @return Yii\web\Response
      */
@@ -24,7 +26,13 @@ class CreateAction extends BaseAction
             $def = new D3Definition($this->modelName);
 
             $def->loadFromForm();
-
+            if($this->sysCompanyId ) {
+                if (is_callable($this->sysCompanyId)) {
+                    $def->setCompanyId(call_user_func($this->sysCompanyId));
+                } else {
+                    $def->setCompanyId($this->sysCompanyId);
+                }
+            }
             $def->save();
 
             $msg = Yii::t('d3labels', 'Labels created successfully');

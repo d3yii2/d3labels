@@ -1,11 +1,13 @@
 <?php
 /**
- * @var int $systemModelId
+ * @var int
+ * @var array $labels
  */
 
 use d3system\widgets\ThBadge;
 use d3yii2\d3labels\components\D3LabelAccess;
 use yii\helpers\Html;
+
 
 ?>
 <table class="table">
@@ -32,7 +34,9 @@ use yii\helpers\Html;
                         'faIcon' => $defRow['icon'],
                         'showText' => true,
                     ]) ?></td>
-            <td><?= Html::a(
+            <td><?php
+                if($defRow['sys_company_id']){
+                ?><?= Html::a(
                     '<span class="glyphicon glyphicon-trash"></span>',
                     [
                         D3LabelAccess::ACTION_DEFINITION_DELETE,
@@ -43,7 +47,9 @@ use yii\helpers\Html;
                         'class' => 'delete-item',
                         'title' => Yii::t('d3labels', 'Remove')
                     ]
-                ) ?></td>
+                ) ?><?php
+                }
+                ?></td>
         </tr>
     <?php
     endforeach;
