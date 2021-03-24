@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemadesigner version="6.5">
+<source>
+<database charset="latin1" collation="latin1_swedish_ci">blankon_20200506</database>
+</source>
+<canvas zoom="100">
+<tables>
+<table name="d3l_definition" view="colnames">
+<left>318</left>
+<top>153</top>
+<width>133</width>
+<height>216</height>
+<sql_create_table>CREATE TABLE `d3l_definition` (
+  `id` smallint(10) unsigned NOT NULL AUTO_INCREMENT,
+  `sys_company_id` smallint(5) unsigned DEFAULT NULL,
+  `code` char(20) DEFAULT NULL COMMENT 'Code',
+  `model_id` tinyint(3) unsigned NOT NULL COMMENT 'Model',
+  `label` varchar(20) CHARACTER SET utf8 DEFAULT NULL COMMENT 'Label',
+  `collor` char(10) DEFAULT NULL COMMENT 'Collor',
+  `icon` varchar(20) DEFAULT NULL COMMENT 'Icon',
+  `action_class` text COMMENT 'Action Class',
+  `action_method` varchar(256) DEFAULT NULL COMMENT 'Action Method',
+  PRIMARY KEY (`id`),
+  KEY `model_id` (`model_id`),
+  CONSTRAINT `d3l_definition_ibfk_1` FOREIGN KEY (`model_id`) REFERENCES `sys_models` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=latin1</sql_create_table>
+</table>
+<table name="d3l_label" view="colnames">
+<left>139</left>
+<top>138</top>
+<width>134</width>
+<height>114</height>
+<sql_create_table>CREATE TABLE `d3l_label` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `definition_id` smallint(5) unsigned NOT NULL,
+  `model_record_id` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `definition_id` (`definition_id`),
+  CONSTRAINT `d3l_label_ibfk_1` FOREIGN KEY (`definition_id`) REFERENCES `d3l_definition` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2750 DEFAULT CHARSET=latin1</sql_create_table>
+</table>
+<table name="sys_models" view="colnames">
+<left>516</left>
+<top>203</top>
+<width>105</width>
+<height>114</height>
+<sql_create_table>CREATE TABLE `sys_models` (
+  `id` tinyint(3) unsigned NOT NULL AUTO_INCREMENT,
+  `table_name` varchar(256) NOT NULL COMMENT 'Table',
+  `class_name` varchar(256) DEFAULT NULL COMMENT 'Class',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `table_name` (`table_name`,`class_name`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=ascii</sql_create_table>
+</table>
+</tables>
+</canvas>
+</schemadesigner>
