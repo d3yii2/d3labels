@@ -27,7 +27,7 @@ DB
 
 Define Labels
 -----
-Migration example
+Migration example for adding new label
 ```php
 
 use yii\db\Migration;
@@ -55,6 +55,30 @@ class m190329_095047_invoice_labels extends Migration
 
 }     
 ```
+
+Migration example for removing label
+```php
+
+use d3modules\d3accexport\logic\ExportRkInvoiceFormExtensions;
+use d3modules\lietvediba\models\RkInvoice;
+use d3yii2\d3labels\logic\D3LabelMaintenance;
+use yii\db\Migration;
+
+class m210426_100707_label_new_remove  extends Migration {
+
+    public function safeUp() {
+        $removedLabelsFromModelRecords = D3LabelMaintenance::removeLabel(ExportRkInvoiceFormExtensions::NEW,RkInvoice::class);
+        echo 'Removed Labels FromModel Records: ' . $removedLabelsFromModelRecords .PHP_EOL;
+
+    }
+
+    public function safeDown() {
+        echo "m210426_100707_label_new_remove cannot be reverted.\n";
+        return false;
+    }
+}
+```
+
 
 Display Widget
 -----

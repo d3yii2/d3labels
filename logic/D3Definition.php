@@ -22,10 +22,8 @@ use yii\web\NotFoundHttpException;
  */
 class D3Definition
 {
-    private $class;
 
     private $definitionModel;
-
 
     /**
      * D3Definition constructor.
@@ -108,7 +106,7 @@ class D3Definition
 
     /**
      * Save the label definitions
-     * @throws D3ActiveRecordException|\yii\db\Exception
+     * @throws D3ActiveRecordException
      */
     public function save(): void
     {
