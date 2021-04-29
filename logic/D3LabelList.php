@@ -110,9 +110,7 @@ class D3LabelList
         $items = [];
 
         foreach ($labels as $label) {
-            $item = self::labelToItem($label, $action, $modelId);
-
-            $items[] = $item;
+            $items[] = self::labelToItem($label, $action, $modelId);
         }
 
         return $items;

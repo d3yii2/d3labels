@@ -8,6 +8,7 @@ use d3yii2\d3labels\logic\D3LabelList;
 use d3yii2\d3labels\models\D3lLabel;
 use Exception;
 use yii\grid\DataColumn;
+use yii\helpers\ArrayHelper;
 
 /**
  * Class D3LabelColumn
@@ -26,6 +27,8 @@ class D3LabelColumn extends DataColumn
 
     /** @var int */
     public $sysCompanyId;
+
+    public $dataProvider;
 
     private $dataProviderIds = [];
     private $recordsWithLabels = [];
@@ -48,11 +51,13 @@ class D3LabelColumn extends DataColumn
      */
     private function initLabels(): void
     {
-        $rows = $this->grid->dataProvider->getModels();
-
-        foreach ($rows as $row) {
-            $this->dataProviderIds[] = $row->id;
+        if($this->dataProvider){
+            $rows = $this->dataProvider->getModels();
+        }else {
+            $rows = $this->grid->dataProvider->getModels();
         }
+
+        $this->dataProviderIds = ArrayHelper::getColumn($rows, 'id');
 
         $recordsWithLabels = D3lLabel::getAllByModelRecordIds($this->dataProviderIds, $this->modelClass);
 
@@ -82,6 +87,15 @@ class D3LabelColumn extends DataColumn
         $labelItems = D3LabelList::getBadgeItems($this->recordsWithLabels[$model->id]);
 
         return D3LabelList::getAsBadges($labelItems, $this->badgeRenderOptions);
+    }
+
+    public function renderForExcel($model): string
+    {
+        if (empty($this->recordsWithLabels[$model->id])) {
+            return '';
+        }
+        $labelItems = D3LabelList::getBadgeItems($this->recordsWithLabels[$model->id]);
+        return implode(', ', ArrayHelper::getColumn($labelItems,'text'));
     }
 
     /**
