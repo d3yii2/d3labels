@@ -266,6 +266,7 @@ $columns[] = [
     'modelClass' => \cewood\cwstore\models\CwbrProduct::class,
     'attribute'=>'label_type',
     'format'=>'raw',
+    'filterNotAssignedLabel' => true,
     'label' => Yii::t('d3labels', 'Labels'),
     'sysCompanyId' => $sysCompanyId
     //'badgeRenderOptions' => ['iconsWithText' => true],
@@ -274,25 +275,9 @@ $columns[] = [
 Search model
 ------------
 Add attribute label_type
+
 ```php 
-public $label_type;
-public function rules(): array
-{
-    ...
-    [['label_type'], 'string'],
-    ...
-}
-
-// for filter
-if ($this->label_type) {
-    $query
-        ->leftJoin(
-            D3lLabel::tableName(),
-            'cwbr_product.id = ' . D3lLabel::tableName() . '.model_record_id')
-        ->andFilterWhere([D3lLabel::tableName() . '.definition_id' => $this->label_type])
-        ->distinct();
-}
-
+    QuerySearch::addFilter($query, $this->label_type, '`inv_invoice`.`id`');
 ```
 
 Export to excel

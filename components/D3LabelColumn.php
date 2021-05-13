@@ -25,6 +25,11 @@ class D3LabelColumn extends DataColumn
     public $badgeRenderOptions = [];
     public $filterListboxOptions = [];
 
+    /**
+     * @var bool if tue, additionaly allow filter records, where not assigned label
+     */
+    public $filterNotAssignedLabel = false;
+
     /** @var int */
     public $sysCompanyId;
 
@@ -108,6 +113,13 @@ class D3LabelColumn extends DataColumn
     protected function renderFilterCellContent(): string
     {
         $items = D3lDefinitionDictionary::getList($this->sysCompanyId, $this->modelClass);
+
+        if($this->filterNotAssignedLabel){
+            $list = $items;
+            foreach($list as $listKey => $listLabel){
+                $items['!' . $listKey] = '! ' . $listLabel;
+            }
+        }
         return D3LabelList::getAsDropdown($items, $this->filterListboxOptions, $this->model);
     }
 }
