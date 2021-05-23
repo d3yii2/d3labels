@@ -29,13 +29,25 @@ class D3Label
     /**
      * Get all attached labels for the model by ID
      * @param int $modelId
+     * @param string $className
      * @return D3lLabel[]
+     * @throws \d3system\exceptions\D3ActiveRecordException
      */
-    public static function getAllByModel(int $modelId): array
+    public static function getAllByModel(int $modelId, string $className): array
     {
-        return D3lLabel::findAll(['model_record_id' => $modelId]);
+        return D3lLabel::find()
+            ->innerJoin('d3l_definition','d3l_definition.id = d3l_label.definition_id')
+            ->where([
+                'model_record_id' => $modelId,
+                'd3l_definition.model_id' => SysModelsDictionary::getIdByClassName($className)
+            ])
+            ->all();
     }
 
+    /**
+     * @throws \yii\db\Exception
+     * @throws \yii\web\NotFoundHttpException
+     */
     public static function attachByModelCode(object $model, string $labelCode): bool
     {
         $definitionId = D3lDefinitionDictionary::findByCodeModelObject($labelCode, $model );
@@ -90,6 +102,10 @@ class D3Label
         return true;
     }
 
+    /**
+     * @throws \yii\db\StaleObjectException
+     * @throws \Throwable
+     */
     public static function detachByModelCode(object $model, string $labelCode): void
     {
         $definitionId = D3lDefinitionDictionary::findByCodeModelObject($labelCode, $model);

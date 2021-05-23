@@ -17,6 +17,7 @@ use yii\web\NotFoundHttpException;
  * @property string $label
  * @property string $icon
  * @property string $color
+ * @property string $code
  * @property int $sysCompanyId
  * @property D3lDefinition
  */

@@ -2,6 +2,7 @@
 
 namespace d3yii2\d3labels\widgets;
 
+use d3system\dictionaries\SysModelsDictionary;
 use d3system\exceptions\D3ActiveRecordException;
 use d3system\widgets\D3Widget;
 use d3system\widgets\ThBadge;
@@ -56,7 +57,7 @@ class D3LabelList extends D3Widget
     private $noAttached = [];
 
     /**
-     * @return bool|void
+     * @return void
      * @throws D3ActiveRecordException
      */
     public function init()
@@ -64,8 +65,12 @@ class D3LabelList extends D3Widget
         parent::init();
 
         $attachedDefIdList = D3lLabel::find()
-            ->select('definition_id')
-            ->where(['model_record_id' => $this->model->id])
+            ->select('d3l_label.definition_id')
+            ->innerJoin('d3l_definition','d3l_definition.id = d3l_label.definition_id')
+            ->where([
+                'model_record_id' => $this->model->id,
+                'd3l_definition.model_id' => SysModelsDictionary::getIdByClassName(get_class($this->model))
+            ])
             ->column();
 
         foreach(D3lDefinitionDictionary::rowlList(get_class($this->model), $this->sysCompanyId) as $defRow){
