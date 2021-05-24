@@ -40,8 +40,7 @@ class BaseAction extends Action
             $this->model = $this->modelName::findOne($id);
         }
         if (!$this->model) {
-            throw new NotFoundHttpException(Yii::t('d3files',
-                'The requested model does not exist: ' . $this->modelName));
+            throw new NotFoundHttpException('The requested model does not exist: ' . $this->modelName);
         }
     }
 
