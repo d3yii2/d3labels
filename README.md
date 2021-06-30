@@ -322,7 +322,7 @@ D3Label::attachByModelCode($model,$labelCode);
 ```
 
 
-dettach from model record
+detach from model record
 ---------------------
 
 ```php
@@ -343,4 +343,13 @@ D3Label::detachByModelCode($model,$labelCode);
                     'modelClass' => RkInvoice::class,
                     'sysCompanyId' => Yii::$app->SysCmp->getActiveCompanyId()
                 ]);
+```
+
+get list (id => label) of model all labels
+---------------------------
+
+```php 
+use d3yii2\d3labels\dictionaries\D3lDefinitionDictionary;
+
+$list = D3lDefinitionDictionary::getList($sysCompanyId, CwStorePack::class)
 ```
