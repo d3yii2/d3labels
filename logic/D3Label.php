@@ -3,13 +3,14 @@
 namespace d3yii2\d3labels\logic;
 
 use d3system\dictionaries\SysModelsDictionary;
+use d3system\exceptions\D3UserAlertException;
 use d3yii2\d3labels\dictionaries\D3lDefinitionDictionary;
-use d3yii2\d3labels\models\D3lDefinition;
 use d3yii2\d3labels\models\D3lLabel;
 use Throwable;
 use yii\db\Exception;
 use yii\db\StaleObjectException;
 use yii\web\NotFoundHttpException;
+use Yii;
 
 /**
  * Class D3Label
@@ -141,6 +142,27 @@ class D3Label
             $label->delete();
         }
 
+    }
+
+    /**
+     * Check if Model has attached label by Code
+     *
+     * @param object $model
+     * @param string $labelCode
+     * @throws Throwable
+     * @throws D3UserAlertException
+     */
+
+    public static function isLabelAttachByModelCode($model, $labelCode)
+    {
+        if($closedLabelId = D3lDefinitionDictionary::findByCodeModelObject($labelCode, $model)) {
+            $attachedL = new D3LabelList($model, Yii::$app->SysCmp->getActiveCompanyId());
+            foreach ($attachedL->getAttached() as $def_id => $label) {
+                if($def_id == $closedLabelId) {
+                    throw new D3UserAlertException(Yii::t('d3invoices', 'Changes are not allowed, invoice is "Closed"!'));
+                }
+            }
+        }
     }
 
 }
