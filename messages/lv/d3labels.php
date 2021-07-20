@@ -69,5 +69,7 @@ return [
     'D3labelsD3lLabelEdit' => 'D3labelsD3lLabelEdit',
     'Model' => 'Model',
     'Action Class' => 'Action Class',
-    'Can not delete system labels(B)' => 'Can not delete system labels(B)'
+    'Can not delete system labels(B)' => 'Can not delete system labels(B)',
+    'Edit saved' => 'Izmaiņas saglabātas',
+    'Save' => 'Saglabāt',
 ];
