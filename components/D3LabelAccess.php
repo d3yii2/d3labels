@@ -12,6 +12,7 @@ class D3LabelAccess
     public const ACTION_ATTACH = 'd3labelsattach';
     public const ACTION_DELETE = 'd3labelsremove';
     public const ACTION_DEFINITION_DELETE = 'd3labelsdefinitionremove';
+    public const ACTION_DEFINITION_EDIT = 'd3labelsdefinitionedit';
 
     /**
      * @param string $modelClass
@@ -40,6 +41,7 @@ class D3LabelAccess
             self::ACTION_ATTACH,
             self::ACTION_DELETE,
             self::ACTION_DEFINITION_DELETE,
+            self::ACTION_DEFINITION_EDIT
         ];
     }
 
@@ -76,6 +78,10 @@ class D3LabelAccess
                 'class' => DefinitionDeleteAction::class,
                 'sysLabelsIdList' => [2]
             ],
+            self::ACTION_DEFINITION_EDIT => [
+                'class' => DefintionEditAction::class,
+                'sysLabelsIdList' => [2]
+            ]
         ];
     }
 }

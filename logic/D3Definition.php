@@ -160,5 +160,4 @@ class D3Definition
             ThBadge::TYPE_TEALS => Yii::t('d3labels-colors', ThBadge::TYPE_TEALS),
         ];
     }
-
 }

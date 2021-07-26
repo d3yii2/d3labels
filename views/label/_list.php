@@ -25,7 +25,12 @@ use yii\helpers\Html;
     foreach ($labels as $defRow): ?>
         <tr>
             <td><b><?= $defRow['label'] ?></b></td>
-            <td><?= $defRow['icon'] ?></td>
+            <td><?= ThBadge::widget(
+                    [
+                        'type' => $defRow['collor'],
+                        'faIcon' => $defRow['icon'],
+                        'showText' => true,
+                    ])  ?></td>
             <td><?= $defRow['collor'] ?></td>
             <td><?= ThBadge::widget(
                     [
@@ -35,8 +40,21 @@ use yii\helpers\Html;
                         'showText' => true,
                     ]) ?></td>
             <td><?php
-                if($defRow['sys_company_id']){
-                ?><?= Html::a(
+                if($defRow['sys_company_id']){ ?>
+                    <?= Html::a(
+                        '<span class="glyphicon glyphicon-pencil"></span>',
+                        'javascript:void(0)',
+                        [
+                            'class' => 'edit-item',
+                            'title' => Yii::t('d3labels', 'Edit'),
+                            'data-link' => [
+                                'definitionId' => $defRow['id'],
+                                'modelId' => $systemModelId,
+                            ],
+                            'style' => 'margin-right:15px;'
+                        ]
+                    )
+                    ?><?= Html::a(
                     '<span class="glyphicon glyphicon-trash"></span>',
                     [
                         D3LabelAccess::ACTION_DEFINITION_DELETE,
@@ -47,7 +65,8 @@ use yii\helpers\Html;
                         'class' => 'delete-item',
                         'title' => Yii::t('d3labels', 'Remove')
                     ]
-                ) ?><?php
+                ) ?>
+                    <?php
                 }
                 ?></td>
         </tr>
