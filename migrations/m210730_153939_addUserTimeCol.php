@@ -13,7 +13,7 @@ class m210730_153939_addUserTimeCol extends Migration
     {
         $this->execute("
         ALTER TABLE `d3l_label`
-          ADD COLUMN `user_id` INT(11) NULL,
+          ADD COLUMN `user_id` INT(11) unsigned NULL,
           ADD COLUMN `time` TIMESTAMP NULL;
         ");
     }
