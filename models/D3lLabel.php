@@ -58,6 +58,12 @@ class D3lLabel extends BaseD3lLabel
 
     }
 
+    public function beforeSave($insert)
+    {
+        $this->user_id = !empty(\Yii::$app->user) ? \Yii::$app->user->id : NULL;
+        $this->time = date('Y-m-d H:i:s');
+        return parent::beforeSave($insert);
+    }
 
 
 }
