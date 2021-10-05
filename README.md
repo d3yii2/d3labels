@@ -67,6 +67,7 @@ class m190329_095047_invoice_labels extends Migration
          $def = new D3Definition(RkInvoice::class);
          $def->setLabel('Warning label');
          $def->setColor(ThBadge::TYPE_INVERSE);
+         $def->setCode('WarningLabel');
          //$def->setCompanyId(14);
          $def->save();
     }
@@ -329,11 +330,11 @@ detach from model record
 use d3yii2\d3labels\logic\D3Label;
 
 // by record id and labelDefId
-$labelDefId = D3lDefinitionDictionary::findByCodeModel($labelCode,InvInvoice::class);
-D3Label::detach($model->id,$labelDefId);
+$labelDefId = D3lDefinitionDictionary::findByCodeModel($labelCode, InvInvoice::class);
+D3Label::detach($model->id, $labelDefId);
 
 // by model and label code
-D3Label::detachByModelCode($model,$labelCode);
+D3Label::detachByModelCode($model->id, $labelCode);
 
 ```
 
