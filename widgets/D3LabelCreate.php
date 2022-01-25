@@ -10,6 +10,7 @@ use Yii;
 use yii\base\Widget;
 
 /**
+ * Panel as row for showing, adding and removing labels
  * Class D3LabelCreate
  * @package d3yii2\d3labels\widgets
  * @property string $modelClass

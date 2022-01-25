@@ -211,11 +211,10 @@ class SettingsController extends LayoutController
 
 ```
 
-View file labels.php
+Panel as row for showing, adding and removing labels.
+Compact variant
 ```php
- 
-
-use cewood\cwstore\models\CwbrProduct;
+ use cewood\cwstore\models\CwbrProduct;
 use d3yii2\d3labels\widgets\D3LabelCreate;
 
 ?>
@@ -225,6 +224,23 @@ use d3yii2\d3labels\widgets\D3LabelCreate;
 ]) ?>
 ```
 
+Simple output in DetailView
+```php
+        echo ThDetailView::widget([
+            'model' => $model,
+            'attributes' => [
+                [
+                    'label' => 'Labels',
+                    'format' => 'raw',
+                    'value' => D3LabelView::widget([
+                        'model' => $model,
+                        'sysCompanyId' => 1
+                    ])
+                ]            
+            ]       
+            ,
+        ]);
+```
 
 Widget for model for displaying, attaching and removing labels from record
 -----
