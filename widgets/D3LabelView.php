@@ -34,7 +34,7 @@ class D3LabelView extends Widget
     /**
      * @var array
      */
-    private $attached;
+    private $attached = [];
 
 
     /**
