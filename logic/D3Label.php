@@ -7,9 +7,7 @@ use d3system\exceptions\D3UserAlertException;
 use d3yii2\d3labels\dictionaries\D3lDefinitionDictionary;
 use d3yii2\d3labels\models\D3lLabel;
 use Throwable;
-use yii\db\Exception;
 use yii\db\StaleObjectException;
-use yii\web\NotFoundHttpException;
 use Yii;
 
 /**
@@ -46,7 +44,6 @@ class D3Label
     }
 
     /**
-     * @throws \yii\db\Exception
      * @throws \yii\web\NotFoundHttpException
      */
     public static function attachByModelCode(object $model, string $labelCode): bool
@@ -77,17 +74,26 @@ class D3Label
      *
      * @param int $modelId
      * @param int $definitionId
+     * @param int|null $userId
      * @return bool
-     * @throws Exception
-     * @throws NotFoundHttpException
+     * @throws \yii\web\NotFoundHttpException
      */
-    public static function attach(int $modelId, int $definitionId): bool
+    public static function attach(
+        int $modelId,
+        int $definitionId,
+        int $userId = null
+    ): bool
     {
         $definition = D3Definition::loadDefinition($definitionId);
 
-        $label = $definition
+        $activeQuery = $definition
             ->getD3lLabels()
-            ->where(['model_record_id' => $modelId])
+            ->where(['model_record_id' => $modelId]);
+
+        if ($userId) {
+            $activeQuery->andWhere(['user_id' => $userId]);
+        }
+        $label = $activeQuery
             ->one();
         if ($label) {
             // Ignorē ja piesaistīta, lai neizraisītu exception pie lapas pārlādes
@@ -153,7 +159,7 @@ class D3Label
      * @throws D3UserAlertException
      */
 
-    public static function isLabelAttachByModelCode($model, $labelCode)
+    public static function isLabelAttachByModelCode(object $model, string $labelCode): void
     {
         if($closedLabelId = D3lDefinitionDictionary::findByCodeModelObject($labelCode, $model)) {
             $attachedL = new D3LabelList($model, Yii::$app->SysCmp->getActiveCompanyId());

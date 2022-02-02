@@ -3,8 +3,8 @@
 namespace d3yii2\d3labels\models;
 
 use d3system\dictionaries\SysModelsDictionary;
-use d3system\exceptions\D3ActiveRecordException;
 use d3yii2\d3labels\models\base\D3lLabel as BaseD3lLabel;
+use Yii;
 use yii\db\Query;
 use yii\helpers\ArrayHelper;
 
@@ -17,24 +17,33 @@ class D3lLabel extends BaseD3lLabel
     /**
      * @param array $ids
      * @param string $modelClassName
+     * @param int|null $filterUserId
      * @return int[]
-     * @throws D3ActiveRecordException
+     * @throws \d3system\exceptions\D3ActiveRecordException
      */
-    public static function getAllByModelRecordIds(array $ids,string $modelClassName): array
+    public static function getAllByModelRecordIds(
+        array $ids,
+        string $modelClassName,
+        int $filterUserId = null
+    ): array
     {
         if (empty($ids)) {
             return [];
         }
 
-        return (new Query())
+        $query = (new Query())
             ->select('*')
             ->leftJoin(D3lDefinition::tableName(),
                 self::tableName() . '.definition_id = ' . D3lDefinition::tableName() . '.id')
             ->from(self::tableName())
             ->where([
-                self::tableName().'.model_record_id' => $ids,
-                D3lDefinition::tableName().'.model_id' => SysModelsDictionary::getIdByClassName($modelClassName)
-            ])
+                self::tableName() . '.model_record_id' => $ids,
+                D3lDefinition::tableName() . '.model_id' => SysModelsDictionary::getIdByClassName($modelClassName)
+            ]);
+        if ($filterUserId) {
+            $query->andWhere([self::tableName() . '.user_id' => $filterUserId]);
+        }
+        return $query
             ->all();
     }
 
@@ -60,10 +69,9 @@ class D3lLabel extends BaseD3lLabel
 
     public function beforeSave($insert)
     {
-        $this->user_id = !empty(\Yii::$app->user) ? \Yii::$app->user->id : NULL;
+        $this->user_id = Yii::$app->user->id ?? NULL;
         $this->time = date('Y-m-d H:i:s');
         return parent::beforeSave($insert);
     }
-
 
 }

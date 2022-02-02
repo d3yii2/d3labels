@@ -5,6 +5,7 @@ namespace d3yii2\d3labels\components;
 use d3system\exceptions\D3ActiveRecordException;
 use d3yii2\d3labels\dictionaries\D3lDefinitionDictionary;
 use d3yii2\d3labels\logic\D3LabelList;
+use d3yii2\d3labels\models\D3lDefinition;
 use d3yii2\d3labels\models\D3lLabel;
 use Exception;
 use yii\grid\DataColumn;
@@ -35,8 +36,16 @@ class D3LabelColumn extends DataColumn
 
     public $dataProvider;
 
+    /** @var array list of toggle labels  */
+    public $toggleLabelCodes;
+
+    /** @var int show user labels */
+    public $filterUserId;
+
     private $dataProviderIds = [];
     private $recordsWithLabels = [];
+
+    private $toggleLabelsDef = [];
 
     /**
      * Set the initial properties on class init
@@ -64,7 +73,7 @@ class D3LabelColumn extends DataColumn
 
         $this->dataProviderIds = ArrayHelper::getColumn($rows, 'id');
 
-        $recordsWithLabels = D3lLabel::getAllByModelRecordIds($this->dataProviderIds, $this->modelClass);
+        $recordsWithLabels = D3lLabel::getAllByModelRecordIds($this->dataProviderIds, $this->modelClass, $this->filterUserId);
 
         foreach ($recordsWithLabels as $labelModel) {
             if (!isset($this->recordsWithLabels[$labelModel['model_record_id']])) {
@@ -72,6 +81,15 @@ class D3LabelColumn extends DataColumn
             }
 
             $this->recordsWithLabels[$labelModel['model_record_id']][$labelModel['definition_id']] = $labelModel;
+        }
+        if ($this->toggleLabelCodes) {
+            $this->toggleLabelsDef = ArrayHelper::index(
+                D3lDefinition::find()
+                    ->where(['code' => $this->toggleLabelCodes])
+                    ->asArray()
+                    ->all(),
+                'id'
+            );
         }
     }
 
@@ -85,11 +103,20 @@ class D3LabelColumn extends DataColumn
      */
     public function renderDataCellContent($model, $key, $index): string
     {
-        if (empty($this->recordsWithLabels[$model->id])) {
-            return '';
+        if ($this->toggleLabelsDef) {
+            $labelItems = [];
+            foreach ($this->toggleLabelsDef as $label) {
+                if (!isset($this->recordsWithLabels[$model->id][(int)$label['id']])) {
+                    $label['collor'] = 'default';
+                }
+                $labelItems[] = D3LabelList::labelToItem($label);
+            }
+        } else {
+            if (empty($this->recordsWithLabels[$model->id])) {
+                return '';
+            }
+            $labelItems = D3LabelList::getBadgeItems($this->recordsWithLabels[$model->id]);
         }
-
-        $labelItems = D3LabelList::getBadgeItems($this->recordsWithLabels[$model->id]);
 
         return D3LabelList::getAsBadges($labelItems, $this->badgeRenderOptions);
     }
