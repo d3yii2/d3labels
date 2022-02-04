@@ -16,7 +16,7 @@ class AjaxAttachAction extends BaseAction
 {
 
     /**
-     * @var bool attach for users labels
+     * @var bool attach/deattach for users labels
      */
     public $userLabels = false;
     /**
@@ -33,7 +33,11 @@ class AjaxAttachAction extends BaseAction
         $userId = $this->userLabels?Yii::$app->user->id:null;
         try {
             $this->loadModel($modelId);
-            D3Label::attach($modelId, $defId, $userId);
+            if (D3Label::modelHasAttachment($modelId, $defId, $userId)) {
+                D3Label::detach($modelId, $defId, $userId);
+            } else {
+                D3Label::attach($modelId, $defId, $userId);
+            }
         } catch (Exception $err) {
             Yii::error($err->getMessage() . PHP_EOL . $err->getTraceAsString());
             return ['error' => $err->getMessage()];

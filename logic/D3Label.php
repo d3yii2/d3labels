@@ -135,16 +135,27 @@ class D3Label
      * @throws Throwable
      * @throws StaleObjectException
      */
-    public static function detach(int $modelId, int $definitionId): void
+    public static function detach(int $modelId, int $definitionId, int $userId = null): void
     {
+
+        $activeQuery = D3lLabel::find()
+            ->where([
+                'model_record_id' => $modelId,
+                'definition_id' => $definitionId
+            ]);
+
+
+        if ($userId) {
+            $activeQuery->andWhere(['user_id' => $userId]);
+        }
+
+        $label = $activeQuery
+            ->one();
 
         /**
          * @var D3lLabel $label
          */
-        if($label = D3lLabel::findOne([
-            'model_record_id' => $modelId,
-            'definition_id' => $definitionId
-        ])){
+        if($label){
             $label->delete();
         }
 
@@ -171,4 +182,21 @@ class D3Label
         }
     }
 
+    /**
+     * check if model has attachment
+     *
+     * @param $modelId
+     * @param $defId
+     * @param $userId
+     * @return bool
+     */
+    public static function modelHasAttachment($modelId, $defId, $userId)
+    {
+
+        return (bool)D3lLabel::findOne([
+            'model_record_id' => $modelId,
+            'definition_id' => $defId,
+            'user_id' => $userId
+        ]);
+    }
 }
