@@ -188,12 +188,13 @@ class D3Label
      * @param $modelId
      * @param $defId
      * @param $userId
-     * @return bool
+     *
+     * @return D3lLabel | null
      */
-    public static function modelHasAttachment($modelId, $defId, $userId)
+    public static function getAttachedLabel($modelId, $defId, $userId)
     {
 
-        return (bool)D3lLabel::findOne([
+        return D3lLabel::findOne([
             'model_record_id' => $modelId,
             'definition_id' => $defId,
             'user_id' => $userId

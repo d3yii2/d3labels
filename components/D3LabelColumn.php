@@ -10,6 +10,7 @@ use d3yii2\d3labels\models\D3lLabel;
 use Exception;
 use yii\grid\DataColumn;
 use yii\helpers\ArrayHelper;
+use Yii;
 
 /**
  * Class D3LabelColumn
@@ -25,6 +26,9 @@ class D3LabelColumn extends DataColumn
     public $modelClass;
     public $badgeRenderOptions = [];
     public $filterListboxOptions = [];
+
+    /** @var string  */
+    public $attachLink;
 
     /**
      * @var bool if tue, additionaly allow filter records, where not assigned label
@@ -89,6 +93,25 @@ class D3LabelColumn extends DataColumn
                     ->asArray()
                     ->all(),
                 'id'
+            );
+        }
+
+        // need to toggle class provided from label definition
+        if ($this->attachLink) {
+            Yii::$app->view->registerJs(<<<JS
+                   $('.badge').on('click', function() {
+                            var modelId = $(this).parents('tr').attr('data-key');
+                            var url = '$this->attachLink' + '&modelId=' + modelId;
+                            
+                            $.ajax({
+                              url: url,
+                              context: this
+                            }).done(function() {
+                              $( this ).toggleClass('badge-default').toggleClass( 'badge-info' );
+                            });
+                            
+                   }); 
+                JS
             );
         }
     }
