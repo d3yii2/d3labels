@@ -98,7 +98,7 @@ class D3LabelColumn extends DataColumn
 
         // need to toggle class provided from label definition
         if ($this->attachLink) {
-            Yii::$app->view->registerJs(<<<JS
+            Yii::$app->view->registerJs("
                    $('.badge').on('click', function() {
                             var modelId = $(this).parents('tr').attr('data-key');
                             var url = '$this->attachLink' + '&modelId=' + modelId;
@@ -111,8 +111,7 @@ class D3LabelColumn extends DataColumn
                             });
                             
                    }); 
-                JS
-            );
+                ");
         }
     }
 
@@ -129,7 +128,7 @@ class D3LabelColumn extends DataColumn
         if ($this->toggleLabelsDef) {
             $labelItems = [];
             foreach ($this->toggleLabelsDef as $label) {
-                if (!isset($this->recordsWithLabels[$model->id][(int)$label['id']])) {
+                if (!isset($this->recordsWithLabels[$model->id][((int)$label['id'])])) {
                     $label['collor'] = 'default';
                 }
                 $labelItems[] = D3LabelList::labelToItem($label);
