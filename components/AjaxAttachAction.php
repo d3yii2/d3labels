@@ -33,8 +33,8 @@ class AjaxAttachAction extends BaseAction
         $userId = $this->userLabels?Yii::$app->user->id:null;
         try {
             $this->loadModel($modelId);
-            if (D3Label::modelHasAttachment($modelId, $defId, $userId)) {
-                D3Label::detach($modelId, $defId, $userId);
+            if ($label = D3Label::getAttachedLabel($modelId, $defId, $userId)) {
+                $label->delete();
             } else {
                 D3Label::attach($modelId, $defId, $userId);
             }
