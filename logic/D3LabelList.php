@@ -56,12 +56,13 @@ class D3LabelList
     /**
      * @param array $items
      * @param array $renderOptions
+     * @param array $htmlOptions
      * @return string
      * @throws Exception
      */
-    public static function getAsBadges(array $items, array $renderOptions = []): string
+    public static function getAsBadges(array $items, array $renderOptions = [], array $htmlOptions = []): string
     {
-        return ThBadgeList::widget(['items' => $items, 'renderOptions' => $renderOptions]);
+        return ThBadgeList::widget(['items' => $items, 'renderOptions' => $renderOptions, 'htmlOptions' => $htmlOptions ]);
     }
 
     /**

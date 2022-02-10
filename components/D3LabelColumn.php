@@ -22,6 +22,7 @@ use Yii;
  */
 class D3LabelColumn extends DataColumn
 {
+    public const COLUMN_CLASS = 'badge-column';
     public $model;
     public $modelClass;
     public $badgeRenderOptions = [];
@@ -98,8 +99,9 @@ class D3LabelColumn extends DataColumn
 
         // need to toggle class provided from label definition
         if ($this->attachLink) {
+            $columnClass = self::COLUMN_CLASS;
             Yii::$app->view->registerJs("
-                   $('.badge').on('click', function() {
+                   $('.$columnClass').on('click', function() {
                             var modelId = $(this).parents('tr').attr('data-key');
                             var url = '$this->attachLink' + '&modelId=' + modelId;
                             
@@ -139,8 +141,7 @@ class D3LabelColumn extends DataColumn
             }
             $labelItems = D3LabelList::getBadgeItems($this->recordsWithLabels[$model->id]);
         }
-
-        return D3LabelList::getAsBadges($labelItems, $this->badgeRenderOptions);
+        return D3LabelList::getAsBadges($labelItems, $this->badgeRenderOptions, ['class' => self::COLUMN_CLASS]);
     }
 
     public function renderForExcel($model): string
