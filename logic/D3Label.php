@@ -3,11 +3,8 @@
 namespace d3yii2\d3labels\logic;
 
 use d3system\dictionaries\SysModelsDictionary;
-use d3system\exceptions\D3UserAlertException;
 use d3yii2\d3labels\dictionaries\D3lDefinitionDictionary;
 use d3yii2\d3labels\models\D3lLabel;
-use Throwable;
-use Yii;
 
 /**
  * Class D3Label
@@ -136,36 +133,8 @@ class D3Label
      */
     public static function detach(int $modelId, int $definitionId, int $userId = null): void
     {
-
-        $label = self::getAttachedLabel($modelId, $definitionId, $userId);
-
-        /**
-         * @var D3lLabel $label
-         */
-        if($label){
+        if ($label = self::getAttachedLabel($modelId, $definitionId, $userId)) {
             $label->delete();
-        }
-
-    }
-
-    /**
-     * Check if Model has attached label by Code
-     *
-     * @param object $model
-     * @param string $labelCode
-     * @throws Throwable
-     * @throws D3UserAlertException
-     */
-
-    public static function isLabelAttachByModelCode(object $model, string $labelCode): void
-    {
-        if($closedLabelId = D3lDefinitionDictionary::findByCodeModelObject($labelCode, $model)) {
-            $attachedL = new D3LabelList($model, Yii::$app->SysCmp->getActiveCompanyId());
-            foreach ($attachedL->getAttached() as $def_id => $label) {
-                if($def_id == $closedLabelId) {
-                    throw new D3UserAlertException(Yii::t('d3invoices', 'Changes are not allowed, invoice is "Closed"!'));
-                }
-            }
         }
     }
 
@@ -193,4 +162,18 @@ class D3Label
         return $activeQuery
             ->one();
     }
+
+    /**
+     * @param object|\d3yii2\d3activity\components\ActivityRecord $model
+     * @param string $labelCode
+     * @param int|null $userId
+     * @return \d3yii2\d3labels\models\D3lLabel|null
+     */
+    public static function getAttachedLabelByCode(object $model, string $labelCode, int $userId = null): ?D3lLabel
+    {
+        $codeId = D3lDefinitionDictionary::findByCodeModelObject($labelCode,$model);
+        return self::getAttachedLabel($model->id,$codeId, $userId);
+
+    }
+
 }

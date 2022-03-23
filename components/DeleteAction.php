@@ -30,7 +30,7 @@ class DeleteAction extends BaseAction
             FlashHelper::addInfo(Yii::t('d3labels', 'Can not find attached label'));
             return $this->redirect();
         }
-        if ($this->labelAccessRoles) {
+        if ($this->labelAccessRoles && isset($this->labelAccessRoles[$label->definition->code])) {
             $hasAccess = false;
             foreach ($this->labelAccessRoles[$label->definition->code]??[] as $roleName) {
                 if (Yii::$app->user->can($roleName)) {
