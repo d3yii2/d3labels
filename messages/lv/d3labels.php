@@ -37,7 +37,7 @@ return [
     'Labels' => 'Birkas',
     'Look' => 'Izskats',
     'Remove' => 'Noņemt',
-    'Label removed sucessfully' => 'Birka noņemta',
+    'Label removed successfully' => 'Birka noņemta',
     'Status' => 'Statuss',
     'Add Label' => 'Pievienot birku',
     'Attach Label to actual record' => 'Pirvienot birku aktuālajam ierakstam',
@@ -72,4 +72,5 @@ return [
     'Can not delete system labels(B)' => 'Can not delete system labels(B)',
     'Edit saved' => 'Izmaiņas saglabātas',
     'Save' => 'Saglabāt',
+    'You do not have rights for removing label "{labelName}"' => 'Jums nav tiesību noņemt birku "{labelName}"'
 ];

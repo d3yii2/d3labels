@@ -5,7 +5,6 @@ namespace d3yii2\d3labels\components;
 use d3yii2\d3labels\logic\D3Label;
 use eaBlankonThema\components\FlashHelper;
 use Exception;
-use Throwable;
 use Yii;
 
 /**
@@ -16,22 +15,42 @@ use Yii;
 class DeleteAction extends BaseAction
 {
 
+    /** @var string[] define access fo label deleting ['closed' => ['roleName1','roleName2']  */
+    public $labelAccessRoles = [];
+
     /**
      * @param int $modelId
      * @param int $labelId
+     * @param int|null $userId
      * @return Yii\web\Response
-     * @throws Throwable
      */
-    public function run(int $modelId, int $labelId): yii\web\Response
+    public function run(int $modelId, int $labelId, int $userId = null): yii\web\Response
     {
+        if (!$label = D3Label::getAttachedLabel($modelId, $labelId, $userId)) {
+            FlashHelper::addInfo(Yii::t('d3labels', 'Can not find attached label'));
+            return $this->redirect();
+        }
+        if ($this->labelAccessRoles) {
+            $hasAccess = false;
+            foreach ($this->labelAccessRoles[$label->definition->code]??[] as $roleName) {
+                if (Yii::$app->user->can($roleName)) {
+                    $hasAccess = true;
+                    break;
+                }
+            }
+            if (!$hasAccess) {
+                FlashHelper::addDanger(Yii::t(
+                    'd3labels',
+                    'You do not have rights for removing label "{labelName}"',
+                    ['labelName' => $label->definition->label]
+                ));
+                return $this->redirect();
+            }
+        }
         try {
-
             $this->loadModel($modelId);
-
-            D3Label::detach($modelId,$labelId);
-
-            $msg = Yii::t('d3labels', 'Label removed sucessfully');
-            FlashHelper::addSuccess($msg);
+            $label->delete();
+            FlashHelper::addSuccess(Yii::t('d3labels', 'Label removed successfully'));
         } catch (Exception $err) {
             FlashHelper::addDanger($err->getMessage());
         }

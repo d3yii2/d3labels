@@ -7,7 +7,6 @@ use d3system\exceptions\D3UserAlertException;
 use d3yii2\d3labels\dictionaries\D3lDefinitionDictionary;
 use d3yii2\d3labels\models\D3lLabel;
 use Throwable;
-use yii\db\StaleObjectException;
 use Yii;
 
 /**
@@ -132,25 +131,13 @@ class D3Label
      *
      * @param int $modelId
      * @param int $definitionId
-     * @throws Throwable
-     * @throws StaleObjectException
+     * @param int|null $userId
+     * @throws \yii\db\StaleObjectException
      */
     public static function detach(int $modelId, int $definitionId, int $userId = null): void
     {
 
-        $activeQuery = D3lLabel::find()
-            ->where([
-                'model_record_id' => $modelId,
-                'definition_id' => $definitionId
-            ]);
-
-
-        if ($userId) {
-            $activeQuery->andWhere(['user_id' => $userId]);
-        }
-
-        $label = $activeQuery
-            ->one();
+        $label = self::getAttachedLabel($modelId, $definitionId, $userId);
 
         /**
          * @var D3lLabel $label
@@ -185,19 +172,25 @@ class D3Label
     /**
      * check if model has attachment
      *
-     * @param $modelId
-     * @param $defId
-     * @param $userId
+     * @param int $modelId
+     * @param int $defId
+     * @param int|null $userId
      *
      * @return D3lLabel | null
      */
-    public static function getAttachedLabel($modelId, $defId, $userId)
+    public static function getAttachedLabel(int $modelId, int $defId, int $userId = null): ?D3lLabel
     {
+        $activeQuery = D3lLabel::find()
+            ->where([
+                'model_record_id' => $modelId,
+                'definition_id' => $defId
+            ]);
 
-        return D3lLabel::findOne([
-            'model_record_id' => $modelId,
-            'definition_id' => $defId,
-            'user_id' => $userId
-        ]);
+        if ($userId) {
+            $activeQuery
+                ->andWhere(['user_id' => $userId]);
+        }
+        return $activeQuery
+            ->one();
     }
 }

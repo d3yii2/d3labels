@@ -176,7 +176,12 @@ class SettingsController extends LayoutController
             'd3labelsremove' => [
                 'class' => DeleteAction::class,
                 'modelName' => CwbrProduct::class,
-            ],
+                'labelAccessRoles' => [
+                    'WarningLabel' => [
+                        'FinanceAdmin'
+                    ]
+                ]
+            ],                
             'd3labelsdefinitionremove' => [
                 'class' => DefinitionDeleteAction::class,
                 'modelName' => CwbrProduct::class,
