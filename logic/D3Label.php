@@ -173,7 +173,20 @@ class D3Label
     {
         $codeId = D3lDefinitionDictionary::findByCodeModelObject($labelCode,$model);
         return self::getAttachedLabel($model->id,$codeId, $userId);
+    }
 
+    /**
+     * @param string $modelClass
+     * @param int $modelRecordId
+     * @param string $labelCode
+     * @param int|null $userId
+     * @return \d3yii2\d3labels\models\D3lLabel|null
+     * @throws \d3system\exceptions\D3ActiveRecordException
+     */
+    public static function getAttachedLabelByClassCode(string $modelClass, int $modelRecordId, string $labelCode, int $userId = null): ?D3lLabel
+    {
+        $codeId = D3lDefinitionDictionary::findByCodeModel($labelCode,$modelClass);
+        return self::getAttachedLabel($modelRecordId,$codeId, $userId);
     }
 
 }
