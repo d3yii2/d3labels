@@ -72,5 +72,7 @@ return [
     'Can not delete system labels(B)' => 'Can not delete system labels(B)',
     'Edit saved' => 'Izmaiņas saglabātas',
     'Save' => 'Saglabāt',
-    'You do not have rights for removing label "{labelName}"' => 'Jums nav tiesību noņemt birku "{labelName}"'
+    'You do not have rights for removing label "{labelName}"' => 'Jums nav tiesību noņemt birku "{labelName}"',
+    'Added' => 'Pievienoja birku',
+    'Droped' => 'Noņēma birku'
 ];

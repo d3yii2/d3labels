@@ -5,7 +5,6 @@
 namespace d3yii2\d3labels\models\base;
 
 use Yii;
-
 use d3system\behaviors\D3DateTimeBehavior;
 
 /**
@@ -16,6 +15,7 @@ use d3system\behaviors\D3DateTimeBehavior;
  * @property integer $model_record_id
  * @property integer $user_id
  * @property string $time
+ * @property string $notes
  *
  * @property \d3yii2\d3labels\models\D3lDefinition $definition
  * @property string $aliasModel
@@ -33,7 +33,6 @@ abstract class D3lLabel extends \yii\db\ActiveRecord
         return 'd3l_label';
     }
 
-
     /**
      * @inheritdoc
      */
@@ -48,7 +47,6 @@ abstract class D3lLabel extends \yii\db\ActiveRecord
         return $behaviors;
     }
 
-
     /**
      * @inheritdoc
      */
@@ -60,6 +58,7 @@ abstract class D3lLabel extends \yii\db\ActiveRecord
             'integer Unsigned' => [['id','model_record_id'],'integer' ,'min' => 0 ,'max' => 4294967295],
             'integer Signed' => [['user_id'],'integer' ,'min' => -2147483648 ,'max' => 2147483647],
             [['time'], 'safe'],
+            [['notes'], 'string', 'max' => 255],
             [['definition_id'], 'exist', 'skipOnError' => true, 'targetClass' => \d3yii2\d3labels\models\D3lDefinition::className(), 'targetAttribute' => ['definition_id' => 'id']],
             'D3DateTimeBehavior' => [['time_local'],'safe']
         ];
@@ -76,6 +75,7 @@ abstract class D3lLabel extends \yii\db\ActiveRecord
             'model_record_id' => Yii::t('d3labels', 'Model Record ID'),
             'user_id' => Yii::t('d3labels', 'User ID'),
             'time' => Yii::t('d3labels', 'Time'),
+            'notes' => Yii::t('d3labels', 'Notes'),
         ];
     }
 

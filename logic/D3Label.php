@@ -42,7 +42,7 @@ class D3Label
     /**
      * @throws \yii\web\NotFoundHttpException
      */
-    public static function attachByModelCode(object $model, string $labelCode): bool
+    public static function attachByModelCode(object $model, string $labelCode, string $notes = ''): bool
     {
         $definitionId = D3lDefinitionDictionary::findByCodeModelObject($labelCode, $model );
         $definition = D3Definition::loadDefinition($definitionId);
@@ -59,6 +59,7 @@ class D3Label
         $mapping = new D3lLabel();
         $mapping->model_record_id = $model->id;
         $mapping->definition_id = $definition->id;
+        $mapping->notes = $notes;
 
         $mapping->saveOrException();
 
@@ -77,7 +78,8 @@ class D3Label
     public static function attach(
         int $modelId,
         int $definitionId,
-        int $userId = null
+        int $userId = null,
+        string $notes = ''
     ): bool
     {
         $definition = D3Definition::loadDefinition($definitionId);
@@ -99,6 +101,7 @@ class D3Label
         $mapping = new D3lLabel();
         $mapping->model_record_id = $modelId;
         $mapping->definition_id = $definition->id;
+        $mapping->notes = $notes;
 
         $mapping->saveOrException();
 

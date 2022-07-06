@@ -74,4 +74,15 @@ class D3lLabel extends BaseD3lLabel
         return parent::beforeSave($insert);
     }
 
+    public function afterSave($insert, $changedAttributes)
+    {
+        parent::afterSave($insert, $changedAttributes);
+        D3lLabelHistory::newRecord($this, D3lLabelHistory::ACTION_ADDED);
+    }
+
+    public function afterDelete()
+    {
+        parent::afterDelete();
+        D3lLabelHistory::newRecord($this, D3lLabelHistory::ACTION_DROPED);
+    }
 }

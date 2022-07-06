@@ -23,7 +23,7 @@ use yii\db\Exception;
  * @property string $action_class
  * @property string $action_method
  *
- * @property \d3yii2\d3labels\models\D3LabelHistory[] $d3LabelHistories
+ * @property \d3yii2\d3labels\models\D3lLabelHistory[] $d3lLabelHistories
  * @property SysModels $model
  * @property \d3yii2\d3labels\models\D3lLabel[] $d3lLabels
  * @property \d3yii2\d3labels\models\D3lTimeBomb[] $d3lTimeBombs
@@ -96,9 +96,9 @@ abstract class D3lDefinition extends ActiveRecord
     /**
      * @return ActiveQuery
      */
-    public function getD3LabelHistories()
+    public function getD3lLabelHistories()
     {
-        return $this->hasMany(\d3yii2\d3labels\models\D3LabelHistory::className(), ['definition_id' => 'id'])->inverseOf('definition');
+        return $this->hasMany(\d3yii2\d3labels\models\D3lLabelHistory::className(), ['definition_id' => 'id'])->inverseOf('definition');
     }
 
     /**
@@ -127,7 +127,7 @@ abstract class D3lDefinition extends ActiveRecord
 
 
     /**
-     * @return \d3yii2\d3labels\models\D3LabelHistory
+     * @return \d3yii2\d3labels\models\D3lLabelHistory
      * @throws Exception
      */
     public function newD3LabelHistories()
@@ -135,7 +135,7 @@ abstract class D3lDefinition extends ActiveRecord
         if ($this->getIsNewRecord()){
             throw new Exception('Can not create new related record for new record!');
         }
-        $model = new \d3yii2\d3labels\models\D3LabelHistory();
+        $model = new \d3yii2\d3labels\models\D3lLabelHistory();
         $model->definition_id = $this->id;
         return $model;
     }
