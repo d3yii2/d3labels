@@ -74,5 +74,8 @@ return [
     'Save' => 'Saglabāt',
     'You do not have rights for removing label "{labelName}"' => 'Jums nav tiesību noņemt birku "{labelName}"',
     'Added' => 'Pievienoja birku',
-    'Droped' => 'Noņēma birku'
+    'Droped' => 'Noņēma birku',
+    'Add label "{label}"' => 'Pievienot birku "{label}"',
+    'Label "{labelOfLabel}" added to {cnt} records' => 'Birka "{labelOfLabel}" pievienota {cnt} ierakstiem',
+    'Label "{labelOfLabel}" is not attached to any record' => 'Birka "{labelOfLabel}" nav pievienota neveinam ierakstam'
 ];

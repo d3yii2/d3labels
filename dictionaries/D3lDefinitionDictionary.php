@@ -20,12 +20,19 @@ class D3lDefinitionDictionary
      * @return array
      * @throws D3ActiveRecordException
      */
-    public static function getList(int $sysCompanyId, string $modelClass): array
+    public static function getList(
+        int $sysCompanyId,
+        string $modelClass,
+        array $ignoreByCode = []
+    ): array
     {
         $modelId = SysModelsDictionary::getIdByClassName($modelClass);
         $fullList = self::getFullSelect();
         $list = [];
         foreach ($fullList as $row) {
+            if ($ignoreByCode && in_array($row['code'], $ignoreByCode, true)) {
+                continue;
+            }
             if ($row['sys_company_id'] && (int)$row['sys_company_id'] !== $sysCompanyId) {
                 continue;
             }

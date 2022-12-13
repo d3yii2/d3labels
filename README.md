@@ -294,6 +294,68 @@ $columns[] = [
     //'badgeRenderOptions' => ['iconsWithText' => true],
 ];
 ```
+
+For bulk in grid view
+--------------------
+
+Controller
+```php 
+use d3yii2\d3labels\logic\D3LabelBulk;
+
+    /**
+     * @return \d3yii2\d3labels\logic\D3LabelBulk
+     * @throws \yii\db\Exception
+     */
+    private function createLabelBulk(): D3LabelBulk
+    {
+        return new D3LabelBulk([
+            'modelClassName' => MyClASS::class,
+            'sysCompanyId' => Yii::$app->SysCmp->getActiveCompanyId(),
+            'userId' => Yii::$app->user->id,
+            'ignoreLabelsByCode' => [RkInvoice::LABEL_CODE_CLOSED]
+        ]);
+    }
+
+    public function actionIndex()
+    {
+            $labelBulk = $this->createLabelBulk();
+            return $this->render('index', [
+                'dataProvider' => $searchModel->search(),
+                'searchModel' => $searchModel,
+                'bulkActions' => $labelBulk->list()
+            ]);        
+    }
+
+    public function actionBulk()
+    {
+        $request = Yii::$app->request;
+        $action = $request->post('action');
+        /** @var int[] $selection */
+        if (!$selection = $request->post('selection')) {
+            return $this->redirect(['index']);
+        }
+
+        /**
+         * check access for checked rows
+         */
+        foreach ($selection as $id) {
+            $this->findModel($id);
+        }
+    
+        /** Labels */
+        $labelBulk = $this->createLabelBulk();
+        if ($labelBulk->isBulkAction($action)) {
+            if ($cnt = $labelBulk->processBulkAction($action,$selection)) {
+                FlashHelper::addSuccess($labelBulk->successMessage($action, $cnt));
+            } else {
+                FlashHelper::addSuccess($labelBulk->nothingAddedMessage($action));
+            }
+            return $this->redirect(['index']);
+        }
+    }
+```
+
+
 Search model
 ------------
 Add attribute label_type
