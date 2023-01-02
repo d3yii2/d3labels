@@ -106,7 +106,42 @@ class m210426_100707_label_new_remove  extends Migration {
 Widget for creating labels
 ---------------
 
-Controller
+Model controller
+----------------
+Add actions d3labelsattach and d3labelsremove
+
+Access rules
+```php
+                  [
+                        'allow' => true,
+                        'actions' => [
+                            'd3labelsattach',
+                            'd3labelsremove',
+                        ],
+                        'roles' => [
+                            'ModuleAdminRoleName',
+                        ],
+                    ],
+```
+
+Actions
+```php
+    public function actions(): array
+    {
+        return [
+            'd3labelsattach' => [
+                'class' => AttachAction::class,
+                'modelName' => D3pPerson::class,
+            ],
+            'd3labelsremove' => [
+                'class' => DeleteAction::class,
+                'modelName' => D3pPerson::class,
+            ],
+        ];
+    }
+```
+
+Label admin Controller
 -------
 ```php
 
@@ -139,15 +174,12 @@ class SettingsController extends LayoutController
                     [
                         'allow' => true,
                         'actions' => [
-                            'index',
                             'labels',
                             'd3labelscreate',
-                            'd3labelsattach',
-                            'd3labelsremove',
                             'd3labelsdefinitionremove',
                         ],
                         'roles' => [
-                            'CwStoreFullUserRole'
+                            'ModuleAdminRoleName'
                         ]
                     ],
                 ]
@@ -169,36 +201,13 @@ class SettingsController extends LayoutController
                     return Yii::$app->SysCmp->getActiveCompanyId();
                 }
             ],
-            'd3labelsattach' => [
-                'class' => AttachAction::class,
-                'modelName' => CwbrProduct::class,
-            ],
-            'd3labelsremove' => [
-                'class' => DeleteAction::class,
-                'modelName' => CwbrProduct::class,
-                'labelAccessRoles' => [
-                    'WarningLabel' => [
-                        'FinanceAdmin'
-                    ]
-                ]
-            ],                
+            
             'd3labelsdefinitionremove' => [
                 'class' => DefinitionDeleteAction::class,
                 'modelName' => CwbrProduct::class,
                 //'sysLabelsIdList' => [2]
             ],
         ];
-    }
-
-    /**
-     * @return string
-     */
-    public function actionIndex(): string
-    {
-        return $this->render('labels', [
-            'active' => true,
-        ]);
-
     }
 
     /**
@@ -213,6 +222,49 @@ class SettingsController extends LayoutController
     }
 
 }
+
+```
+
+Label admin view
+```php
+<?php
+
+use d3yii2\d3labels\widgets\D3LabelCreate;
+use eaBlankonThema\assetbundles\layout\LayoutAsset;
+use yii2d3\d3persons\models\D3pPerson;
+
+LayoutAsset::register($this);
+
+/**
+ * @var \d3system\yii2\web\D3SystemView $this
+ */
+
+$title = Yii::t('d3persons', 'Labels settings');
+$this->title = $title;
+$this->setPageHeader($title);
+$this->setPageIcon('tags');
+$this->setPageWiki('drpersons-conf-person-labels');
+$this->addPageButtons(\eaBlankonThema\widget\ThReturnButton::widget([
+        'link' => ['d3p-person/my-company-index']
+]))
+
+/**
+ * @var yii\web\View $this
+ *
+ * */
+?>
+<div class="panel panel-tab panel-tab-double shadow">
+    <div class="panel-body">
+        <div class="tab-content">
+            <div class="tab-pane fade in active">
+                <?= D3LabelCreate::widget([
+                    'modelClass' => D3pPerson::class,
+                    'sysCompanyId' => Yii::$app->SysCmp->getActiveCompanyId()
+                ])?>
+            </div>
+        </div>
+    </div>
+</div>
 
 ```
 
@@ -358,9 +410,25 @@ use d3yii2\d3labels\logic\D3LabelBulk;
 
 Search model
 ------------
-Add attribute label_type
+Add attribute label_type to search model
 
 ```php 
+    use d3yii2\d3labels\components\QuerySearch;
+    
+    ...
+    
+    public $label_type;
+    
+    ...
+    
+    public function rules() {
+        return [
+            ['label_type','safe']
+        ];
+    }    
+    
+    ....
+    
     QuerySearch::addFilter($query, $this->label_type, '`inv_invoice`.`id`');
 ```
 
