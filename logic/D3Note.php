@@ -2,9 +2,11 @@
 
 namespace d3yii2\d3labels\logic;
 
+use cewood\cwatlikumi\models\CwatPack;
 use d3system\dictionaries\SysModelsDictionary;
 use d3yii2\d3labels\dictionaries\D3lDefinitionDictionary;
 use d3yii2\d3labels\models\D3Note as NoteModel;
+use yii\db\ActiveRecord;
 
 /**
  * Class D3Note
@@ -13,25 +15,16 @@ use d3yii2\d3labels\models\D3Note as NoteModel;
 class D3Note
 {
     /**
-     * Get all Labels
-     * @return D3lLabel[]
-     */
-    public static function getAll(): array
-    {
-        return NoteModel::findAll([]);
-    }
-
-    /**
      * Get all attached notes for the model by ID
-     * @param int $modelId
-     * @return NoteModel[]
-     * @throws \d3system\exceptions\D3ActiveRecordException
+     * @param ActiveRecord $model
+     * @return array
      */
-    public static function getAllByModel(int $modelId): array
+    public static function getAllByModel(ActiveRecord $model, ?string $modelClass = null): array
     {
         return NoteModel::find()
             ->where([
-                'model_record_id' => $modelId,
+                'model_id' => self::getSysModelId($model, $modelClass),
+                'model_record_id' => $model->id,
             ])
             ->all();
     }
@@ -46,10 +39,12 @@ class D3Note
      * @return bool
      * @throws \yii\web\NotFoundHttpException
      */
-    public static function attach(int $modelId, int $modelRecordId, string $content, int $userId): bool
+    public static function attach(ActiveRecord $model, string $content, int $userId): bool
     {
+        $sysModelId = self::getSysModelId($model);
+            
         $note = NoteModel::find()
-            ->where(['model_id' => $modelId, 'model_record_id' => $modelRecordId, 'user_id' => $userId])
+            ->where(['model_id' => $sysModelId, 'model_record_id' => $model->id, 'user_id' => $userId])
             ->one();
 
         if ($note) {
@@ -58,8 +53,8 @@ class D3Note
         }
 
         $mapping = new NoteModel();
-        $mapping->model_id = $modelId;
-        $mapping->model_record_id = $modelRecordId;
+        $mapping->model_id = $sysModelId;
+        $mapping->model_record_id = $model->id;
         $mapping->notes = $content;
         $mapping->user_id = $userId;
 
@@ -69,32 +64,33 @@ class D3Note
     }
 
     /**
-     * Detach a Note from the Model
-     *
-     * @param int $modelId
+     * Detach a Notes from the Model
+     * @param ActiveRecord $model
      * @param int|null $userId
-     * @throws \yii\db\StaleObjectException
      */
-    public static function detach(int $modelId, int $userId = null): void
+    public static function detach(ActiveRecord $model, ?int $userId = null): void
     {
-        if ($note = self::getAttachedNote($modelId, $userId)) {
-            $note->delete();
+        if ($notes = self::getAttachedNotes($model, $userId)) {
+            
+            foreach ($notes as $note) {
+                $note->delete();
+            }
         }
     }
 
     /**
      * Get all notes attached to model
-     *
-     * @param int $modeRecordId
+     * @param ActiveRecord $model
      * @param int|null $userId
-     *
      * @return array
      */
-    public static function getAttachedNotes(int $modelRecordId, int $userId = null): array
+    public static function getAttachedNotes(ActiveRecord $model, ?int $userId = null, ?string $modelClass = null): array
     {
+        
         $activeQuery = NoteModel::find()
             ->where([
-                'model_record_id' => $modelRecordId,
+                'model_id' => self::getSysModelId($model, $modelClass),
+                'model_record_id' => $model->id,
             ]);
 
         if ($userId) {
@@ -103,5 +99,15 @@ class D3Note
         }
         return $activeQuery
             ->all();
+    }
+
+    /**
+     * @param ActiveRecord $model
+     * @return null|int
+     * @throws \d3system\exceptions\D3ActiveRecordException
+     */
+    private static function getSysModelId(ActiveRecord $model, ?string $modelClass = null): ?int
+    {
+        return SysModelsDictionary::getIdByClassName($modelClass ?? get_class($model));
     }
 }

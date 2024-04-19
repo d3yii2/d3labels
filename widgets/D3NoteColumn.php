@@ -4,13 +4,14 @@ namespace d3yii2\d3labels\widgets;
 
 use Closure;
 use d3yii2\d3labels\logic\D3Note;
+use d3yii2\d3store\models\StoreTransactions;
 use yii\db\ActiveRecord;
 use yii\grid\DataColumn;
 use yii\helpers\Html;
 
 class D3NoteColumn extends DataColumn
 {
-    
+
     /**
      * Renders a data cell.
      * @param mixed $model the data model being rendered
@@ -25,13 +26,13 @@ class D3NoteColumn extends DataColumn
         } else {
             $options = $this->contentOptions;
         }
-        
+
         $options['id'] = 'd3notes-data-col-' . $this->attribute . '-' . $key;
         $options['class'] = 'd3notes-data-col-' . $this->attribute;
-        
+
         return Html::tag('td', $this->renderDataCellContent($model, $key, $index), $options);
     }
-    
+
     /**
      * @param mixed $model
      * @param mixed $key
@@ -42,12 +43,12 @@ class D3NoteColumn extends DataColumn
     {
         $cellValue = '';
 
-        $notes = D3Note::getAttachedNotes($model->id);
-            
-            foreach ($notes as $note)  {
-                $cellValue = Html::tag('span', Html::encode($note->notes));
-            }
-            
+        $notes = D3Note::getAttachedNotes($model, null,StoreTransactions::class);
+
+        foreach ($notes as $note) {
+            $cellValue = Html::tag('span', Html::encode($note->notes));
+        }
+
         return $cellValue;
     }
 }

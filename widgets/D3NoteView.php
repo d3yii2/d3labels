@@ -39,7 +39,7 @@ class D3NoteView extends Widget
     {
         parent::init();
 
-        $this->attached = D3Note::getAttachedNotes($this->model->id ?? null, $this->userId);
+        $this->attached = D3Note::getAttachedNotes($this->model, $this->userId);
     }
 
     /**
