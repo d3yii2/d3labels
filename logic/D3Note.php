@@ -41,19 +41,8 @@ class D3Note
      */
     public static function attach(ActiveRecord $model, string $content, int $userId): bool
     {
-        $sysModelId = self::getSysModelId($model);
-            
-        $note = NoteModel::find()
-            ->where(['model_id' => $sysModelId, 'model_record_id' => $model->id, 'user_id' => $userId])
-            ->one();
-
-        if ($note) {
-            // Ignorē ja piesaistīta, lai neizraisītu exception pie lapas pārlādes
-            return true;
-        }
-
         $mapping = new NoteModel();
-        $mapping->model_id = $sysModelId;
+        $mapping->model_id = self::getSysModelId($model);
         $mapping->model_record_id = $model->id;
         $mapping->notes = $content;
         $mapping->user_id = $userId;
@@ -82,7 +71,9 @@ class D3Note
      * Get all notes attached to model
      * @param ActiveRecord $model
      * @param int|null $userId
+     * @param string|null $modelClass
      * @return array
+     * @throws \d3system\exceptions\D3ActiveRecordException
      */
     public static function getAttachedNotes(ActiveRecord $model, ?int $userId = null, ?string $modelClass = null): array
     {

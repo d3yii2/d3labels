@@ -505,3 +505,72 @@ use d3yii2\d3labels\dictionaries\D3lDefinitionDictionary;
 
 $list = D3lDefinitionDictionary::getList($sysCompanyId, CwStorePack::class)
 ```
+
+Attach Note to model
+-
+```php
+use d3yii2\d3labels\logic\D3Note;
+
+D3Note::attach($model, $noteContent);
+```
+
+Attach User Note to model
+-
+```php
+use d3yii2\d3labels\logic\D3Note;
+
+D3Note::attach($model, $noteContent, $userId);
+```
+
+Detach Note from model
+-
+```php
+use d3yii2\d3labels\logic\D3Note;
+
+D3Note::detach($model);
+```
+
+Detach User Note from model 
+-
+```php
+use d3yii2\d3labels\logic\D3Note;
+
+D3Note::detach($model, $userId);
+```
+
+Show Note in Grid View column 
+-
+```php
+use d3yii2\d3labels\widgets\D3NoteColumn;
+
+$columns[] = [
+    'attribute' => 'notes',
+    'header' => 'Piezīmes',
+    'class' => D3NoteColumn::class,
+];
+```
+
+Show Note in Grid View column with custom Class
+-
+```php
+use d3yii2\d3labels\widgets\D3NoteColumn;
+
+$columns[] = [
+    'attribute' => 'notes',
+    'header' => 'Piezīmes',
+    'class' => D3NoteColumn::class,
+    'modelClasss' => ExampleModel::class,
+];
+```
+
+Show Note in Widget
+-
+```php
+use d3yii2\d3labels\widgets\D3NoteView
+
+<?= D3NoteView::widget([
+        'model' => $model,
+        // Optional
+        'userId' => $userId,
+]) ?>
+```

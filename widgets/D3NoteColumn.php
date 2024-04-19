@@ -5,12 +5,14 @@ namespace d3yii2\d3labels\widgets;
 use Closure;
 use d3yii2\d3labels\logic\D3Note;
 use d3yii2\d3store\models\StoreTransactions;
+use yii\base\Exception;
 use yii\db\ActiveRecord;
 use yii\grid\DataColumn;
 use yii\helpers\Html;
 
 class D3NoteColumn extends DataColumn
 {
+    public ?string $modelClasss = null;
 
     /**
      * Renders a data cell.
@@ -43,7 +45,9 @@ class D3NoteColumn extends DataColumn
     {
         $cellValue = '';
 
-        $notes = D3Note::getAttachedNotes($model, null,StoreTransactions::class);
+        $modelClass = $this->modelClasss ?? get_class($model);
+        
+        $notes = D3Note::getAttachedNotes($model, null, $modelClass);
 
         foreach ($notes as $note) {
             $cellValue = Html::tag('span', Html::encode($note->notes));
