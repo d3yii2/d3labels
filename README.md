@@ -505,7 +505,7 @@ use d3yii2\d3labels\dictionaries\D3lDefinitionDictionary;
 
 $list = D3lDefinitionDictionary::getList($sysCompanyId, CwStorePack::class)
 ```
-
+# NOTES
 Attach Note to model
 -
 ```php
@@ -569,8 +569,27 @@ Show Note in Widget
 use d3yii2\d3labels\widgets\D3NoteView
 
 <?= D3NoteView::widget([
-        'model' => $model,
-        // Optional
-        'userId' => $userId,
-]) ?>
+    'model' => $model,
+    'canEdit' => $canEdit,
+    'addButtonLink' =>  [
+        'notes-add',
+        'id' => $model->id,
+        'ru' => ReturnUrl::getToken()
+    ]
+]);
+```
+
+Add action to controller for adding notes
+
+```php
+    public function actions(): array
+    {
+        return [
+            'notes-add' => [
+                'class' => AttachNoteAction::class,
+                'userId' => Yii::$app->user->id,
+            ]
+        ];
+    }
+
 ```

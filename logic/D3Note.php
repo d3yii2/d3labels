@@ -2,11 +2,11 @@
 
 namespace d3yii2\d3labels\logic;
 
-use cewood\cwatlikumi\models\CwatPack;
 use d3system\dictionaries\SysModelsDictionary;
-use d3yii2\d3labels\dictionaries\D3lDefinitionDictionary;
+use d3system\exceptions\D3ActiveRecordException;
 use d3yii2\d3labels\models\D3Note as NoteModel;
 use yii\db\ActiveRecord;
+use yii\db\Exception;
 
 /**
  * Class D3Note
@@ -14,10 +14,13 @@ use yii\db\ActiveRecord;
  */
 class D3Note
 {
+
     /**
      * Get all attached notes for the model by ID
      * @param ActiveRecord $model
+     * @param string|null $modelClass
      * @return array
+     * @throws D3ActiveRecordException
      */
     public static function getAllByModel(ActiveRecord $model, ?string $modelClass = null): array
     {
@@ -32,14 +35,14 @@ class D3Note
     /**
      * Attach the Note to Model
      *
-     * @param int $modelId
-     * @param int $modelRecordId
+     * @param ActiveRecord $model
      * @param string $content
-     * @param int $userId
+     * @param int|null $userId
      * @return bool
-     * @throws \yii\web\NotFoundHttpException
+     * @throws D3ActiveRecordException
+     * @throws Exception
      */
-    public static function attach(ActiveRecord $model, string $content, int $userId): bool
+    public static function attach(ActiveRecord $model, string $content, int $userId = null): bool
     {
         $mapping = new NoteModel();
         $mapping->model_id = self::getSysModelId($model);
@@ -56,6 +59,7 @@ class D3Note
      * Detach a Notes from the Model
      * @param ActiveRecord $model
      * @param int|null $userId
+     * @throws D3ActiveRecordException
      */
     public static function detach(ActiveRecord $model, ?int $userId = null): void
     {
@@ -73,15 +77,23 @@ class D3Note
      * @param int|null $userId
      * @param string|null $modelClass
      * @return array
-     * @throws \d3system\exceptions\D3ActiveRecordException
+     * @throws D3ActiveRecordException
      */
     public static function getAttachedNotes(ActiveRecord $model, ?int $userId = null, ?string $modelClass = null): array
     {
         
         $activeQuery = NoteModel::find()
+            ->select([
+                'd3l_notes.*',
+                'userName' => 'user.username',
+            ])
+            ->leftJoin(
+                'user',
+                'user.id = d3l_notes.user_id'
+            )
             ->where([
-                'model_id' => self::getSysModelId($model, $modelClass),
-                'model_record_id' => $model->id,
+                'd3l_notes.model_id' => self::getSysModelId($model, $modelClass),
+                'd3l_notes.model_record_id' => $model->id,
             ]);
 
         if ($userId) {
@@ -94,8 +106,9 @@ class D3Note
 
     /**
      * @param ActiveRecord $model
+     * @param string|null $modelClass
      * @return null|int
-     * @throws \d3system\exceptions\D3ActiveRecordException
+     * @throws D3ActiveRecordException
      */
     private static function getSysModelId(ActiveRecord $model, ?string $modelClass = null): ?int
     {

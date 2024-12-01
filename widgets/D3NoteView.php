@@ -2,17 +2,18 @@
 
 namespace d3yii2\d3labels\widgets;
 
-use d3system\dictionaries\SysModelsDictionary;
 use d3yii2\d3labels\logic\D3Note;
+use eaBlankonThema\widget\ThButton;
+use eaBlankonThema\widget\ThPanel;
 use Exception;
 use Yii;
 use yii\base\Widget;
 use yii\db\ActiveRecord;
-use yii\helpers\Html;
+
 
 /**
  * Class D3NoteView
- * Use for displaying notes without adding, removing. Can use in DetailViev
+ * Use for displaying notes without adding, removing. Can use in DetailView
  * @package d3yii2\d3labels\widgets
  * @property string $modelClass
  * @property yii\web\Controller
@@ -20,16 +21,21 @@ use yii\helpers\Html;
  */
 class D3NoteView extends Widget
 {
-    /** @var ActiveRecord */
-    public $model;
+
+    public ?string $title = null;
+    public ?array $addButtonLink = null;
+    public ?bool $canEdit = false;
+
+    /** @var object|null|ActiveRecord */
+    public ?object $model = null;
 
     /** @var null|int **/
     public ?int $userId = null;
 
     /**
-     * @var array
+     * @var \d3yii2\d3labels\models\D3Note[]
      */
-    private $attached = [];
+    private array $attached = [];
 
 
     /**
@@ -49,16 +55,28 @@ class D3NoteView extends Widget
      */
     public function run(): string
     {
-        $content = '';
-        
-        $notes = [];
-        foreach ($this->attached as $note) {
-
-            $notes[] = Html::tag('span', $note->notes, ['class' => 'd3notes-item']);
+        $headerHtml = '';
+        if ($this->canEdit && $this->addButtonLink) {
+            $headerHtml .= ThButton::widget([
+                'label' => Yii::t('d3labels', 'Add'),
+                'link' =>$this->addButtonLink,
+                'icon' => ThButton::ICON_PLUS,
+                'type' => ThButton::TYPE_SUCCESS,
+                'size' => ThButton::SIZE_SMALL
+            ]);
         }
-
-        $content .= implode(' ', $notes);
-        
-        return $content;
+        $headerHtml .= $this->title ?? Yii::t('d3labels', 'Notes');
+        $bodyHtml = '';
+        foreach ($this->attached as $note) {
+            $bodyHtml .= ThPanel::widget([
+                'header' => trim($note->time . ' ' . ($note->userName??'')),
+                'body' => $note->notes
+            ]);
+        }
+        return ThPanel::widget([
+            'type' => ThPanel::TYPE_DEFAULT,
+            'header' => $headerHtml,
+            'body' => $bodyHtml,
+        ]);
     }
 }
