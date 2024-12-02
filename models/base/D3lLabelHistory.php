@@ -146,7 +146,7 @@ abstract class D3lLabelHistory extends \yii\db\ActiveRecord
     {
         return [
             self::ACTION_ADDED => Yii::t('d3labels', 'Added'),
-            self::ACTION_DROPED => Yii::t('d3labels', 'Droped'),
+            self::ACTION_DROPED => Yii::t('d3labels', 'Dropped'),
             self::ACTION_CANCELED => Yii::t('d3labels', 'Canceled'),
             self::ACTION_EXPLODED => Yii::t('d3labels', 'Exploded'),
         ];

@@ -22,7 +22,7 @@ return [
     'Attach Label' => 'Pievienot birku',
     'Cancel and close' => 'Atcelt un aizvērt',
     'Create Label' => 'Izveidot birku',
-    'Collor' => 'Krāsa',
+    'Color' => 'Krāsa',
     'Cannot delete.  Attached to records' => 'Nav iespējams dzēst. Šī birka ir piesaistīta ierakstiem',
     'Deleted sucessfully' => 'Veiksmīgi dzēsta',
     'Not exists or deleted already' => 'Neeksistē vai jau ir dzēsta',
@@ -74,8 +74,11 @@ return [
     'Save' => 'Saglabāt',
     'You do not have rights for removing label "{labelName}"' => 'Jums nav tiesību noņemt birku "{labelName}"',
     'Added' => 'Pievienoja birku',
-    'Droped' => 'Noņēma birku',
+    'Dropped' => 'Noņēma birku',
     'Add label "{label}"' => 'Pievienot birku "{label}"',
     'Label "{labelOfLabel}" added to {cnt} records' => 'Birka "{labelOfLabel}" pievienota {cnt} ierakstiem',
-    'Label "{labelOfLabel}" is not attached to any record' => 'Birka "{labelOfLabel}" nav pievienota neveinam ierakstam'
+    'Label "{labelOfLabel}" is not attached to any record' => 'Birka "{labelOfLabel}" nav pievienota neveinam ierakstam',
+    'Add' => 'Добавить',
+    'Add a note' => 'Добавить примечание',
+    'Note' => 'Примечание',
 ];

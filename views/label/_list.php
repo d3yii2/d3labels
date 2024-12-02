@@ -15,7 +15,7 @@ use yii\helpers\Html;
     <tr>
         <th scope="col"><?= Yii::t('d3labels', 'Label') ?></th>
         <th scope="col"><?= Yii::t('d3labels', 'Icon') ?></th>
-        <th scope="col"><?= Yii::t('d3labels', 'Collor') ?></th>
+        <th scope="col"><?= Yii::t('d3labels', 'Color') ?></th>
         <th scope="col"><?= Yii::t('d3labels', 'Look') ?></th>
         <th scope="col"><?= Yii::t('crud', 'Action') ?></th>
     </tr>

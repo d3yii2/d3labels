@@ -32,7 +32,7 @@ Yii::$app->view->addPageButtons(ThReturnButton::widget(['backUrl' => ReturnUrl::
 
                     <?= $form->field($model, 'note')->textInput() ?>
                     <?= ThButton::widget([
-                        'label' => Yii::t('d3labels', 'Save'),
+                        'label' => Yii::t('d3labels', 'Add'),
                         'icon' => ThButton::ICON_CHECK,
                         'type' => ThButton::TYPE_SUCCESS,
                         'submit' => true,
