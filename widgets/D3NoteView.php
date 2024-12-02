@@ -3,9 +3,8 @@
 namespace d3yii2\d3labels\widgets;
 
 use d3yii2\d3labels\logic\D3Note;
-use eaBlankonThema\widget\ThButton;
-use eaBlankonThema\widget\ThPanel;
 use Exception;
+use ReflectionClass;
 use Yii;
 use yii\base\Widget;
 use yii\db\ActiveRecord;
@@ -38,12 +37,29 @@ class D3NoteView extends Widget
     private array $attached = [];
 
 
+    public function getViewPath(): string
+    {
+        $directory = 'views';
+        if (method_exists($this->getView(), 'getTheme')) {
+            $directory .= '-' . $this->getView()->getTheme();
+        }
+        $class = new ReflectionClass($this);
+        return dirname($class->getFileName()) . DIRECTORY_SEPARATOR . $directory;
+    }
+
     /**
      * @throws Exception
      */
     public function init()
     {
         parent::init();
+
+//        if (!method_exists($this->view, 'getTheme')
+//            || !$theme = $this->view->getTheme() ?? null) {
+//            $this->viewPath = '@d3yii2/d3labels/views/note-path/view';
+//        } else {
+//            $this->viewPath = '@d3yii2/d3labels/views-' . $theme . '/note-path/view';;
+//        }
 
         $this->attached = D3Note::getAttachedNotes($this->model, $this->userId);
     }
@@ -55,28 +71,11 @@ class D3NoteView extends Widget
      */
     public function run(): string
     {
-        $headerHtml = '';
-        if ($this->canEdit && $this->addButtonLink) {
-            $headerHtml .= ThButton::widget([
-                'label' => Yii::t('d3labels', 'Add'),
-                'link' =>$this->addButtonLink,
-                'icon' => ThButton::ICON_PLUS,
-                'type' => ThButton::TYPE_SUCCESS,
-                'size' => ThButton::SIZE_SMALL
-            ]);
-        }
-        $headerHtml .= $this->title ?? Yii::t('d3labels', 'Notes');
-        $bodyHtml = '';
-        foreach ($this->attached as $note) {
-            $bodyHtml .= ThPanel::widget([
-                'header' => trim($note->time . ' ' . ($note->userName??'')),
-                'body' => $note->notes
-            ]);
-        }
-        return ThPanel::widget([
-            'type' => ThPanel::TYPE_DEFAULT,
-            'header' => $headerHtml,
-            'body' => $bodyHtml,
+        return $this->render('d3-note-view', [
+            'addButtonLink' => $this->addButtonLink,
+            'canEdit' => $this->canEdit,
+            'title' => $this->title,
+            'attached' => $this->attached,
         ]);
     }
 }
