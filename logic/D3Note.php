@@ -94,7 +94,9 @@ class D3Note
             ->where([
                 'd3l_notes.model_id' => self::getSysModelId($model, $modelClass),
                 'd3l_notes.model_record_id' => $model->id,
-            ]);
+            ])
+            ->orderBy(['time' => SORT_ASC]);
+        ;
 
         if ($userId) {
             $activeQuery

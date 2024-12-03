@@ -21,9 +21,14 @@ use yii\db\ActiveRecord;
 class D3NoteView extends Widget
 {
 
+    public const TYPE_PANEL = 'panel';
+    public const TYPE_TABLE = 'table';
+
     public ?string $title = null;
     public ?array $addButtonLink = null;
+    public ?array $removeButtonLink = null;
     public ?bool $canEdit = false;
+    public ?string $type = self::TYPE_PANEL;
 
     /** @var object|null|ActiveRecord */
     public ?object $model = null;
@@ -71,11 +76,27 @@ class D3NoteView extends Widget
      */
     public function run(): string
     {
-        return $this->render('d3-note-view', [
-            'addButtonLink' => $this->addButtonLink,
-            'canEdit' => $this->canEdit,
-            'title' => $this->title,
-            'attached' => $this->attached,
-        ]);
+        if ($this->type === self::TYPE_PANEL) {
+            return $this->render(
+            'd3-note-view-panel' ,
+            [
+                'addButtonLink' => $this->addButtonLink,
+                'removeButtonLink' => $this->removeButtonLink,
+                'canEdit' => $this->canEdit,
+                'title' => $this->title,
+                'attached' => $this->attached,
+            ]);
+        }
+        if ($this->type === self::TYPE_TABLE) {
+            return $this->render(
+            'd3-note-view-table' ,
+            [
+                'addButtonLink' => $this->addButtonLink,
+                'removeButtonLink' => $this->removeButtonLink,
+                'canEdit' => $this->canEdit,
+                'title' => $this->title,
+                'attached' => $this->attached,
+            ]);
+        }
     }
 }

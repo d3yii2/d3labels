@@ -23,7 +23,12 @@ class D3Note extends BaseD3Note
     {
         return array_merge(
             parent::attributeLabels(),
-            ['userName' => Yii::t('d3labels','User Name')]
+            ['userName' => Yii::t('d3labels','User')]
         );
+    }
+
+    public function getNotesAsHtml(): string
+    {
+        return str_replace(PHP_EOL, '<br>', $this->notes);
     }
 }
