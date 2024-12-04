@@ -74,7 +74,7 @@ abstract class D3Note extends \yii\db\ActiveRecord
             'model_id' => Yii::t('d3labels', 'Model ID'),
             'model_record_id' => Yii::t('d3labels', 'Model Record ID'),
             'notes' => Yii::t('d3labels', 'Notes'),
-            'user_id' => Yii::t('d3labels', 'User ID'),
+            'user_id' => Yii::t('d3labels', 'User'),
             'time' => Yii::t('d3labels', 'Time'),
         ];
     }

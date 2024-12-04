@@ -5,7 +5,7 @@ namespace d3yii2\d3labels\components;
 use cornernote\returnurl\ReturnUrl;
 use d3system\exceptions\D3ActiveRecordException;
 use d3yii2\d3labels\models\D3Note;
-use eaBlankonThema\components\FlashHelper;
+use d3system\helpers\FlashHelper;
 use Exception;
 use Throwable;
 use Yii;

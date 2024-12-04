@@ -3,8 +3,8 @@
 namespace d3yii2\d3labels\components;
 
 use cornernote\returnurl\ReturnUrl;
+use d3system\helpers\FlashHelper;
 use d3yii2\d3labels\models\forms\Note;
-use eaBlankonThema\components\FlashHelper;
 use Exception;
 use Yii;
 use yii\web\NotFoundHttpException;
@@ -25,7 +25,21 @@ class AttachNoteAction extends BaseAction
     public ?int $userId = null;
 
     /** @var string|null form view path */
-    public ?string $view = '@d3yii2/d3labels/views/note/create';
+    public ?string $view = null;
+
+    public ?string $flashHelperClass = null;
+
+    public function init()
+    {
+        parent::init();
+        if (!$this->view) {
+            if (method_exists($this->controller->getView(), 'getThemeName')) {
+                $this->view = '@d3yii2/d3labels/views-' . $this->controller->getView()->getThemeName() . '/note/create';
+            } else {
+                $this->view = '@d3yii2/d3labels/views/note/create';
+            }
+        }
+    }
 
     /**
      * @param int $id

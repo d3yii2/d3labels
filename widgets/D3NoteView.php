@@ -45,8 +45,8 @@ class D3NoteView extends Widget
     public function getViewPath(): string
     {
         $directory = 'views';
-        if (method_exists($this->getView(), 'getTheme')) {
-            $directory .= '-' . $this->getView()->getTheme();
+        if (method_exists($this->getView(), 'getThemeName')) {
+            $directory .= '-' . $this->getView()->getThemeName();
         }
         $class = new ReflectionClass($this);
         return dirname($class->getFileName()) . DIRECTORY_SEPARATOR . $directory;
@@ -58,14 +58,6 @@ class D3NoteView extends Widget
     public function init()
     {
         parent::init();
-
-//        if (!method_exists($this->view, 'getTheme')
-//            || !$theme = $this->view->getTheme() ?? null) {
-//            $this->viewPath = '@d3yii2/d3labels/views/note-path/view';
-//        } else {
-//            $this->viewPath = '@d3yii2/d3labels/views-' . $theme . '/note-path/view';;
-//        }
-
         $this->attached = D3Note::getAttachedNotes($this->model, $this->userId);
     }
 
@@ -98,5 +90,6 @@ class D3NoteView extends Widget
                 'attached' => $this->attached,
             ]);
         }
+        throw new Exception('Unknown type: ' . $this->type);
     }
 }
