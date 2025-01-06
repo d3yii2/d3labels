@@ -3,6 +3,7 @@
 namespace d3yii2\d3labels\models;
 
 use d3system\dictionaries\SysModelsDictionary;
+use d3system\exceptions\D3ActiveRecordException;
 use d3yii2\d3labels\models\base\D3lLabel as BaseD3lLabel;
 use Yii;
 use yii\db\Query;
@@ -18,8 +19,21 @@ class D3lLabel extends BaseD3lLabel
      * @param array $ids
      * @param string $modelClassName
      * @param int|null $filterUserId
-     * @return int[]
-     * @throws \d3system\exceptions\D3ActiveRecordException
+     * @return arra{
+     *     id:int,
+     *     definition_id: int,
+     *     model_record_id: int,
+     *     user_id: int|null,
+     *     time: string|null,
+     *     notes: string,
+     *     sys_company_id: int,
+     *     code: string|null,
+     *     model_id: int,
+     *     collor: string,
+     *     action_class: string,
+     *     action_method: string
+     * }[]
+     * @throws D3ActiveRecordException
      */
     public static function getAllByModelRecordIds(
         array $ids,
@@ -67,19 +81,25 @@ class D3lLabel extends BaseD3lLabel
 
     }
 
-    public function beforeSave($insert)
+    public function beforeSave($insert): bool
     {
         $this->user_id = Yii::$app->user->id ?? NULL;
         $this->time = date('Y-m-d H:i:s');
         return parent::beforeSave($insert);
     }
 
+    /**
+     * @throws D3ActiveRecordException
+     */
     public function afterSave($insert, $changedAttributes)
     {
         parent::afterSave($insert, $changedAttributes);
         D3lLabelHistory::newRecord($this, D3lLabelHistory::ACTION_ADDED);
     }
 
+    /**
+     * @throws D3ActiveRecordException
+     */
     public function afterDelete()
     {
         parent::afterDelete();
