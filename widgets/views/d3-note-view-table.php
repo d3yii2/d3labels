@@ -74,6 +74,7 @@ $headerHtml .= $title ?? Yii::t('d3labels', 'Notes');
 
 echo ThPanel::widget([
     'type' => ThPanel::TYPE_DEFAULT,
+    'leftIcon' => 'pencil',
     'header' => $headerHtml,
     'body' => $bodyHtml,
 ]);
