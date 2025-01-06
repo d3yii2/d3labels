@@ -1,175 +1,108 @@
 <?php
 
-namespace d3yii2\d3labels\components;
+namespace d3yii2\d3labels\models;
 
+use d3system\dictionaries\SysModelsDictionary;
 use d3system\exceptions\D3ActiveRecordException;
-use d3yii2\d3labels\dictionaries\D3lDefinitionDictionary;
-use d3yii2\d3labels\logic\D3LabelList;
-use d3yii2\d3labels\models\D3lDefinition;
-use d3yii2\d3labels\models\D3lLabel;
-use Exception;
-use yii\grid\DataColumn;
-use yii\helpers\ArrayHelper;
+use d3yii2\d3labels\models\base\D3lLabel as BaseD3lLabel;
 use Yii;
+use yii\db\Query;
+use yii\helpers\ArrayHelper;
 
 /**
- * Class D3LabelColumn
- * @package d3yii2\d3labels\components
- * @property object $model
- * @property array $badgeRenderOptions
- * @property array $dataProviderIds
- * @property array $recordsWithLabels
+ * This is the model class for table "d3l_label".
  */
-class D3LabelColumn extends DataColumn
+class D3lLabel extends BaseD3lLabel
 {
-    public const COLUMN_CLASS = 'badge-column';
-    public $model;
-    public $modelClass;
-    public $badgeRenderOptions = [];
-    public $filterListboxOptions = [];
-
-    /** @var string  */
-    public $attachLink;
 
     /**
-     * @var bool if tue, additionaly allow filter records, where not assigned label
-     */
-    public $filterNotAssignedLabel = false;
-
-    /** @var int */
-    public $sysCompanyId;
-
-    public $dataProvider;
-
-    /** @var array list of toggle labels  */
-    public $toggleLabelCodes;
-
-    /** @var int show user labels */
-    public $filterUserId;
-
-    private $dataProviderIds = [];
-    private $recordsWithLabels = [];
-
-    private $toggleLabelsDef = [];
-
-    /**
-     * Set the initial properties on class init
+     * @param array $ids
+     * @param string $modelClassName
+     * @param int|null $filterUserId
+     * @return arra{
+     *     id:int,
+     *     definition_id: int,
+     *     model_record_id: int,
+     *     user_id: int|null,
+     *     time: string|null,
+     *     notes: string,
+     *     sys_company_id: int,
+     *     code: string|null,
+     *     model_id: int,
+     *     collor: string,
+     *     action_class: string,
+     *     action_method: string
+     * }[]
      * @throws D3ActiveRecordException
      */
-    public function init(): void
+    public static function getAllByModelRecordIds(
+        array $ids,
+        string $modelClassName,
+        int $filterUserId = null
+    ): array
     {
-        $this->initLabels();
+        if (empty($ids)) {
+            return [];
+        }
 
-        parent::init();
+        $query = (new Query())
+            ->select('*')
+            ->leftJoin(D3lDefinition::tableName(),
+                self::tableName() . '.definition_id = ' . D3lDefinition::tableName() . '.id')
+            ->from(self::tableName())
+            ->where([
+                self::tableName() . '.model_record_id' => $ids,
+                D3lDefinition::tableName() . '.model_id' => SysModelsDictionary::getIdByClassName($modelClassName)
+            ]);
+        if ($filterUserId) {
+            $query->andWhere([self::tableName() . '.user_id' => $filterUserId]);
+        }
+        return $query
+            ->all();
     }
 
     /**
-     * Read all the records containing attached labels into $this->recordsWithLabels array
-     *
+     * @param int $modelId
+     * @return array
+     * @deprecated  use D3lDefinitionDictionary::getForListBox()
+     */
+    public static function forListBox(int $modelId): array
+    {
+        $models = D3lDefinition::find()
+            ->select([
+                'id',
+                'label'
+            ])
+            ->where(['model_id' => $modelId])
+            ->asArray()
+            ->all();
+
+        return ArrayHelper::map($models, 'id', 'label');
+
+    }
+
+    public function beforeSave($insert): bool
+    {
+        $this->user_id = Yii::$app->user->id ?? NULL;
+        $this->time = date('Y-m-d H:i:s');
+        return parent::beforeSave($insert);
+    }
+
+    /**
      * @throws D3ActiveRecordException
      */
-    private function initLabels(): void
+    public function afterSave($insert, $changedAttributes)
     {
-        if($this->dataProvider){
-            $rows = $this->dataProvider->getModels();
-        }else {
-            $rows = $this->grid->dataProvider->getModels();
-        }
-
-        $this->dataProviderIds = ArrayHelper::getColumn($rows, 'id');
-
-        $recordsWithLabels = D3lLabel::getAllByModelRecordIds($this->dataProviderIds, $this->modelClass, $this->filterUserId);
-
-        foreach ($recordsWithLabels as $labelModel) {
-            if (!isset($this->recordsWithLabels[$labelModel['model_record_id']])) {
-                $this->recordsWithLabels[$labelModel['model_record_id']] = [];
-            }
-
-            $this->recordsWithLabels[$labelModel['model_record_id']][$labelModel['definition_id']] = $labelModel;
-        }
-        if ($this->toggleLabelCodes) {
-            $this->toggleLabelsDef = ArrayHelper::index(
-                D3lDefinition::find()
-                    ->where(['code' => $this->toggleLabelCodes])
-                    ->asArray()
-                    ->all(),
-                'id'
-            );
-        }
-
-        // need to toggle class provided from label definition
-        if ($this->attachLink) {
-            $columnClass = self::COLUMN_CLASS;
-            Yii::$app->view->registerJs("
-                   $('.$columnClass').on('click', function() {
-                            var modelId = $(this).parents('tr').attr('data-key');
-                            var url = '$this->attachLink' + '&modelId=' + modelId;
-                            
-                            $.ajax({
-                              url: url,
-                              context: this
-                            }).done(function() {
-                              $( this ).toggleClass('badge-default').toggleClass( 'badge-info' );
-                            });
-                            
-                   }); 
-                ");
-        }
+        parent::afterSave($insert, $changedAttributes);
+        D3lLabelHistory::newRecord($this, D3lLabelHistory::ACTION_ADDED);
     }
 
     /**
-     * Render the labels inside grid data cell
-     * @param $model
-     * @param $key
-     * @param $index
-     * @return string
-     * @throws Exception
-     */
-    public function renderDataCellContent($model, $key, $index): string
-    {
-        if ($this->toggleLabelsDef) {
-            $labelItems = [];
-            foreach ($this->toggleLabelsDef as $label) {
-                if (!isset($this->recordsWithLabels[$model->id][((int)$label['id'])])) {
-                    $label['collor'] = 'default';
-                }
-                $labelItems[] = D3LabelList::labelToItem($label);
-            }
-        } else {
-            if (empty($this->recordsWithLabels[$model->id])) {
-                return '';
-            }
-            $labelItems = D3LabelList::getBadgeItems($this->recordsWithLabels[$model->id]);
-        }
-        return D3LabelList::getAsBadges($labelItems, $this->badgeRenderOptions, ['class' => self::COLUMN_CLASS]);
-    }
-
-    public function renderForExcel($model): string
-    {
-        if (empty($this->recordsWithLabels[$model->id])) {
-            return '';
-        }
-        $labelItems = D3LabelList::getBadgeItems($this->recordsWithLabels[$model->id]);
-        return implode(', ', ArrayHelper::getColumn($labelItems,'text'));
-    }
-
-    /**
-     * Renders the filter cell content.
-     * The default implementation simply renders a space.
-     * This method may be overridden to customize the rendering of the filter cell (if any).
-     * @return string the rendering result
      * @throws D3ActiveRecordException
      */
-    protected function renderFilterCellContent(): string
+    public function afterDelete()
     {
-        $items = D3lDefinitionDictionary::getList($this->sysCompanyId, $this->modelClass);
-
-        if($this->filterNotAssignedLabel){
-            $list = $items;
-            foreach($list as $listKey => $listLabel){
-                $items['!' . $listKey] = '! ' . $listLabel;
-            }
-        }
-        return D3LabelList::getAsDropdown($items, $this->filterListboxOptions, $this->model);
+        parent::afterDelete();
+        D3lLabelHistory::newRecord($this, D3lLabelHistory::ACTION_DROPED);
     }
 }
