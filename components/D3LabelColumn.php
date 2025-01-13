@@ -75,7 +75,7 @@ class D3LabelColumn extends DataColumn
         }else {
             $dataProvider = clone $this->grid->dataProvider;
         }
-        $dataProvider->sort = false;
+        //$dataProvider->sort = false;
         $rows = $dataProvider->getModels();
         $this->dataProviderIds = ArrayHelper::getColumn($rows, 'id');
 
