@@ -2,10 +2,9 @@
 
 use cornernote\returnurl\ReturnUrl;
 use d3yii2\d3labels\models\D3Note;
+use eaArgonTheme\widget\ThActionColumn;
 use eaArgonTheme\widget\ThButton;
 use eaArgonTheme\widget\ThPanel;
-use kartik\grid\ActionColumn;
-use kartik\grid\GridView;
 use yii\data\ActiveDataProvider;
 use yii\helpers\Url;
 
@@ -22,7 +21,7 @@ if ($canEdit && $addButtonLink) {
         'label' => Yii::t('d3labels', 'Add'),
         'link' => $addButtonLink,
         'icon' => ThButton::ICON_PLUS,
-        'type' => ThButton::TYPE_SUCCESS,
+        'type' => ThButton::TYPE_PRIMARY,
         'size' => ThButton::SIZE_SMALL
     ]);
 }
@@ -47,7 +46,7 @@ if ($attached) {
 
     if ($canEdit && $removeButtonLink) {
         $columns[] = [
-            'class' => ActionColumn::class,
+            'class' => ThActionColumn::class,
             'template' => '{delete}',
             'urlCreator' =>
                 static function (string $action, D3Note $model) use ($removeButtonLink) {
@@ -58,16 +57,12 @@ if ($attached) {
         ];
     }
 
-    $bodyHtml = GridView::widget([
-        'layout' => '{items}',
-        'export' => false,
+    $bodyHtml = Yii::$app->widget->gridView::widget([
         'dataProvider' => new ActiveDataProvider([
             'models' => $attached,
             'pagination' => false
         ]),
-        'tableOptions' => [
-            'class' => 'table table-striped table-success tbody '
-        ],
+        'actionColumnTemplate' => '',
         'columns' => $columns
     ]);
 } else {

@@ -13,27 +13,25 @@ use eaArgonTheme\widget\ActiveForm;
  */
 
 $this->title = Yii::t('d3labels', 'Add a note');
-$this->setPageHeader($this->title);
 Yii::$app->view->addPageButtons(ThReturnButton::widget(['backUrl' => ReturnUrl::getUrl()]));
 
 ?>
 <div class="row">
     <div class="col-md-9">
-        <div class="panel  rounded shadow">
-            <div class="panel-body rounded-bottom">
-
-                <div class="form-body">
-                    <?php $form = ActiveForm::begin([
-                        'fieldConfig' => [
-                            'template' => "{label}\n{input}\n{error}"
-                        ],
-                    ]); ?>
-
+        <div class="card">
+            <?php $form = ActiveForm::begin([
+                'fieldConfig' => [
+                    'template' => "{label}\n{input}\n{error}"
+                ],
+            ]); ?>
+                <div class="card-body">
                     <?= $form->field($model, 'note')->textarea(['rows' => 6]) ?>
+                </div>
+                <div class="card-footer">
                     <?= ThButton::widget([
                         'label' => Yii::t('d3labels', 'Add'),
                         'icon' => ThButton::ICON_CHECK,
-                        'type' => ThButton::TYPE_SUCCESS,
+                        'type' => ThButton::TYPE_PRIMARY,
                         'submit' => true,
                         'htmlOptions' => [
                             'name' => 'action',
@@ -41,9 +39,9 @@ Yii::$app->view->addPageButtons(ThReturnButton::widget(['backUrl' => ReturnUrl::
                         ],
                     ])
                     ?>
-                    <?php $form::end(); ?>
                 </div>
-            </div>
+            <?php $form::end(); ?>
+        </div>
     </div>
 </div>
 

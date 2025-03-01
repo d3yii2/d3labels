@@ -17,7 +17,7 @@ if ($canEdit && $addButtonLink) {
         'label' => Yii::t('d3labels', 'Add'),
         'link' =>$addButtonLink,
         'icon' => ThButton::ICON_PLUS,
-        'type' => ThButton::TYPE_SUCCESS,
+        'type' => ThButton::TYPE_PRIMARY,
         'size' => ThButton::SIZE_SMALL
     ]);
 }
