@@ -201,7 +201,10 @@ class SettingsController extends LayoutController
                     return Yii::$app->SysCmp->getActiveCompanyId();
                 }
             ],
-            
+            'd3labelsdefinitionedit' => [
+                'class' => DefinitionEditAction::class,
+                'showCode' => true,
+            ],            
             'd3labelsdefinitionremove' => [
                 'class' => DefinitionDeleteAction::class,
                 'modelName' => CwbrProduct::class,
@@ -259,7 +262,8 @@ $this->addPageButtons(\eaBlankonThema\widget\ThReturnButton::widget([
             <div class="tab-pane fade in active">
                 <?= D3LabelCreate::widget([
                     'modelClass' => D3pPerson::class,
-                    'sysCompanyId' => Yii::$app->SysCmp->getActiveCompanyId()
+                    'sysCompanyId' => Yii::$app->SysCmp->getActiveCompanyId(),
+                    'showCode' => false,
                 ])?>
             </div>
         </div>
@@ -277,7 +281,8 @@ use d3yii2\d3labels\widgets\D3LabelCreate;
 ?>
 <?= D3LabelCreate::widget([
     'modelClass' => CwbrProduct::class,
-    'sysCompanyId' => Yii::$app->SysCmp->getActiveCompanyId()
+    'sysCompanyId' => Yii::$app->SysCmp->getActiveCompanyId(),
+    'showCode' => false
 ]) ?>
 ```
 

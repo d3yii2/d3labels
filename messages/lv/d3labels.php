@@ -17,7 +17,7 @@
  * NOTE: this file must be saved in UTF-8 encoding.
  */
 return [
-    'Action' => 'Darbība',
+    'Action' => 'Darbības',
     'Attached Labels' => 'Piesaistītās birkas',
     'Attach Label' => 'Pievienot birku',
     'Cancel and close' => 'Atcelt un aizvērt',
@@ -63,7 +63,7 @@ return [
     'Label/Time Bomb record' => 'Label/Time Bomb record',
     'Definition' => 'Definition',
     'D3labelsD3lLabelView' => 'D3labelsD3lLabelView',
-    'Code' => 'Code',
+    'Code' => 'Kods',
     'D3labelsD3lLabelFull' => 'D3labelsD3lLabelFull',
     'Type' => 'Type',
     'D3labelsD3lLabelEdit' => 'D3labelsD3lLabelEdit',

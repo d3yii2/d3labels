@@ -8,13 +8,13 @@ use eaBlankonThema\widget\ThButton;
 use yii\bootstrap\ActiveForm;
 use yii\helpers\Url;
 use d3yii2\d3labels\dictionaries\D3lIconDictionary;
-use kartik\select2\Select2;
 
 /**
  * @var $model D3lDefinition
  * @var string $returnURLToken
  * @var string $labelsList
  * @var string $createButtonPlacement
+ * @var bool $showCode
  */
 $modulePath = Yii::$app->getModule('d3labels')->basePath;
 
@@ -80,7 +80,9 @@ $icons = D3lIconDictionary::getIcons();
 
                             <?= $form->field($model, 'collor')->dropDownList(D3Definition::getColors()) ?>
                             <?= $form->field($model, 'label')->textInput() ?>
-
+                            <?php if($showCode): ?>
+                                <?= $form->field($model, 'code')->textInput() ?>
+                            <?php endif; ?>
                             <div class="form-group field-d3ldefinition-icon has-success">
                                 <label class="control-label" for="d3ldefinition-icon"><?=Yii::t('d3labels', 'Icon')?></label>
                                 <select id="d3ldefinition-icon" class="form-control fa" style="font-size: 25px !important; width:75px;" name="D3lDefinition[icon]" aria-invalid="false">
