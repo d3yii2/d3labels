@@ -15,6 +15,7 @@ use kartik\select2\Select2;
  * @var string $returnURLToken
  * @var string $labelsList
  * @var string $createButtonPlacement
+ * @var string $modelClass
  */
 $modulePath = Yii::$app->getModule('d3labels')->basePath;
 
@@ -68,7 +69,7 @@ $icons = D3lIconDictionary::getIcons();
                     <div class="row collapse" id="collapse">
                         <div class="card card-body">
                             <?php $form = ActiveForm::begin([
-                                'action' => Url::toRoute(['d3labelscreate']),
+                                'action' => Url::toRoute([D3Definition::getCreateActionName($modelClass)]),
                                 'fieldConfig' => [
                                     'template' => "{label}\n{input}\n{error}"
                                 ],
@@ -137,7 +138,7 @@ $('.delete-item').on('click', function() {
 });
 $('.edit-item').on('click', function () {
     $.ajax({
-            url: '".Url::toRoute('d3labelsdefinitionedit')."',
+            url: '".Url::toRoute(D3Definition::getEditActionName($modelClass))."',
             type: 'post',
             data: {definition: $(this).attr('data-link')},
             dataType: 'json',

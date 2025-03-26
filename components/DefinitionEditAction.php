@@ -22,12 +22,27 @@ class DefinitionEditAction extends BaseAction
             $request = Json::decode(Yii::$app->request->post()['definition'], false);
             $modulePath = Yii::$app->getModule('d3labels')->basePath;
 
-            $model = D3lDefinition::findOne([
-                'id' => $request->definitionId,
-                'model_id' => $request->modelId,
-                'sys_company_id' => Yii::$app->SysCmp->getActiveCompanyId()
-            ]);
-            return Json::encode(['content' => $this->controller->renderFile($modulePath . '/views/label/edit.php', ['model' => $model])]);
+            $model = D3lDefinition::find()
+                ->where([
+                    D3lDefinition::tableName() . '.id' => $request->definitionId,
+                    D3lDefinition::tableName() . '.model_id' => $request->modelId,
+                    D3lDefinition::tableName() . '.sys_company_id' => Yii::$app->SysCmp->getActiveCompanyId()
+            ])
+                ->joinWith('model')
+                ->one();
+            
+            $attachedModelClass = $model->model->class_name;
+            
+            return Json::encode(
+                [
+                    'content' => $this->controller->renderFile(
+                        $modulePath . '/views/label/edit.php',
+                        [
+                            'model' => $model,
+                            'editAction' => D3Definition::getEditActionName($attachedModelClass),
+                        ]
+                    )
+                ]);
         } else if ($request = Yii::$app->request->post()['D3lDefinition']) {
             try {
                 $model = D3lDefinition::findOne([

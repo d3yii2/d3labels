@@ -71,11 +71,13 @@ class D3LabelCreate extends Widget
                 'labelsList' => $this->renderFile(
                     $modulePath . '/views/label/_list.php',
                     [
-                        'labels' => D3lDefinitionDictionary::rowlList($this->modelClass,$this->sysCompanyId),
+                        'labels' => D3lDefinitionDictionary::rowlList($this->modelClass, $this->sysCompanyId),
                         'systemModelId' => $this->definition->getSystemModelId(),
+                        'modelClass' => $this->modelClass,
                     ]
                 ),
                 'createButtonPlacement' => $this->createButtonPlacement,
+                'modelClass' => $this->modelClass,
             ]
         );
     }

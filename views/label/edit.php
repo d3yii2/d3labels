@@ -13,6 +13,7 @@ use d3yii2\d3labels\dictionaries\D3lIconDictionary;
  * @var string $returnURLToken
  * @var string $labelsList
  * @var string $createButtonPlacement
+ * @var string $editAction
  */
 $modulePath = Yii::$app->getModule('d3labels')->basePath;
 $icons = D3lIconDictionary::getIcons();
@@ -25,7 +26,7 @@ $icons = D3lIconDictionary::getIcons();
                     <div class="row">
                         <div class="card card-body">
                             <?php $form = ActiveForm::begin([
-                                'action' => Url::toRoute(['d3labelsdefinitionedit']),
+                                'action' => Url::toRoute([$editAction]),
                                 'fieldConfig' => [
                                     'template' => "{label}\n{input}\n{error}"
                                 ],

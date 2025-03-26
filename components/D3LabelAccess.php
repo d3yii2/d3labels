@@ -2,6 +2,8 @@
 
 namespace d3yii2\d3labels\components;
 
+use d3yii2\d3labels\logic\D3Definition;
+
 /**
  * Class D3LabelAccess
  * @package d3yii2\d3labels\components
@@ -34,14 +36,14 @@ class D3LabelAccess
     /**
      * @return array
      */
-    public static function getControllerBehaviors(): array
+    public static function getControllerBehaviors(?string $modelClass = null): array
     {
         return [
             self::ACTION_CREATE,
             self::ACTION_ATTACH,
             self::ACTION_DELETE,
-            self::ACTION_DEFINITION_DELETE,
-            self::ACTION_DEFINITION_EDIT
+            $modelClass ? D3Definition::getRemoveActionName($modelClass)  : self::ACTION_DEFINITION_DELETE,
+            $modelClass ? D3Definition::getEditActionName($modelClass) : self::ACTION_DEFINITION_EDIT
         ];
     }
 
@@ -52,7 +54,7 @@ class D3LabelAccess
      */
     public static function getAction(string $key, string $modelClass): array
     {
-        $actions = self::getActions();
+        $actions = self::getActions($modelClass);
         $action = $actions[$key];
         $action['modelName'] = $modelClass;
 
@@ -62,7 +64,7 @@ class D3LabelAccess
     /**
      * @return array
      */
-    private static function getActions(): array
+    private static function getActions(string $modelClass): array
     {
         return [
             self::ACTION_CREATE => [
@@ -74,11 +76,11 @@ class D3LabelAccess
             self::ACTION_DELETE => [
                 'class' => DeleteAction::class,
             ],
-            self::ACTION_DEFINITION_DELETE => [
+            D3Definition::getRemoveActionName($modelClass) => [
                 'class' => DefinitionDeleteAction::class,
                 'sysLabelsIdList' => [2]
             ],
-            self::ACTION_DEFINITION_EDIT => [
+            D3Definition::getEditActionName($modelClass) => [
                 'class' => DefintionEditAction::class,
                 'sysLabelsIdList' => [2]
             ]

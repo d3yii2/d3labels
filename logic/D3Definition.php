@@ -5,6 +5,9 @@ namespace d3yii2\d3labels\logic;
 use d3system\dictionaries\SysModelsDictionary;
 use d3system\exceptions\D3ActiveRecordException;
 use d3system\widgets\ThBadge;
+use d3yii2\d3labels\components\CreateAction;
+use d3yii2\d3labels\components\DefinitionDeleteAction;
+use d3yii2\d3labels\components\DefinitionEditAction;
 use d3yii2\d3labels\models\D3lDefinition;
 use Yii;
 use yii\base\Exception;
@@ -160,4 +163,87 @@ class D3Definition
             ThBadge::TYPE_TEALS => Yii::t('d3labels-colors', ThBadge::TYPE_TEALS),
         ];
     }
+
+    /**
+     * @param string $modelClass
+     * @param int|null $sysCompanyId
+     * @return array
+     *
+     */
+    public static function getControllerActionConfig(string $modelClass, ?int $sysCompanyId = null): array
+    {
+        return [
+            self::getCreateActionName($modelClass) => [
+                'class' => CreateAction::class,
+                'modelName' => $modelClass,
+                'sysCompanyId' => $sysCompanyId,
+            ],
+            self::getRemoveActionName($modelClass) => [
+                'class' => DefinitionDeleteAction::class,
+                'modelName' => $modelClass,
+                'sysLabelsIdList' => [2]
+            ],
+            self::getEditActionName($modelClass) => [
+                'class' => DefinitionEditAction::class,
+            ],
+        ];
+    }
+
+    /**
+     * @param string $modelClass
+     * @return array
+     *
+     */
+    public static function getControllerActionNames(string $modelClass): array
+    {
+        return [
+            self::getCreateActionName($modelClass),
+            self::getRemoveActionName($modelClass),
+            self::getEditActionName($modelClass),
+        ];
+    }
+
+    /**
+     * @param string $modelClass
+     * @return string
+     */
+    public static function getCreateActionName(string $modelClass): string
+    {
+
+        return self::getActionName($modelClass, 'definitioncreate');
+    }
+
+    /**
+     * @param string $modelClass
+     * @return string
+     */
+    public static function getEditActionName(string $modelClass): string
+    {
+
+        return self::getActionName($modelClass, 'definitionedit');
+    }
+
+    /**
+     * @param string $modelClass
+     * @return string
+     */
+    public static function getRemoveActionName(string $modelClass): string
+    {
+
+        return self::getActionName($modelClass, 'definitionremove');
+    }
+
+    /**
+     * @param string $modelClass
+     * @param string $type
+     * @return string
+     */
+    public function getActionName(string $modelClass, string $type): string
+    {
+        $classParts = explode('\\', $modelClass);
+        $classShortName = strtolower(end($classParts));
+
+        return 'd3labels' . $classShortName . $type;
+    }
+
 }

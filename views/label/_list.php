@@ -2,10 +2,12 @@
 /**
  * @var int
  * @var array $labels
+ * @var string $modelClass
  */
 
 use d3system\widgets\ThBadge;
 use d3yii2\d3labels\components\D3LabelAccess;
+use d3yii2\d3labels\logic\D3Definition;
 use yii\helpers\Html;
 
 
@@ -57,7 +59,7 @@ use yii\helpers\Html;
                     ?><?= Html::a(
                     '<span class="glyphicon glyphicon-trash"></span>',
                     [
-                        D3LabelAccess::ACTION_DEFINITION_DELETE,
+                        D3Definition::getRemoveActionName($modelClass),
                         'definitionId' => $defRow['id'],
                         'modelId' => $systemModelId,
                     ],
