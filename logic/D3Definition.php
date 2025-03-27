@@ -23,7 +23,7 @@ use yii\web\NotFoundHttpException;
 class D3Definition
 {
 
-    private $definitionModel;
+    private ?D3lDefinition $definitionModel = null;
 
     /**
      * D3Definition constructor.
@@ -95,7 +95,7 @@ class D3Definition
      */
     public function loadFromForm(): void
     {
-        $formAttrs = ['label', 'icon', 'collor'];
+        $formAttrs = ['label', 'icon', 'collor', 'code'];
 
         $post = Yii::$app->request->post('D3lDefinition');
 

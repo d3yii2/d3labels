@@ -19,10 +19,8 @@ use yii\base\Widget;
  */
 class D3LabelCreate extends Widget
 {
-    /**
-     * @var string
-     */
-    public $modelClass;
+
+    public ?string $modelClass = null;
     public $controller;
 
     /**
@@ -33,6 +31,8 @@ class D3LabelCreate extends Widget
 
     /** @var int */
     public $sysCompanyId;
+
+    public bool $showCode = false;
 
     /** @var D3Definition */
     private $definition;
@@ -73,9 +73,11 @@ class D3LabelCreate extends Widget
                     [
                         'labels' => D3lDefinitionDictionary::rowlList($this->modelClass,$this->sysCompanyId),
                         'systemModelId' => $this->definition->getSystemModelId(),
+                        'showCode' => $this->showCode
                     ]
                 ),
                 'createButtonPlacement' => $this->createButtonPlacement,
+                'showCode' => $this->showCode
             ]
         );
     }
