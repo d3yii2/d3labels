@@ -52,6 +52,8 @@ class D3LabelColumn extends DataColumn
 
     private $toggleLabelsDef = [];
 
+    public string  $primaryKey = 'id';
+
     /**
      * Set the initial properties on class init
      * @throws D3ActiveRecordException
@@ -77,7 +79,7 @@ class D3LabelColumn extends DataColumn
         }
         //$dataProvider->sort = false;
         $rows = $dataProvider->getModels();
-        $this->dataProviderIds = ArrayHelper::getColumn($rows, 'id');
+        $this->dataProviderIds = ArrayHelper::getColumn($rows, $this->primaryKey);
 
         $recordsWithLabels = D3lLabel::getAllByModelRecordIds($this->dataProviderIds, $this->modelClass, $this->filterUserId);
 
@@ -131,7 +133,7 @@ class D3LabelColumn extends DataColumn
         if ($this->toggleLabelsDef) {
             $labelItems = [];
             foreach ($this->toggleLabelsDef as $label) {
-                if (!isset($this->recordsWithLabels[$model->id][((int)$label['id'])])) {
+                if (!isset($this->recordsWithLabels[$model->{$this->primaryKey}][((int)$label['id'])])) {
                     $label['collor'] = 'default';
                 }
                 $labelItems[] = D3LabelList::labelToItem($label);
@@ -163,6 +165,9 @@ class D3LabelColumn extends DataColumn
      */
     protected function renderFilterCellContent(): string
     {
+        if (!$this->filter) {
+            return '';
+        }
         $items = D3lDefinitionDictionary::getList($this->sysCompanyId, $this->modelClass);
 
         if($this->filterNotAssignedLabel){

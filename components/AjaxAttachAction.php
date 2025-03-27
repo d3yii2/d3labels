@@ -4,6 +4,7 @@ namespace d3yii2\d3labels\components;
 
 use d3yii2\d3labels\logic\D3Label;
 use Exception;
+use Throwable;
 use Yii;
 use yii\web\Response;
 
@@ -18,11 +19,15 @@ class AjaxAttachAction extends BaseAction
     /**
      * @var bool attach/deattach for users labels
      */
-    public $userLabels = false;
+    public bool $userLabels = false;
+
+    public string  $primaryKey = 'id';
+
     /**
      * @param int $defId
      * @param int $modelId
      * @return array
+     * @throws Throwable
      */
     public function run(int $defId, int $modelId): array
     {
@@ -42,7 +47,6 @@ class AjaxAttachAction extends BaseAction
             Yii::error($err->getMessage() . PHP_EOL . $err->getTraceAsString());
             return ['error' => $err->getMessage()];
         }
-
         return ['response' => 'ok'];
     }
 }
