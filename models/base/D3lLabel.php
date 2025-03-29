@@ -6,6 +6,11 @@ namespace d3yii2\d3labels\models\base;
 
 use Yii;
 use d3system\behaviors\D3DateTimeBehavior;
+use d3system\yii2\validators\D3TrimValidator;
+use d3yii2\d3labels\models\D3lDefinition;
+use yii\base\Exception;
+use yii\db\ActiveQuery;
+use yii\db\ActiveRecord;
 
 /**
  * This is the base-model class for table "d3l_label".
@@ -17,13 +22,11 @@ use d3system\behaviors\D3DateTimeBehavior;
  * @property string $time
  * @property string $notes
  *
- * @property \d3yii2\d3labels\models\D3lDefinition $definition
+ * @property D3lDefinition $definition
  * @property string $aliasModel
  */
-abstract class D3lLabel extends \yii\db\ActiveRecord
+abstract class D3lLabel extends ActiveRecord
 {
-
-
 
     /**
      * @inheritdoc
@@ -36,30 +39,26 @@ abstract class D3lLabel extends \yii\db\ActiveRecord
     /**
      * @inheritdoc
      */
-    public function behaviors()
+    public function behaviors(): array
     {
-        $behaviors = [
-        ];
-        $behaviors = array_merge(
-            $behaviors,
-            D3DateTimeBehavior::getConfig(['time'])
-        );
-        return $behaviors;
+        return D3DateTimeBehavior::getConfig(['time']);
     }
 
     /**
      * @inheritdoc
      */
-    public function rules()
+    public function rules(): array
     {
         return [
+            'trimNumbers' => [['id','definition_id','model_record_id','user_id'],D3TrimValidator::class, 'trimOnlyStringValues' => true],
             'required' => [['definition_id', 'model_record_id'], 'required'],
             'smallint Unsigned' => [['definition_id'],'integer' ,'min' => 0 ,'max' => 65535],
-            'integer Unsigned' => [['id','model_record_id'],'integer' ,'min' => 0 ,'max' => 4294967295],
-            'integer Signed' => [['user_id'],'integer' ,'min' => -2147483648 ,'max' => 2147483647],
+            'integer Unsigned' => [['id','user_id'],'integer' ,'min' => 0 ,'max' => 4294967295],
+            'bigint Unsigned' => [['model_record_id'],'integer' ,'min' => 0 ,'max' => 1.844674407371E+19],
+            [['user_id', 'time', 'notes'], 'default', 'value' => null],
             [['time'], 'safe'],
             [['notes'], 'string', 'max' => 255],
-            [['definition_id'], 'exist', 'skipOnError' => true, 'targetClass' => \d3yii2\d3labels\models\D3lDefinition::className(), 'targetAttribute' => ['definition_id' => 'id']],
+            [['definition_id'], 'exist', 'skipOnError' => true, 'targetClass' => D3lDefinition::class, 'targetAttribute' => ['definition_id' => 'id']],
             'D3DateTimeBehavior' => [['time_local'],'safe']
         ];
     }
@@ -67,7 +66,7 @@ abstract class D3lLabel extends \yii\db\ActiveRecord
     /**
      * @inheritdoc
      */
-    public function attributeLabels()
+    public function attributeLabels(): array
     {
         return [
             'id' => Yii::t('d3labels', 'ID'),
@@ -80,11 +79,13 @@ abstract class D3lLabel extends \yii\db\ActiveRecord
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
-    public function getDefinition()
+    public function getDefinition(): ActiveQuery
     {
-        return $this->hasOne(\d3yii2\d3labels\models\D3lDefinition::className(), ['id' => 'definition_id'])->inverseOf('d3lLabels');
+        return $this
+            ->hasOne(D3lDefinition::class, ['id' => 'definition_id'])
+            ->inverseOf('d3lLabels');
     }
 
     /**
