@@ -165,7 +165,7 @@ class D3LabelColumn extends DataColumn
      */
     protected function renderFilterCellContent(): string
     {
-        if (!$this->filter) {
+        if ($this->filter === false) {
             return '';
         }
         $items = D3lDefinitionDictionary::getList($this->sysCompanyId, $this->modelClass);
