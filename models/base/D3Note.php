@@ -6,6 +6,10 @@ namespace d3yii2\d3labels\models\base;
 
 use Yii;
 use d3system\behaviors\D3DateTimeBehavior;
+use d3system\yii2\validators\D3TrimValidator;
+use d3yii2\d3labels\models\SysModels;
+use yii\db\ActiveQuery;
+use yii\db\ActiveRecord;
 use yii\db\Exception;
 
 /**
@@ -13,18 +17,16 @@ use yii\db\Exception;
  *
  * @property integer $id
  * @property integer $model_id
- * @property integer $model_record_id
+ * @property string $model_record_id
  * @property string $notes
  * @property integer $user_id
  * @property string $time
  *
- * @property \d3yii2\d3labels\models\SysModels $model
+ * @property SysModels $model
  * @property string $aliasModel
  */
-abstract class D3Note extends \yii\db\ActiveRecord
+abstract class D3Note extends ActiveRecord
 {
-
-
 
     /**
      * @inheritdoc
@@ -39,13 +41,7 @@ abstract class D3Note extends \yii\db\ActiveRecord
      */
     public function behaviors()
     {
-        $behaviors = [
-        ];
-        $behaviors = array_merge(
-            $behaviors,
-            D3DateTimeBehavior::getConfig(['time'])
-        );
-        return $behaviors;
+        return D3DateTimeBehavior::getConfig(['time']);
     }
 
     /**
@@ -54,12 +50,15 @@ abstract class D3Note extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
+            'trimNumbers' => [['id','model_id','model_record_id','user_id'],D3TrimValidator::class, 'trimOnlyStringValues' => true],
             'required' => [['model_id', 'model_record_id'], 'required'],
             'tinyint Unsigned' => [['model_id'],'integer' ,'min' => 0 ,'max' => 255],
-            'integer Unsigned' => [['id','model_record_id','user_id'],'integer' ,'min' => 0 ,'max' => 4294967295],
+            'integer Unsigned' => [['id','user_id'],'integer' ,'min' => 0 ,'max' => 4294967295],
+            'bigint Unsigned' => [['model_record_id'],'integer' ,'min' => 0 ,'max' => 1.844674407371E+19],
+            [['notes', 'user_id'], 'default', 'value' => null],
             [['time'], 'safe'],
             [['notes'], 'string', 'max' => 255],
-            [['model_id'], 'exist', 'skipOnError' => true, 'targetClass' => \d3yii2\d3labels\models\SysModels::class, 'targetAttribute' => ['model_id' => 'id']],
+            [['model_id'], 'exist', 'skipOnError' => true, 'targetClass' => SysModels::class, 'targetAttribute' => ['model_id' => 'id']],
             'D3DateTimeBehavior' => [['time_local'],'safe']
         ];
     }
@@ -80,11 +79,13 @@ abstract class D3Note extends \yii\db\ActiveRecord
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
     public function getModel()
     {
-        return $this->hasOne(\d3yii2\d3labels\models\SysModels::class, ['id' => 'model_id'])->inverseOf('d3lNotes');
+        return $this
+            ->hasOne(SysModels::class, ['id' => 'model_id'])
+            ->inverseOf('d3lNotes');
     }
 
 
