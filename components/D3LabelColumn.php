@@ -23,10 +23,30 @@ use Yii;
 class D3LabelColumn extends DataColumn
 {
     public const COLUMN_CLASS = 'badge-column';
+
+    /**
+     * search model
+     */
     public $model;
-    public $modelClass;
-    public $badgeRenderOptions = [];
-    public $filterListboxOptions = [];
+
+    /**
+     * @var string|null search model class name
+     */
+    public ?string $modelClass = null;
+    public array $badgeRenderOptions = [];
+
+    /**
+     * @var bool show icon without label name
+     */
+    public bool $showOnlyIcon = false;
+
+    public array $filterListboxOptions = [];
+
+    /**
+     * @var string|null filter prompt text
+     */
+    public ?string $filterPrompt = null;
+
 
     /** @var string  */
     public $attachLink;
@@ -44,15 +64,17 @@ class D3LabelColumn extends DataColumn
     /** @var array list of toggle labels  */
     public $toggleLabelCodes;
 
-    /** @var int show user labels */
-    public $filterUserId;
+    /**
+     * @var int|null show only user labels
+     */
+    public ?int $showLabelsForUserId = null;
 
-    private $dataProviderIds = [];
-    private $recordsWithLabels = [];
+    private array $dataProviderIds = [];
+    private array $recordsWithLabels = [];
 
-    private $toggleLabelsDef = [];
+    private array $toggleLabelsDef = [];
 
-    public string  $primaryKey = 'id';
+    public string $primaryKey = 'id';
 
     /**
      * Set the initial properties on class init
@@ -81,7 +103,11 @@ class D3LabelColumn extends DataColumn
         $rows = $dataProvider->getModels();
         $this->dataProviderIds = ArrayHelper::getColumn($rows, $this->primaryKey);
 
-        $recordsWithLabels = D3lLabel::getAllByModelRecordIds($this->dataProviderIds, $this->modelClass, $this->filterUserId);
+        $recordsWithLabels = D3lLabel::getAllByModelRecordIds(
+            $this->dataProviderIds,
+            $this->modelClass,
+            $this->showLabelsForUserId
+        );
 
         foreach ($recordsWithLabels as $labelModel) {
             if (!isset($this->recordsWithLabels[$labelModel['model_record_id']])) {
@@ -136,7 +162,7 @@ class D3LabelColumn extends DataColumn
                 if (!isset($this->recordsWithLabels[$model->{$this->primaryKey}][((int)$label['id'])])) {
                     $label['collor'] = 'default';
                 }
-                $labelItems[] = D3LabelList::labelToItem($label);
+                $labelItems[] = D3LabelList::labelToItem($label, '', null, $this->showOnlyIcon);
             }
         } else {
             if (empty($this->recordsWithLabels[$model->id])) {
@@ -176,6 +202,15 @@ class D3LabelColumn extends DataColumn
                 $items['!' . $listKey] = '! ' . $listLabel;
             }
         }
-        return D3LabelList::getAsDropdown($items, $this->filterListboxOptions, $this->model);
+
+        if ($this->showOnlyIcon) {
+            $this->filterListboxOptions['encode'] = false;
+        }
+        return D3LabelList::getAsDropdown(
+            $items,
+            $this->filterListboxOptions,
+            $this->model,
+            $this->filterPrompt
+        );
     }
 }
