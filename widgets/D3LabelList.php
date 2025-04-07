@@ -2,7 +2,6 @@
 
 namespace d3yii2\d3labels\widgets;
 
-use d3system\dictionaries\SysModelsDictionary;
 use d3system\exceptions\D3ActiveRecordException;
 use d3system\widgets\D3Widget;
 use d3system\widgets\ThBadge;
@@ -12,12 +11,15 @@ use d3yii2\d3labels\models\D3lLabel;
 use eaBlankonThema\widget\ThButton;
 use eaBlankonThema\widget\ThButtonDropDown;
 use Exception;
+use Throwable;
 use Yii;
 use yii\db\ActiveRecord;
 use yii\helpers\Html;
 use yii\helpers\Url;
 
 /**
+ * displaying, attaching and removing labels to model
+ *
  * Class D3LabelList
  * @package d3yii2\d3labels\widgets
  * @property object $model
@@ -34,46 +36,45 @@ use yii\helpers\Url;
  */
 class D3LabelList extends D3Widget
 {
-    /** @var ActiveRecord */
-    public $model;
-    public $title;
-    public $titleDescription;
-    public $titleHtmlOptions = ['style' => 'padding-bottom:0'];
-    public $collapsed = false;
-    public $tableOptions = [
+    /** @var ActiveRecord|object|null  */
+    public ?object $model = null;
+    public ?string $title = null;
+    public ?string $titleDescription = null;
+    public array $titleHtmlOptions = ['style' => 'padding-bottom:0'];
+    public bool $collapsed = false;
+    public array $tableOptions = [
         'class' => 'table table-striped table-success table-bordered'
     ];
-    public $gridIconsWithText = false;
-    public $returnURLToken;
+    public bool $gridIconsWithText = false;
+    public ?string $returnURLToken = null;
     public $returnURL;
 
-    public $readOnly = false;
+    public bool $readOnly = false;
 
-    /** @var int */
-    public $sysCompanyId;
+    /** @var int|null */
+    public ?int $sysCompanyId = null;
 
     private $_controllerRoute;
-    private $attached = [];
-    private $noAttached = [];
+    private array $attached = [];
+    private array $noAttached = [];
 
     /**
      * @return void
      * @throws D3ActiveRecordException
      */
-    public function init()
+    public function init(): void
     {
         parent::init();
 
-        $attachedDefIdList = D3lLabel::find()
+        $modelClassName = get_class($this->model);
+        $attachedDefIdList = D3lLabel::findModelAttachedLabels(
+                $modelClassName,
+                $this->model->id
+            )
             ->select('d3l_label.definition_id')
-            ->innerJoin('d3l_definition','d3l_definition.id = d3l_label.definition_id')
-            ->where([
-                'model_record_id' => $this->model->id,
-                'd3l_definition.model_id' => SysModelsDictionary::getIdByClassName(get_class($this->model))
-            ])
             ->column();
 
-        foreach(D3lDefinitionDictionary::rowlList(get_class($this->model), $this->sysCompanyId) as $defRow){
+        foreach(D3lDefinitionDictionary::rowlList($modelClassName, $this->sysCompanyId) as $defRow){
             if(in_array($defRow['id'],$attachedDefIdList,true)){
                 $this->attached[] = $defRow;
             }else{
@@ -93,7 +94,7 @@ class D3LabelList extends D3Widget
     /**
      * Render the table with available labels for the model
      * @return string
-     * @throws Exception
+     * @throws Exception|Throwable
      */
     public function run(): string
     {
@@ -119,7 +120,7 @@ class D3LabelList extends D3Widget
     /**
      * Get the Header content for Labels table
      * @return string
-     * @throws Exception
+     * @throws Exception|Throwable
      */
     public function createTitle(): string
     {
@@ -164,7 +165,7 @@ class D3LabelList extends D3Widget
     /**
      * Get the Labels table content
      * @return string
-     * @throws Exception
+     * @throws Exception|Throwable
      */
     public function createTable(): string
     {
@@ -192,13 +193,11 @@ class D3LabelList extends D3Widget
                     ]) : null,
                 ]
             );
-
             $html .= '
                 <tr>
                     <td>' . $label . '</td>
                 </tr>';
         }
-
         return $html . '</tbody>';
     }
 }

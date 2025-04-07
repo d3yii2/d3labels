@@ -6,6 +6,7 @@ use d3system\dictionaries\SysModelsDictionary;
 use d3system\exceptions\D3ActiveRecordException;
 use d3yii2\d3labels\models\base\D3lLabel as BaseD3lLabel;
 use Yii;
+use yii\db\ActiveQuery;
 use yii\db\Query;
 use yii\helpers\ArrayHelper;
 
@@ -91,7 +92,7 @@ class D3lLabel extends BaseD3lLabel
     /**
      * @throws D3ActiveRecordException
      */
-    public function afterSave($insert, $changedAttributes)
+    public function afterSave($insert, $changedAttributes): void
     {
         parent::afterSave($insert, $changedAttributes);
         D3lLabelHistory::newRecord($this, D3lLabelHistory::ACTION_ADDED);
@@ -100,9 +101,32 @@ class D3lLabel extends BaseD3lLabel
     /**
      * @throws D3ActiveRecordException
      */
-    public function afterDelete()
+    public function afterDelete(): void
     {
         parent::afterDelete();
         D3lLabelHistory::newRecord($this, D3lLabelHistory::ACTION_DROPED);
+    }
+
+    /**
+     * get to model attached label list query
+     * @throws D3ActiveRecordException
+     */
+    public static function findModelAttachedLabels(
+        string $modelClassName,
+        int $modelRecordId,
+        int $userId = null
+    ): ActiveQuery {
+        return self::find()
+            ->innerJoin(
+                'd3l_definition',
+                'd3l_definition.id = '.self::tableName().'.definition_id'
+            )
+            ->where([
+                'model_record_id' => $modelRecordId,
+                'd3l_definition.model_id' => SysModelsDictionary::getIdByClassName($modelClassName)
+            ])
+            ->andFilterWhere([
+                self::tableName() . '.user_id' => $userId
+            ]);
     }
 }

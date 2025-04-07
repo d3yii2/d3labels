@@ -502,6 +502,17 @@ D3Label::detachByModelCode($model->id, $labelCode);
                 ]);
 ```
 
+get modell attached labels
+--------------------------
+
+```php
+$label = D3lLabel::findModelAttachedLabels(
+    'd3modules\d3invoices\models\D3cCompany',
+    $args['partnerId']
+)
+->all();
+```
+
 get list (id => label) of model all labels
 ---------------------------
 
