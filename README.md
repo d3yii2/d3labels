@@ -347,7 +347,9 @@ $columns[] = [
     'format'=>'raw',
     'filterNotAssignedLabel' => true,
     'label' => Yii::t('d3labels', 'Labels'),
-    'sysCompanyId' => $sysCompanyId
+    'sysCompanyId' => $sysCompanyId,
+    'filterPrompt' => 'Filtrēt birkas',
+    'showLabelsForUserId' => true, //
     //'badgeRenderOptions' => ['iconsWithText' => true],
 ];
 ```

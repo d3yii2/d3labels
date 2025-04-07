@@ -11,30 +11,38 @@ class QuerySearch
     /**
      * @param ActiveQuery $query
      * @param string|null $fieldValue
-     * @param string $modelIdField for example 'invoice.id
+     * @param string $modelIdField for example 'invoice.id'
+     * @param int|null $userId - filter userId labels
      */
-    public static function addFilter(&$query, ?string $fieldValue, string $modelIdField): void
-    {
+    public static function addFilter(
+        $query,
+        ?string $fieldValue,
+        string $modelIdField,
+        ?int $userId = null
+    ): void {
         if (!$fieldValue) {
             return;
         }
-
+        $dsn = D3lLabel::getDb()->dsn;
+        preg_match('/dbname=([^;]+)/', $dsn, $matches);
+        $d3lLabelTableName = $matches[1] . '.' . D3lLabel::tableName();
         if (strpos($fieldValue, '!') === 0) {
             $query
                 ->leftJoin(
-                    D3lLabel::tableName(),
-                    $modelIdField . ' = ' . D3lLabel::tableName() . '.model_record_id
-                        AND ' . D3lLabel::tableName() . '.definition_id = :labelType',
+                    $d3lLabelTableName,
+                    $modelIdField . ' = ' . $d3lLabelTableName . '.model_record_id
+                        AND ' . $d3lLabelTableName . '.definition_id = :labelType',
                     [':labelType' => substr($fieldValue, 1)]
                 )
-                ->andWhere(D3lLabel::tableName() . '.id IS NULL')
+                ->andWhere($d3lLabelTableName . '.id IS NULL')
                 ->distinct();
         } else {
             $query
                 ->leftJoin(
-                    D3lLabel::tableName(),
-                    $modelIdField . ' = ' . D3lLabel::tableName() . '.model_record_id')
-                ->andWhere([D3lLabel::tableName() . '.definition_id' => $fieldValue])
+                    $d3lLabelTableName,
+                    $modelIdField . ' = ' . $d3lLabelTableName . '.model_record_id')
+                ->andWhere([$d3lLabelTableName . '.definition_id' => $fieldValue])
+                ->andFilterWhere(['d3l_label.user_id' => $userId])
                 ->distinct();
         }
     }

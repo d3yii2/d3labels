@@ -8,6 +8,7 @@ use d3system\widgets\ThBadgeList;
 use d3yii2\d3labels\dictionaries\D3lDefinitionDictionary;
 use d3yii2\d3labels\models\D3lLabel;
 use Exception;
+use Throwable;
 use Yii;
 use yii\db\ActiveRecord;
 use yii\helpers\Html;
@@ -23,8 +24,8 @@ use yii\helpers\Url;
 class D3LabelList
 {
     public $model;
-    private $availableLabels = [];
-    private $attachedLabels = [];
+    private array $availableLabels = [];
+    private array $attachedLabels = [];
 
     /**
      * D3LabelList constructor.
@@ -58,7 +59,7 @@ class D3LabelList
      * @param array $renderOptions
      * @param array $htmlOptions
      * @return string
-     * @throws Exception
+     * @throws Exception|Throwable
      */
     public static function getAsBadges(array $items, array $renderOptions = [], array $htmlOptions = []): string
     {
@@ -68,15 +69,21 @@ class D3LabelList
     /**
      * Get the Labes as the Dropdown List
      * @param array $items
-     * @param null $model
      * @param array $dropdownOptions
+     * @param null $model
+     * @param string|null $prompt
      * @return string
      */
-    public static function getAsDropdown(array $items, array $dropdownOptions, $model = null): string
-    {
+    public static function getAsDropdown(
+        array $items,
+        array $dropdownOptions,
+        $model = null,
+        string $prompt = null
+    ): string {
+
         $dropdownOptions = array_merge([
             'class' => 'form-control limiter-max__150',
-            'prompt' => Yii::t('d3labels', 'Filter by Label')
+            'prompt' => $prompt ?? Yii::t('d3labels', 'Filter by Label')
         ],
             $dropdownOptions
         );
@@ -122,13 +129,18 @@ class D3LabelList
      * @param $label
      * @param string $action
      * @param int|null $modelId
+     * @param bool $showOnlyIcon
      * @return array
      */
-    public static function labelToItem($label, string $action = '', int $modelId = null): array
-    {
+    public static function labelToItem(
+        $label,
+        string $action = '',
+        int $modelId = null,
+        bool $showOnlyIcon = false
+    ): array {
         $item = is_object($label)
-            ? ['type' => $label->collor, 'text' => $label->label, 'faIcon' => $label->icon]
-            : ['type' => $label['collor'], 'text' => $label['label'], 'faIcon' => $label['icon']];
+            ? ['type' => $label->collor, 'text' => $showOnlyIcon?'':$label->label, 'faIcon' => $label->icon]
+            : ['type' => $label['collor'], 'text' => $showOnlyIcon?'':$label['label'], 'faIcon' => $label['icon']];
 
         if ('' !== $action) {
             $labelId = is_object($label) ? $label->id : $label['id'];
@@ -188,7 +200,6 @@ class D3LabelList
                 $nonAttached[$id] = $label;
             }
         }
-
         return $nonAttached;
     }
 }
