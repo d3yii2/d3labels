@@ -22,14 +22,18 @@ class AjaxAttachAction extends BaseAction
     public bool $userLabels = false;
 
     public string  $primaryKey = 'id';
+    /**
+     * @var callable|null
+     */
+    public $callableSave;
 
     /**
      * @param int $defId
-     * @param int $modelId
+     * @param int|string $modelId
      * @return array
      * @throws Throwable
      */
-    public function run(int $defId, int $modelId): array
+    public function run(int $defId, $modelId): array
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
         if (!Yii::$app->request->isAjax) {
@@ -37,6 +41,9 @@ class AjaxAttachAction extends BaseAction
         }
         $userId = $this->userLabels?Yii::$app->user->id:null;
         try {
+            if ($this->callableSave && is_callable($this->callableSave)) {
+                return call_user_func($this->callableSave, $this, $modelId, $defId, $userId);
+            }
             $this->loadModel($modelId);
             if ($label = D3Label::getAttachedLabel($modelId, $defId, $userId)) {
                 $label->delete();
