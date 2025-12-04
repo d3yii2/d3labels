@@ -95,11 +95,10 @@ class D3LabelColumn extends DataColumn
     private function initLabels(): void
     {
         if($this->dataProvider){
-            $dataProvider = clone $this->dataProvider;
+            $dataProvider = $this->dataProvider;
         }else {
-            $dataProvider = clone $this->grid->dataProvider;
+            $dataProvider = $this->grid->dataProvider;
         }
-        //$dataProvider->sort = false;
         $rows = $dataProvider->getModels();
         $this->dataProviderIds = ArrayHelper::getColumn($rows, $this->primaryKey);
 

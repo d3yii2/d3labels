@@ -169,15 +169,9 @@ class D3LabelList extends D3Widget
      */
     public function createTable(): string
     {
-        $html = '
-        <thead>
-            <tr><th data-col-seq="0">' . Yii::t('d3labels', 'Attached Labels') . '</th></tr>    
-        </thead>
-        <tbody>
-        ';
+        $html = '<tbody>';
 
         foreach ($this->attached as $defRow) {
-
             $label = ThBadge::widget(
                 [
                     'type' => $defRow['collor'],
@@ -193,10 +187,7 @@ class D3LabelList extends D3Widget
                     ]) : null,
                 ]
             );
-            $html .= '
-                <tr>
-                    <td>' . $label . '</td>
-                </tr>';
+            $html .= '<tr><td>' . $label . '</td></tr>';
         }
         return $html . '</tbody>';
     }

@@ -1,12 +1,14 @@
 <?php
+
+use yii\helpers\Html;
+
 /**
+ * @var string $title
  * @var string $collapseIcon
  * @var string $collapsedHtml
  * @var string $table
  * @var array $tableOptions
  */
-
-use yii\helpers\Html;
 
 ?>
 <div class="panel rounded shadow">
