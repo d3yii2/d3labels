@@ -40,7 +40,7 @@ class D3LabelList extends D3Widget
     public ?object $model = null;
     public ?string $title = null;
     public ?string $titleDescription = null;
-    public array $titleHtmlOptions = ['style' => 'padding-bottom:0'];
+    public array $titleHtmlOptions = [];
     public bool $collapsed = false;
     public array $tableOptions = [
         'class' => 'table table-striped table-success table-bordered'

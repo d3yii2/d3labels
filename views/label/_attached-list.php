@@ -1,6 +1,7 @@
 <?php
 
 use yii\helpers\Html;
+use yii\web\View;
 
 /**
  * @var string $title
@@ -9,6 +10,14 @@ use yii\helpers\Html;
  * @var string $table
  * @var array $tableOptions
  */
+
+$css = <<<CSS
+.panel .panel-heading>.pull-right {
+    margin-top: 5px;
+}
+CSS;
+
+$this->registerCss($css, ['position' => View::POS_HEAD]);
 
 ?>
 <div class="panel rounded shadow">
