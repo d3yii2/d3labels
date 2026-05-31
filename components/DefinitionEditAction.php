@@ -3,7 +3,7 @@
 namespace d3yii2\d3labels\components;
 
 use d3yii2\d3labels\models\D3lDefinition;
-use eaBlankonThema\components\FlashHelper;
+use d3system\helpers\FlashHelper;
 use Exception;
 use RuntimeException;
 use Yii;

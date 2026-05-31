@@ -3,6 +3,7 @@
 namespace d3yii2\d3labels\logic;
 
 use d3system\dictionaries\SysModelsDictionary;
+use d3system\exceptions\D3ActiveRecordException;
 use d3yii2\d3labels\dictionaries\D3lDefinitionDictionary;
 use d3yii2\d3labels\models\D3lLabel;
 
@@ -26,7 +27,7 @@ class D3Label
      * @param int $modelId
      * @param string $className
      * @return D3lLabel[]
-     * @throws \d3system\exceptions\D3ActiveRecordException
+     * @throws D3ActiveRecordException
      */
     public static function getAllByModel(int $modelId, string $className): array
     {
@@ -78,7 +79,7 @@ class D3Label
     public static function attach(
         int $modelId,
         int $definitionId,
-        int $userId = null,
+        ?int $userId = null,
         string $notes = ''
     ): bool
     {
@@ -134,7 +135,7 @@ class D3Label
      * @param int|null $userId
      * @throws \yii\db\StaleObjectException
      */
-    public static function detach(int $modelId, int $definitionId, int $userId = null): void
+    public static function detach(int $modelId, int $definitionId, ?int $userId = null): void
     {
         if ($label = self::getAttachedLabel($modelId, $definitionId, $userId)) {
             $label->delete();
@@ -150,7 +151,7 @@ class D3Label
      *
      * @return D3lLabel | null
      */
-    public static function getAttachedLabel(int $modelId, int $defId, int $userId = null): ?D3lLabel
+    public static function getAttachedLabel(int $modelId, int $defId, ?int $userId = null): ?D3lLabel
     {
         $activeQuery = D3lLabel::find()
             ->where([
@@ -170,9 +171,9 @@ class D3Label
      * @param object|\d3yii2\d3activity\components\ActivityRecord $model
      * @param string $labelCode
      * @param int|null $userId
-     * @return \d3yii2\d3labels\models\D3lLabel|null
+     * @return D3lLabel|null
      */
-    public static function getAttachedLabelByCode(object $model, string $labelCode, int $userId = null): ?D3lLabel
+    public static function getAttachedLabelByCode(object $model, string $labelCode, ?int $userId = null): ?D3lLabel
     {
         $codeId = D3lDefinitionDictionary::findByCodeModelObject($labelCode,$model);
         return self::getAttachedLabel($model->id,$codeId, $userId);
@@ -183,10 +184,10 @@ class D3Label
      * @param int $modelRecordId
      * @param string $labelCode
      * @param int|null $userId
-     * @return \d3yii2\d3labels\models\D3lLabel|null
-     * @throws \d3system\exceptions\D3ActiveRecordException
+     * @return D3lLabel|null
+     * @throws D3ActiveRecordException
      */
-    public static function getAttachedLabelByClassCode(string $modelClass, int $modelRecordId, string $labelCode, int $userId = null): ?D3lLabel
+    public static function getAttachedLabelByClassCode(string $modelClass, int $modelRecordId, string $labelCode, ?int $userId = null): ?D3lLabel
     {
         $codeId = D3lDefinitionDictionary::findByCodeModel($labelCode,$modelClass);
         return self::getAttachedLabel($modelRecordId,$codeId, $userId);

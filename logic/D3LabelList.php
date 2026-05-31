@@ -78,7 +78,7 @@ class D3LabelList
         array $items,
         array $dropdownOptions,
         $model = null,
-        string $prompt = null
+        ?string $prompt = null
     ): string {
 
         $dropdownOptions = array_merge([
@@ -113,7 +113,7 @@ class D3LabelList
      * @param int|null $modelId
      * @return array
      */
-    public static function getBadgeItems(array $labels, string $action = '', int $modelId = null): array
+    public static function getBadgeItems(array $labels, string $action = '', ?int $modelId = null): array
     {
         $items = [];
 
@@ -135,7 +135,7 @@ class D3LabelList
     public static function labelToItem(
         $label,
         string $action = '',
-        int $modelId = null,
+        ?int $modelId = null,
         bool $showOnlyIcon = false
     ): array {
         $item = is_object($label)

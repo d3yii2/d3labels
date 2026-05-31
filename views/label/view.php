@@ -8,6 +8,10 @@
 
 use yii\helpers\Html;
 
+/**
+ * @var string $title
+ */
+
 ?>
 <div class="panel rounded shadow">
     <div class="panel-heading">

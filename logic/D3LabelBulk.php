@@ -59,7 +59,7 @@ class D3LabelBulk extends Component
      */
     public function processBulkAction(string $action, array $selection): int
     {
-        [$prefix,$labelDefId] = explode('-',$action);
+        [,$labelDefId] = explode('-',$action);
         $cnt = 0;
         foreach ($selection as $modelId) {
             D3Label::attach($modelId, $labelDefId, $this->userId);
@@ -70,7 +70,7 @@ class D3LabelBulk extends Component
 
     public function successMessage(string $action,int $cnt): string
     {
-        [$prefix,$labelDefId] = explode('-',$action);
+        [,$labelDefId] = explode('-',$action);
         return Yii::t(
             'd3labels',
             'Label "{labelOfLabel}" added to {cnt} records',
@@ -83,7 +83,7 @@ class D3LabelBulk extends Component
 
     public function nothingAddedMessage(string $action): string
     {
-        [$prefix,$labelDefId] = explode('-',$action);
+        [,$labelDefId] = explode('-',$action);
         return Yii::t(
             'd3labels',
             'Label "{labelOfLabel}" is not attached to any record',

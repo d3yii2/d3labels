@@ -4,9 +4,6 @@ namespace d3yii2\d3labels\widgets;
 
 use Closure;
 use d3yii2\d3labels\logic\D3Note;
-use d3yii2\d3store\models\StoreTransactions;
-use yii\base\Exception;
-use yii\db\ActiveRecord;
 use yii\grid\DataColumn;
 use yii\helpers\Html;
 

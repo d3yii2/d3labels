@@ -39,7 +39,7 @@ class D3lLabel extends BaseD3lLabel
     public static function getAllByModelRecordIds(
         array $ids,
         string $modelClassName,
-        int $filterUserId = null
+        ?int $filterUserId = null
     ): array
     {
         if (empty($ids)) {
@@ -114,7 +114,7 @@ class D3lLabel extends BaseD3lLabel
     public static function findModelAttachedLabels(
         string $modelClassName,
         int $modelRecordId,
-        int $userId = null
+        ?int $userId = null
     ): ActiveQuery {
         return self::find()
             ->innerJoin(

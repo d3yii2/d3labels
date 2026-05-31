@@ -42,7 +42,7 @@ class D3Note
      * @throws D3ActiveRecordException
      * @throws Exception
      */
-    public static function attach(ActiveRecord $model, string $content, int $userId = null): bool
+    public static function attach(ActiveRecord $model, string $content, ?int $userId = null): bool
     {
         $mapping = new NoteModel();
         $mapping->model_id = self::getSysModelId($model);
