@@ -75,7 +75,7 @@ class D3LabelList extends D3Widget
             ->column();
 
         foreach(D3lDefinitionDictionary::rowlList($modelClassName, $this->sysCompanyId) as $defRow){
-            if(in_array($defRow['id'],$attachedDefIdList,true)){
+            if(in_array((int)$defRow['id'],$attachedDefIdList,true)){
                 $this->attached[] = $defRow;
             }else{
                 $this->noAttached[] = $defRow;
