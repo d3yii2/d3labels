@@ -24,6 +24,7 @@ class D3Definition
 {
 
     private ?D3lDefinition $definitionModel = null;
+    private ?string $class = null;
 
     /**
      * D3Definition constructor.
