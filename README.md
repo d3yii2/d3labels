@@ -48,6 +48,17 @@ Add to modules d3labels
     ]
 ```
 
+Tabler (Bootstrap 5) views
+-----
+Tabler (Bootstrap 5) label templates are provided in `views-tabler/label` for
+creation, definition editing, lists and badges. Install `ea/theme-bs5` and
+`yiisoft/yii2-bootstrap5`, then configure
+`ea\themeBs5\components\TablerTheme` and a matching layout in the host application.
+The theme selects these templates automatically when widgets render the module's
+original view paths; no application-owned copies or path map are needed. Original
+views remain the fallback. Label fields, codes, colours, permissions and AJAX
+action names are preserved; no migration is required for the templates.
+
 Define Labels by migration
 -----
 Migration example for adding new label
