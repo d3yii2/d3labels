@@ -622,3 +622,56 @@ Add action to controller for adding notes
     }
 
 ```
+
+# REFERENCES
+Typed links from a record of one model (owner) to a record of another model (target),
+e.g. order → invoices created from it. Full description: [doc/references.md](doc/references.md).
+
+- `D3lRefDef` (`d3l_ref_def`) – reference type: `code`, target model class (`sys_model_id`),
+  presenter class for the widget (`class_sys_model_id`). Created by migration.
+- `D3lRefRecords` (`d3l_ref_records`) – the links. Run migration `m261019_213337_d3yii2_d3labels_init_ref`.
+- `D3RefList` – widget that lists the owner's references.
+
+Define reference type by migration
+-
+```php
+$model = new D3lRefDef([
+    'sys_model_id' => SysModelsDictionary::getIdByClassName(InvInvoice::class),          // target
+    'code' => OrderConfig::D3L_REF_DEF_IN_INVOICE_CODE,                                   // max 15 chars
+    'class_sys_model_id' => SysModelsDictionary::getIdByClassName(InvInvoiceRef::class), // presenter
+]);
+if (!$model->save()) {
+    throw new D3ActiveRecordException2($model);
+}
+```
+
+Presenter class methods used by `D3RefList`: `__construct(int $id)`, `createIcon()`, `createTypeLabel()`,
+`createLabel()`, `createUrl(string $ru)`. Example: `d3modules\d3invoices\components\InvInvoiceRef`.
+
+Create and read references
+-
+```php
+use d3yii2\d3labels\models\D3lRefRecords;
+
+D3lRefRecords::createRef(OrderConfig::D3L_REF_DEF_IN_INVOICE_CODE, $order, $invoice); // idempotent
+$refs = D3lRefRecords::findAllRef(OrderConfig::D3L_REF_DEF_IN_INVOICE_CODE, $order);
+$refs = D3lRefRecords::findByModel($order, 'INVOICE');
+$refs = D3lRefRecords::find()->findByRefModel($invoice, 'INVOICE')->all(); // reverse lookup
+```
+
+Show references
+-
+```php
+use d3yii2\d3labels\widgets\D3RefList;
+
+<?= D3RefList::widget([
+    'model' => $model,
+    //'codes' => ['INVOICE'],
+]) ?>
+```
+
+Claude Code skill
+-
+`claude/skills/d3labels-ref/SKILL.md` – step-by-step procedure for adding a reference type
+(code constant, presenter, migration, `createRef()`, widget). Copy it to the project's
+`.claude/skills/d3labels-ref/` to use it as `/d3labels-ref`.
