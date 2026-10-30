@@ -56,6 +56,29 @@ class D3lRefRecords extends BaseD3lRefRecords
         }
     }
 
+    public static function createRefByClassName(
+        string $defCode,
+        string $modelClassName,
+        int $modelId,
+        ActiveRecord $refModel
+    ): void {
+        $params = [
+            'sys_model_id' => SysModelsDictionary::getIdByClassName($modelClassName),
+            'record_id' => $modelId,
+            'def_id' => D3lRefDefDictionary::getIdByCode($defCode),
+            'ref_record_id' => $refModel->id,
+        ];
+
+        if (self::findOne($params)) {
+            return;
+        }
+
+        $model = new self($params);
+        if (!$model->save()) {
+            throw new D3ActiveRecordException2($model);
+        }
+    }
+
 
     /**
      * @param string $defCode
